@@ -1,4 +1,3 @@
-
 <!DOCTYPE html>
 <html lang="vi">
 <head>
@@ -12,8 +11,8 @@
     <!-- Bong bóng nền -->
     <div class="bubble-layer" id="bubbleLayer"></div>
 
-    <!-- Canvas pháo hoa -->
-    <canvas id="fireworksCanvas"></canvas>
+    <!-- Canvas bánh sinh nhật + hoa rơi -->
+    <canvas id="birthdayCanvas"></canvas>
 
     <!-- ===== TRANG ĐĂNG NHẬP ===== -->
     <div class="container" id="loginPage">
@@ -57,42 +56,20 @@
         <div class="card">
             <div class="emoji-big">💌</div>
             <h1>🎉 Những Lá Thư Cho Chị!</h1>
-            <p class="sub-message">Ấn vào từng lá thư để đọc lời chúc nhé ❤️</p>
+            <p class="sub-message" id="letterCounter">Lá thư 1 / 5</p>
 
-            <div class="letters-grid" id="lettersGrid">
-                <!-- Lá thư 1 -->
-                <div class="letter-card" data-index="0">
-                    <div class="letter-emoji">💖</div>
-                    <div class="letter-title">Lá thư số 1</div>
-                    <div class="letter-content hidden">Chị à, em chúc chị luôn vui vẻ và hạnh phúc! Chị xứng đáng với những điều tốt đẹp nhất trên đời này. 🌸</div>
-                </div>
-                <!-- Lá thư 2 -->
-                <div class="letter-card" data-index="1">
-                    <div class="letter-emoji">🌟</div>
-                    <div class="letter-title">Lá thư số 2</div>
-                    <div class="letter-content hidden">Cảm ơn chị vì luôn bên em, chăm sóc và yêu thương em. Em may mắn khi có chị trong cuộc đời! 🥰</div>
-                </div>
-                <!-- Lá thư 3 -->
-                <div class="letter-card" data-index="2">
-                    <div class="letter-emoji">🌈</div>
-                    <div class="letter-title">Lá thư số 3</div>
-                    <div class="letter-content hidden">Chúc chị năm mới tuổi mới thật nhiều niềm vui, sức khỏe và thành công trong mọi dự định! 🎊</div>
-                </div>
-                <!-- Lá thư 4 -->
-                <div class="letter-card" data-index="3">
-                    <div class="letter-emoji">🌺</div>
-                    <div class="letter-title">Lá thư số 4</div>
-                    <div class="letter-content hidden">Chị luôn là nguồn cảm hứng và là hình mẫu của em. Em yêu chị rất nhiều! Mong chị luôn xinh đẹp và rạng rỡ! ✨</div>
-                </div>
-                <!-- Lá thư 5 -->
-                <div class="letter-card" data-index="4">
-                    <div class="letter-emoji">🎁</div>
-                    <div class="letter-title">Lá thư số 5</div>
-                    <div class="letter-content hidden">Tuổi mới, chị hãy sống thật vui và thật ý nghĩa nhé! Em luôn ủng hộ và yêu thương chị! 💕</div>
-                </div>
+            <!-- Nội dung lá thư -->
+            <div class="letter-display" id="letterDisplay">
+                <div class="letter-emoji-big" id="letterEmoji">💖</div>
+                <div class="letter-content-full" id="letterContent">Chị à, em chúc chị luôn vui vẻ và hạnh phúc! Chị xứng đáng với những điều tốt đẹp nhất trên đời này. 🌸</div>
             </div>
 
-            <button id="fireworksBtn" class="btn-fireworks">🎆 Bắn pháo hoa nào!</button>
+            <!-- Nút điều hướng -->
+            <div class="letter-nav">
+                <button class="nav-btn" id="prevBtn">⬅️ Trước</button>
+                <span class="page-dot" id="pageDot">● ○ ○ ○ ○</span>
+                <button class="nav-btn" id="nextBtn">Sau ➡️</button>
+            </div>
         </div>
     </div>
 
