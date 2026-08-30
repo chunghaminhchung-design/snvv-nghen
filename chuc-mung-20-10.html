@@ -1,164 +1,100 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="vi">
 <head>
-<meta charset="utf-8"/>
-<meta name="viewport" content="width=device-width,initial-scale=1"/>
-<title>Tặng chị 20/10 🌷</title>
-<style>
-  :root{
-    --bg1:#fff5f9;
-    --bg2:#ffe6f0;
-    --text:#d63384;
-  }
-  html,body{
-    height:100%;
-    margin:0;
-    background:linear-gradient(180deg,var(--bg1),var(--bg2));
-    overflow:hidden;
-    font-family:"Segoe UI", Roboto, Arial;
-    color:var(--text);
-  }
-
-  .stage{
-    position:relative;
-    width:100%;height:100%;
-    display:flex;
-    align-items:center;
-    justify-content:center;
-    flex-direction:column;
-    padding-bottom:6vh;
-    box-sizing:border-box;
-  }
-
-  .bouquet-wrap{
-    position:relative;
-    width:300px;
-    animation:sway 4s ease-in-out infinite alternate;
-    alternate;
-  display:flex;
-  justify-content:center;
-  align-items:center;
-}
-
-  @keyframes sway{from{transform:translateY(0) rotate(-2deg)} to{transform:translateY(-6px) rotate(2deg)}}
-
-  .bouquet-img{
-display:block;
-  width:100%;
-  height:auto;
-  border-radius:12px;
-  object-fit:cover;
-  filter: drop-shadow(0 4px 16px rgba(0,0,0,0.25));
-  }
-
-  .shine{
-    position:absolute;
-    inset:0;
-    pointer-events:none;
-    background: linear-gradient(120deg, transparent 10%, rgba(255,255,255,0.35) 45%, transparent 90%);
-    mix-blend-mode: screen;
-    transform: translateX(-120%);
-    animation: shineMove 6s linear infinite;
-  }
-  @keyframes shineMove{0%{transform:translateX(-120%)}100%{transform:translateX(140%)}}
-
-  .flower-fall{
-    position:fixed;
-    top:-30px;
-    font-size:20px;
-    pointer-events:none;
-    animation:fall 7s linear forwards;
-  }
-  @keyframes fall{
-    0%{transform:translateY(0) rotate(0deg);opacity:1}
-    100%{transform:translateY(110vh) rotate(360deg);opacity:0}
-  }
-
-  .messages{
-    position:fixed;
-    bottom:6vh;
-    width:100%;
-    display:flex;
-    justify-content:center;
-    align-items:center;
-    pointer-events:none;
-  }
-  .msg-box{
-    background:rgba(255,255,255,0.6);
-    backdrop-filter:blur(6px);
-    padding:14px 18px;
-    border-radius:12px;
-    text-align:center;
-    color:#c2185b;
-    font-weight:500;
-    font-size:18px;
-    box-shadow:0 4px 20px rgba(255,182,193,0.4);
-  }
-  .msg-line{opacity:0;transition:opacity .6s ease;}
-  .msg-line.show{opacity:1;}
-
-  .credit{
-    position:fixed;
-    bottom:18px;
-    left:50%;
-    transform:translateX(-50%);
-    color:#f48fb1;
-    font-size:13px;
-    text-align:center;
-  }
-</style>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    <title>🎂 Chúc Mừng Sinh Nhật Chị!</title>
+    <link rel="stylesheet" href="style.css" />
 </head>
 <body>
 
-<div class="stage">
-  <div class="bouquet-wrap">
-    <a href='https://postimg.cc/2qvC4r6Y' target='_blank'><img src='https://i.postimg.cc/fbqkQbQV/IMG-2369.jpg' border='0' alt='IMG-2369'/></a>
-    <div class="shine"></div>
-  </div>
+    <!-- Bong bóng nền -->
+    <div class="bubble-layer" id="bubbleLayer"></div>
 
-  <div class="messages">
-    <div class="msg-box" id="msgBox"></div>
-  </div>
+    <!-- Canvas pháo hoa -->
+    <canvas id="fireworksCanvas"></canvas>
 
-  <div class="credit">✨ Tặng riêng — Cho mình chị :))</div>
-</div>
+    <!-- ===== TRANG ĐĂNG NHẬP ===== -->
+    <div class="container" id="loginPage">
+        <div class="card">
+            <div class="emoji-big">🔐</div>
+            <h1>🎂 Nhập mật khẩu</h1>
+            <p class="sub-message">Nhập mã để nhận quà từ em nhé!</p>
 
-<audio autoplay loop>
-  <source src="https://cdn.pixabay.com/download/audio/2023/03/29/audio_20f0e377da.mp3?filename=piano-beautiful-14360.mp3" type="audio/mpeg">
-</audio>
+            <!-- Bàn phím số -->
+            <div class="keypad">
+                <div class="key-row">
+                    <button class="key" data-value="1">1</button>
+                    <button class="key" data-value="2">2</button>
+                    <button class="key" data-value="3">3</button>
+                </div>
+                <div class="key-row">
+                    <button class="key" data-value="4">4</button>
+                    <button class="key" data-value="5">5</button>
+                    <button class="key" data-value="6">6</button>
+                </div>
+                <div class="key-row">
+                    <button class="key" data-value="7">7</button>
+                    <button class="key" data-value="8">8</button>
+                    <button class="key" data-value="9">9</button>
+                </div>
+                <div class="key-row">
+                    <button class="key key-clear" data-value="clear">⌫</button>
+                    <button class="key" data-value="0">0</button>
+                    <button class="key key-enter" data-value="enter">↵</button>
+                </div>
+            </div>
 
-<script>
-const lines=[
-  "Nay nhân ngày 20/10 🌸",
-  "Em chúc chị thật nhiều may mắn,",
-  "Càng ngày càng xinh đẹp hơn và vui vẻ nhé 💖",
-];
-const box=document.getElementById("msgBox");
-let i=0;
-function showNextLine(){
-  if(i<lines.length){
-    const d=document.createElement("div");
-    d.className="msg-line";
-    d.textContent=lines[i++];
-    box.appendChild(d);
-    setTimeout(()=>d.classList.add("show"),100);
-    setTimeout(showNextLine,2300);
-  }
-}
-showNextLine();
+            <!-- Hiển thị mật khẩu nhập -->
+            <div class="display" id="display">❤️</div>
+            <p id="errorMsg" class="error hidden">❌ Sai mật khẩu rồi! Thử lại nhé!</p>
+        </div>
+    </div>
 
-function createFlower(){
-  const el=document.createElement("div");
-  el.className="flower-fall";
-  el.textContent=["🌸","🌷","🌼","💮","🌹"][Math.floor(Math.random()*5)];
-  el.style.left=Math.random()*100+"vw";
-  el.style.fontSize=18+Math.random()*12+"px";
-  el.style.animationDuration=6+Math.random()*3+"s";
-  document.body.appendChild(el);
-  setTimeout(()=>el.remove(),9000);
-}
-setInterval(createFlower,300);
-</script>
+    <!-- ===== TRANG LÁ THƯ ===== -->
+    <div class="container hidden" id="letterPage">
+        <div class="card">
+            <div class="emoji-big">💌</div>
+            <h1>🎉 Những Lá Thư Cho Chị!</h1>
+            <p class="sub-message">Ấn vào từng lá thư để đọc lời chúc nhé ❤️</p>
 
+            <div class="letters-grid" id="lettersGrid">
+                <!-- Lá thư 1 -->
+                <div class="letter-card" data-index="0">
+                    <div class="letter-emoji">💖</div>
+                    <div class="letter-title">Lá thư số 1</div>
+                    <div class="letter-content hidden">Chị à, em chúc chị luôn vui vẻ và hạnh phúc! Chị xứng đáng với những điều tốt đẹp nhất trên đời này. 🌸</div>
+                </div>
+                <!-- Lá thư 2 -->
+                <div class="letter-card" data-index="1">
+                    <div class="letter-emoji">🌟</div>
+                    <div class="letter-title">Lá thư số 2</div>
+                    <div class="letter-content hidden">Cảm ơn chị vì luôn bên em, chăm sóc và yêu thương em. Em may mắn khi có chị trong cuộc đời! 🥰</div>
+                </div>
+                <!-- Lá thư 3 -->
+                <div class="letter-card" data-index="2">
+                    <div class="letter-emoji">🌈</div>
+                    <div class="letter-title">Lá thư số 3</div>
+                    <div class="letter-content hidden">Chúc chị năm mới tuổi mới thật nhiều niềm vui, sức khỏe và thành công trong mọi dự định! 🎊</div>
+                </div>
+                <!-- Lá thư 4 -->
+                <div class="letter-card" data-index="3">
+                    <div class="letter-emoji">🌺</div>
+                    <div class="letter-title">Lá thư số 4</div>
+                    <div class="letter-content hidden">Chị luôn là nguồn cảm hứng và là hình mẫu của em. Em yêu chị rất nhiều! Mong chị luôn xinh đẹp và rạng rỡ! ✨</div>
+                </div>
+                <!-- Lá thư 5 -->
+                <div class="letter-card" data-index="4">
+                    <div class="letter-emoji">🎁</div>
+                    <div class="letter-title">Lá thư số 5</div>
+                    <div class="letter-content hidden">Tuổi mới, chị hãy sống thật vui và thật ý nghĩa nhé! Em luôn ủng hộ và yêu thương chị! 💕</div>
+                </div>
+            </div>
+
+            <button id="fireworksBtn" class="btn-fireworks">🎆 Bắn pháo hoa nào!</button>
+        </div>
+    </div>
+
+    <script src="script.js"></script>
 </body>
 </html>
