@@ -48,8 +48,8 @@ body {
     }
 }
 
-/* ---- Canvas pháo hoa ---- */
-#fireworksCanvas {
+/* ---- Canvas bánh sinh nhật + hoa ---- */
+#birthdayCanvas {
     position: fixed;
     top: 0;
     left: 0;
@@ -180,100 +180,84 @@ h1 {
     display: none;
 }
 
-/* ---- Lá thư ---- */
-.letters-grid {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 14px;
-    margin: 18px 0 20px;
-}
-
-.letter-card {
+/* ===== LÁ THƯ ===== */
+.letter-display {
     background: linear-gradient(145deg, #fff5f7, #ffe8ee);
-    border-radius: 20px;
-    padding: 18px 14px;
-    cursor: pointer;
-    transition: all 0.25s ease;
-    border: 2px solid rgba(214, 51, 108, 0.15);
-    box-shadow: 0 4px 12px rgba(0,0,0,0.06);
-    min-height: 80px;
+    border-radius: 24px;
+    padding: 30px 20px;
+    min-height: 200px;
     display: flex;
     flex-direction: column;
     align-items: center;
     justify-content: center;
-}
-
-.letter-card:hover {
-    transform: translateY(-4px) scale(1.02);
-    border-color: #d6336c;
-    box-shadow: 0 8px 25px rgba(214, 51, 108, 0.15);
-}
-
-.letter-card:active {
-    transform: scale(0.96);
-}
-
-.letter-emoji {
-    font-size: 32px;
-    margin-bottom: 4px;
-}
-
-.letter-title {
-    font-size: 14px;
-    font-weight: 600;
-    color: #d6336c;
-}
-
-.letter-content {
-    font-size: 14px;
-    color: #555;
-    margin-top: 8px;
-    line-height: 1.5;
-    padding: 8px 4px;
-    background: rgba(255,255,255,0.5);
-    border-radius: 12px;
-    width: 100%;
-    animation: fadeSlide 0.3s ease;
-}
-
-.letter-content.hidden {
-    display: none;
+    border: 2px solid rgba(214, 51, 108, 0.15);
+    margin: 10px 0 16px;
+    animation: fadeSlide 0.4s ease;
 }
 
 @keyframes fadeSlide {
     0% {
         opacity: 0;
-        transform: translateY(-6px);
+        transform: translateY(10px) scale(0.95);
     }
     100% {
         opacity: 1;
-        transform: translateY(0);
+        transform: translateY(0) scale(1);
     }
 }
 
-/* ---- Nút ---- */
-.btn-fireworks {
+.letter-emoji-big {
+    font-size: 56px;
+    margin-bottom: 14px;
+}
+
+.letter-content-full {
+    font-size: 18px;
+    color: #444;
+    line-height: 1.7;
+    max-width: 400px;
+    font-weight: 500;
+}
+
+/* ---- Nút điều hướng ---- */
+.letter-nav {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+    margin: 10px 0 18px;
+}
+
+.nav-btn {
     background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
     border: none;
-    padding: 14px 36px;
-    border-radius: 40px;
-    font-size: 18px;
+    padding: 10px 22px;
+    border-radius: 30px;
+    font-size: 15px;
     font-weight: 600;
     color: #fff;
     cursor: pointer;
-    box-shadow: 0 8px 25px rgba(245, 87, 108, 0.35);
     transition: all 0.2s ease;
+    box-shadow: 0 4px 15px rgba(245, 87, 108, 0.3);
     border: 1px solid rgba(255,255,255,0.2);
-    margin-top: 6px;
+    flex: 1;
 }
 
-.btn-fireworks:hover {
-    transform: scale(1.04);
-    box-shadow: 0 10px 35px rgba(245, 87, 108, 0.5);
+.nav-btn:active {
+    transform: scale(0.93);
 }
 
-.btn-fireworks:active {
-    transform: scale(0.95);
+.nav-btn:disabled {
+    opacity: 0.4;
+    cursor: not-allowed;
+    transform: none;
+}
+
+.page-dot {
+    font-size: 18px;
+    letter-spacing: 4px;
+    color: #d6336c;
+    min-width: 80px;
 }
 
 /* ---- Responsive ---- */
@@ -292,15 +276,18 @@ h1 {
     .display {
         font-size: 24px;
     }
-    .letters-grid {
-        grid-template-columns: 1fr 1fr;
-        gap: 10px;
+    .letter-emoji-big {
+        font-size: 44px;
     }
-    .letter-card {
-        padding: 14px 10px;
-        min-height: 70px;
+    .letter-content-full {
+        font-size: 16px;
     }
-    .letter-emoji {
-        font-size: 26px;
+    .nav-btn {
+        font-size: 13px;
+        padding: 8px 14px;
+    }
+    .page-dot {
+        font-size: 14px;
+        min-width: 60px;
     }
 }
