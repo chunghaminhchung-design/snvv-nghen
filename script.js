@@ -1,45 +1,53 @@
 // ===== BONG BÓNG =====
-const bubbleLayer = document.getElementById('bubbleLayer');
-let floatingTimer = null;
+// Bọc trong try/catch: nếu trình duyệt (vd webview trong Messenger) không hỗ trợ
+// đầy đủ 1 API nào đó ở đây, lỗi sẽ KHÔNG làm hỏng phần nút "Trước/Sau" phía dưới nữa.
+try {
+    const bubbleLayer = document.getElementById('bubbleLayer');
+    let floatingTimer = null;
 
-function isSmallScreen() {
-    return window.innerWidth < 500;
-}
+    const isSmallScreen = () => window.innerWidth < 500;
 
-function createBubble() {
-    const bubble = document.createElement('div');
-    bubble.classList.add('bubble');
-    const size = 20 + Math.random() * 45;
-    bubble.style.width = size + 'px';
-    bubble.style.height = size + 'px';
-    bubble.style.left = Math.random() * 100 + '%';
-    bubble.style.animationDuration = 12 + Math.random() * 18 + 's';
-    bubble.style.animationDelay = Math.random() * 5 + 's';
-    bubble.style.opacity = 0.3 + Math.random() * 0.4;
-    bubbleLayer.appendChild(bubble);
-    setTimeout(() => bubble.remove(), 28000);
-}
-
-function startFloating() {
-    if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
-    floatingTimer = setInterval(createBubble, isSmallScreen() ? 2800 : 1200);
-}
-
-function stopFloating() {
-    clearInterval(floatingTimer);
-    floatingTimer = null;
-    bubbleLayer.innerHTML = '';
-}
-
-startFloating();
-
-document.addEventListener('visibilitychange', () => {
-    if (document.hidden) {
-        stopFloating();
-    } else {
-        startFloating();
+    function createBubble() {
+        const bubble = document.createElement('div');
+        bubble.classList.add('bubble');
+        const size = 20 + Math.random() * 45;
+        bubble.style.width = size + 'px';
+        bubble.style.height = size + 'px';
+        bubble.style.left = Math.random() * 100 + '%';
+        bubble.style.animationDuration = 12 + Math.random() * 18 + 's';
+        bubble.style.animationDelay = Math.random() * 5 + 's';
+        bubble.style.opacity = 0.3 + Math.random() * 0.4;
+        bubbleLayer.appendChild(bubble);
+        setTimeout(() => bubble.remove(), 28000);
     }
-});
+
+    function startFloating() {
+        // Kiểm tra matchMedia có tồn tại không trước khi dùng, tránh crash trên webview cũ/hạn chế
+        const reduceMotion = typeof window.matchMedia === 'function'
+            ? window.matchMedia('(prefers-reduced-motion: reduce)').matches
+            : false;
+        if (reduceMotion) return;
+        floatingTimer = setInterval(createBubble, isSmallScreen() ? 2800 : 1200);
+    }
+
+    function stopFloating() {
+        clearInterval(floatingTimer);
+        floatingTimer = null;
+        bubbleLayer.innerHTML = '';
+    }
+
+    startFloating();
+
+    document.addEventListener('visibilitychange', () => {
+        if (document.hidden) {
+            stopFloating();
+        } else {
+            startFloating();
+        }
+    });
+} catch (err) {
+    console.warn('Bong bóng không khởi động được (bỏ qua, không ảnh hưởng phần còn lại):', err);
+}
 
 // ===== MẬT KHẨU =====
 const PASSWORD = '492006';
@@ -135,20 +143,20 @@ function updateLetter(index) {
     letterEmoji.textContent = letter.emoji;
     letterContent.textContent = letter.content;
     letterCounter.textContent = `Lá thư ${index + 1} / ${letters.length}`;
-    
+
     let dots = '';
     for (let i = 0; i < letters.length; i++) {
         dots += i === index ? '●' : '○';
     }
     pageDot.textContent = dots;
-    
+
     prevBtn.disabled = index === 0;
     nextBtn.disabled = index === letters.length - 1;
-    
-    const display = document.getElementById('letterDisplay');
-    display.style.animation = 'none';
+
+    const letterDisplayEl = document.getElementById('letterDisplay');
+    letterDisplayEl.style.animation = 'none';
     requestAnimationFrame(() => {
-        display.style.animation = 'fadeSlide 0.4s ease';
+        letterDisplayEl.style.animation = 'fadeSlide 0.4s ease';
     });
 }
 
@@ -242,321 +250,332 @@ if (!letterPage.classList.contains('hidden')) {
 }
 
 // ===== BÁNH SINH NHẬT + HOA RƠI TỰ ĐỘNG =====
-const canvas = document.getElementById('birthdayCanvas');
-const ctx = canvas.getContext('2d');
+// Bọc trong try/catch: nếu canvas lỗi trên máy nào đó, nút Trước/Sau (đã gắn ở trên) vẫn không bị ảnh hưởng.
+let startBirthdayEffect = () => {}; // fallback no-op nếu phần dưới lỗi khi khởi tạo
 
-let W, H;
-function resizeCanvas() {
-    W = canvas.width = window.innerWidth;
-    H = canvas.height = window.innerHeight;
-}
-resizeCanvas();
-window.addEventListener('resize', resizeCanvas);
+try {
+    const canvas = document.getElementById('birthdayCanvas');
+    const ctx = canvas.getContext('2d');
 
-// ---- Hoa rơi ----
-class Flower {
-    constructor() {
-        this.reset();
-        this.y = Math.random() * -H;
+    let W, H;
+    function resizeCanvas() {
+        W = canvas.width = window.innerWidth;
+        H = canvas.height = window.innerHeight;
     }
-    
-    reset() {
-        this.x = Math.random() * W;
-        this.y = -20;
-        this.size = 15 + Math.random() * 25;
-        this.speed = 0.8 + Math.random() * 1.5;
-        this.swing = 0.3 + Math.random() * 0.6;
-        this.swingSpeed = 0.02 + Math.random() * 0.03;
-        this.phase = Math.random() * Math.PI * 2;
-        this.rotation = Math.random() * Math.PI * 2;
-        this.rotSpeed = 0.01 + Math.random() * 0.03;
-        this.opacity = 0.6 + Math.random() * 0.4;
-        this.petalColor = this.randomColor();
-        this.centerColor = '#ffd93d';
-        this.type = Math.floor(Math.random() * 3);
-    }
-    
-    randomColor() {
-        const colors = [
-            '#ff6b6b', '#ff9ff3', '#feca57', '#ff9f43',
-            '#ff4757', '#ff6348', '#ff7f50', '#ff6b81',
-            '#ffcccc', '#ffb8b8', '#ffd93d', '#ffda79'
-        ];
-        return colors[Math.floor(Math.random() * colors.length)];
-    }
-    
-    draw() {
-        ctx.save();
-        ctx.translate(this.x, this.y);
-        ctx.rotate(this.rotation);
-        ctx.globalAlpha = this.opacity;
-        
-        const s = this.size;
-        
-        if (this.type === 0) {
-            for (let i = 0; i < 5; i++) {
-                const angle = (i / 5) * Math.PI * 2;
-                ctx.save();
-                ctx.rotate(angle);
-                ctx.beginPath();
-                ctx.ellipse(0, -s * 0.6, s * 0.4, s * 0.7, 0, 0, Math.PI * 2);
-                ctx.fillStyle = this.petalColor;
-                ctx.fill();
-                ctx.restore();
-            }
-        } else if (this.type === 1) {
-            for (let i = 0; i < 6; i++) {
-                const angle = (i / 6) * Math.PI * 2;
-                ctx.save();
-                ctx.rotate(angle);
-                ctx.beginPath();
-                ctx.ellipse(0, -s * 0.55, s * 0.35, s * 0.65, 0, 0, Math.PI * 2);
-                ctx.fillStyle = this.petalColor;
-                ctx.fill();
-                ctx.restore();
-            }
-        } else {
-            for (let i = 0; i < 8; i++) {
-                const angle = (i / 8) * Math.PI * 2;
-                ctx.save();
-                ctx.rotate(angle);
-                ctx.beginPath();
-                ctx.ellipse(0, -s * 0.5, s * 0.3, s * 0.6, 0, 0, Math.PI * 2);
-                ctx.fillStyle = this.petalColor;
-                ctx.fill();
-                ctx.restore();
-            }
-        }
-        
-        ctx.beginPath();
-        ctx.arc(0, 0, s * 0.2, 0, Math.PI * 2);
-        ctx.fillStyle = this.centerColor;
-        ctx.fill();
-        
-        ctx.restore();
-    }
-    
-    update() {
-        this.y += this.speed;
-        this.x += Math.sin(this.phase) * this.swing;
-        this.phase += this.swingSpeed;
-        this.rotation += this.rotSpeed;
-        
-        if (this.y > H + 50) {
-            this.reset();
-        }
-    }
-}
-
-// ---- Bánh sinh nhật ----
-class BirthdayCake {
-    constructor() {
-        this.x = W / 2;
-        this.y = H / 2 + 60;
-        this.scale = Math.min(W, H) / 500;
-        this.layers = 3;
-        this.decorations = [];
-        this.candles = [];
-        
-        for (let i = 0; i < 7; i++) {
-            this.candles.push({
-                x: (i - 3) * 22 * this.scale,
-                y: 0,
-                height: 40 * this.scale + Math.random() * 10 * this.scale,
-                width: 8 * this.scale,
-                color: ['#ff6b6b', '#feca57', '#48dbfb', '#ff9ff3', '#54a0ff', '#ff9f43', '#00d2d3'][i % 7],
-                flame: {
-                    size: 12 * this.scale + Math.random() * 4 * this.scale,
-                    flicker: Math.random() * 0.5
-                }
-            });
-        }
-        
-        for (let i = 0; i < 30; i++) {
-            this.decorations.push({
-                x: (Math.random() - 0.5) * 200 * this.scale,
-                y: Math.random() * 60 * this.scale - 30 * this.scale,
-                size: 4 * this.scale + Math.random() * 6 * this.scale,
-                color: ['#ff6b6b', '#feca57', '#48dbfb', '#ff9ff3', '#54a0ff', '#ff9f43', '#00d2d3'][Math.floor(Math.random() * 7)]
-            });
-        }
-    }
-    
-    draw() {
-        ctx.save();
-        ctx.translate(this.x, this.y);
-        ctx.scale(this.scale, this.scale);
-        
-        const gradient = ctx.createRadialGradient(0, -30, 10, 0, -30, 180);
-        gradient.addColorStop(0, 'rgba(255, 215, 0, 0.08)');
-        gradient.addColorStop(0.5, 'rgba(255, 215, 0, 0.04)');
-        gradient.addColorStop(1, 'rgba(255, 215, 0, 0)');
-        ctx.fillStyle = gradient;
-        ctx.beginPath();
-        ctx.arc(0, -30, 180, 0, Math.PI * 2);
-        ctx.fill();
-        
-        const layerColors = ['#f8c8d8', '#f5b8c8', '#f2a8b8'];
-        const layerHeights = [50, 45, 40];
-        const layerWidths = [180, 160, 140];
-        
-        for (let i = 0; i < this.layers; i++) {
-            const yOffset = -i * 40;
-            const w = layerWidths[i];
-            const h = layerHeights[i];
-            
-            ctx.shadowColor = 'rgba(0,0,0,0.1)';
-            ctx.shadowBlur = 20;
-            ctx.shadowOffsetY = 5;
-            
-            const grad = ctx.createLinearGradient(-w/2, yOffset - h/2, w/2, yOffset + h/2);
-            grad.addColorStop(0, layerColors[i]);
-            grad.addColorStop(0.5, '#fff0f5');
-            grad.addColorStop(1, layerColors[i]);
-            
-            ctx.fillStyle = grad;
-            ctx.beginPath();
-            ctx.roundRect(-w/2, yOffset - h/2, w, h, 12);
-            ctx.fill();
-            
-            ctx.shadowBlur = 0;
-            ctx.strokeStyle = 'rgba(255,255,255,0.3)';
-            ctx.lineWidth = 2;
-            ctx.beginPath();
-            ctx.roundRect(-w/2, yOffset - h/2, w, h, 12);
-            ctx.stroke();
-            
-            if (i < this.layers - 1) {
-                for (let j = 0; j < 12; j++) {
-                    const dotX = -w/2 + 20 + j * ((w - 40) / 11);
-                    ctx.beginPath();
-                    ctx.arc(dotX, yOffset - h/2, 6, 0, Math.PI * 2);
-                    ctx.fillStyle = 'rgba(255,255,255,0.6)';
-                    ctx.fill();
-                }
-            }
-        }
-        
-        this.decorations.forEach(dec => {
-            ctx.shadowBlur = 0;
-            ctx.fillStyle = dec.color;
-            ctx.beginPath();
-            ctx.arc(dec.x, -this.layers * 40 + 30 + dec.y, dec.size, 0, Math.PI * 2);
-            ctx.fill();
-            ctx.strokeStyle = 'rgba(255,255,255,0.3)';
-            ctx.lineWidth = 1;
-            ctx.stroke();
-        });
-        
-        const candleY = -this.layers * 40 + 20;
-        this.candles.forEach((candle, idx) => {
-            const x = candle.x;
-            
-            ctx.shadowColor = 'rgba(0,0,0,0.15)';
-            ctx.shadowBlur = 10;
-            ctx.shadowOffsetY = 3;
-            
-            ctx.fillStyle = candle.color;
-            ctx.beginPath();
-            ctx.roundRect(x - candle.width/2, candleY - candle.height, candle.width, candle.height, 3);
-            ctx.fill();
-            
-            ctx.shadowBlur = 0;
-            ctx.strokeStyle = 'rgba(255,255,255,0.2)';
-            ctx.lineWidth = 1;
-            for (let s = 0; s < 3; s++) {
-                const sy = candleY - candle.height + 8 + s * 12;
-                ctx.beginPath();
-                ctx.moveTo(x - candle.width/2 + 2, sy);
-                ctx.lineTo(x + candle.width/2 - 2, sy);
-                ctx.stroke();
-            }
-            
-            const flameSize = candle.flame.size * (0.8 + Math.sin(Date.now() / 150 + idx) * 0.2);
-            const flickerX = Math.sin(Date.now() / 100 + idx * 2) * 2;
-            
-            ctx.shadowColor = 'rgba(255, 200, 50, 0.3)';
-            ctx.shadowBlur = 30;
-            
-            const grad2 = ctx.createRadialGradient(
-                x + flickerX, candleY - candle.height - flameSize * 0.3, 0,
-                x + flickerX, candleY - candle.height - flameSize * 0.3, flameSize * 0.8
-            );
-            grad2.addColorStop(0, 'rgba(255, 255, 200, 0.9)');
-            grad2.addColorStop(0.3, 'rgba(255, 200, 50, 0.8)');
-            grad2.addColorStop(0.7, 'rgba(255, 150, 0, 0.6)');
-            grad2.addColorStop(1, 'rgba(255, 100, 0, 0)');
-            
-            ctx.fillStyle = grad2;
-            ctx.beginPath();
-            ctx.ellipse(x + flickerX, candleY - candle.height - flameSize * 0.3, flameSize * 0.6, flameSize, 0, 0, Math.PI * 2);
-            ctx.fill();
-            
-            ctx.shadowBlur = 20;
-            ctx.fillStyle = 'rgba(255, 255, 255, 0.6)';
-            ctx.beginPath();
-            ctx.ellipse(x + flickerX * 0.5, candleY - candle.height - flameSize * 0.4, flameSize * 0.2, flameSize * 0.4, 0, 0, Math.PI * 2);
-            ctx.fill();
-        });
-        
-        ctx.restore();
-    }
-}
-
-let flowers = [];
-let cake = null;
-let effectStarted = false;
-
-function startBirthdayEffect() {
-    if (effectStarted) return;
-    effectStarted = true;
-    
-    for (let i = 0; i < (isSmallScreen() ? 25 : 40); i++) {
-        const flower = new Flower();
-        flower.y = Math.random() * H;
-        flowers.push(flower);
-    }
-    
-    cake = new BirthdayCake();
-    animate();
-}
-
-function animate() {
-    ctx.clearRect(0, 0, W, H);
-    
-    if (cake) {
-        cake.draw();
-    }
-    
-    flowers.forEach(flower => {
-        flower.update();
-        flower.draw();
-    });
-    
-    requestAnimationFrame(animate);
-}
-
-if (!CanvasRenderingContext2D.prototype.roundRect) {
-    CanvasRenderingContext2D.prototype.roundRect = function(x, y, w, h, r) {
-        if (r > w/2) r = w/2;
-        if (r > h/2) r = h/2;
-        this.moveTo(x + r, y);
-        this.lineTo(x + w - r, y);
-        this.quadraticCurveTo(x + w, y, x + w, y + r);
-        this.lineTo(x + w, y + h - r);
-        this.quadraticCurveTo(x + w, y + h, x + w - r, y + h);
-        this.lineTo(x + r, y + h);
-        this.quadraticCurveTo(x, y + h, x, y + h - r);
-        this.lineTo(x, y + r);
-        this.quadraticCurveTo(x, y, x + r, y);
-        return this;
-    };
-}
-
-window.addEventListener('resize', () => {
     resizeCanvas();
-    if (cake) {
-        cake.x = W / 2;
-        cake.y = H / 2 + 60;
+    window.addEventListener('resize', resizeCanvas);
+
+    // ---- Hoa rơi ----
+    class Flower {
+        constructor() {
+            this.reset();
+            this.y = Math.random() * -H;
+        }
+
+        reset() {
+            this.x = Math.random() * W;
+            this.y = -20;
+            this.size = 15 + Math.random() * 25;
+            this.speed = 0.8 + Math.random() * 1.5;
+            this.swing = 0.3 + Math.random() * 0.6;
+            this.swingSpeed = 0.02 + Math.random() * 0.03;
+            this.phase = Math.random() * Math.PI * 2;
+            this.rotation = Math.random() * Math.PI * 2;
+            this.rotSpeed = 0.01 + Math.random() * 0.03;
+            this.opacity = 0.6 + Math.random() * 0.4;
+            this.petalColor = this.randomColor();
+            this.centerColor = '#ffd93d';
+            this.type = Math.floor(Math.random() * 3);
+        }
+
+        randomColor() {
+            const colors = [
+                '#ff6b6b', '#ff9ff3', '#feca57', '#ff9f43',
+                '#ff4757', '#ff6348', '#ff7f50', '#ff6b81',
+                '#ffcccc', '#ffb8b8', '#ffd93d', '#ffda79'
+            ];
+            return colors[Math.floor(Math.random() * colors.length)];
+        }
+
+        draw() {
+            ctx.save();
+            ctx.translate(this.x, this.y);
+            ctx.rotate(this.rotation);
+            ctx.globalAlpha = this.opacity;
+
+            const s = this.size;
+
+            if (this.type === 0) {
+                for (let i = 0; i < 5; i++) {
+                    const angle = (i / 5) * Math.PI * 2;
+                    ctx.save();
+                    ctx.rotate(angle);
+                    ctx.beginPath();
+                    ctx.ellipse(0, -s * 0.6, s * 0.4, s * 0.7, 0, 0, Math.PI * 2);
+                    ctx.fillStyle = this.petalColor;
+                    ctx.fill();
+                    ctx.restore();
+                }
+            } else if (this.type === 1) {
+                for (let i = 0; i < 6; i++) {
+                    const angle = (i / 6) * Math.PI * 2;
+                    ctx.save();
+                    ctx.rotate(angle);
+                    ctx.beginPath();
+                    ctx.ellipse(0, -s * 0.55, s * 0.35, s * 0.65, 0, 0, Math.PI * 2);
+                    ctx.fillStyle = this.petalColor;
+                    ctx.fill();
+                    ctx.restore();
+                }
+            } else {
+                for (let i = 0; i < 8; i++) {
+                    const angle = (i / 8) * Math.PI * 2;
+                    ctx.save();
+                    ctx.rotate(angle);
+                    ctx.beginPath();
+                    ctx.ellipse(0, -s * 0.5, s * 0.3, s * 0.6, 0, 0, Math.PI * 2);
+                    ctx.fillStyle = this.petalColor;
+                    ctx.fill();
+                    ctx.restore();
+                }
+            }
+
+            ctx.beginPath();
+            ctx.arc(0, 0, s * 0.2, 0, Math.PI * 2);
+            ctx.fillStyle = this.centerColor;
+            ctx.fill();
+
+            ctx.restore();
+        }
+
+        update() {
+            this.y += this.speed;
+            this.x += Math.sin(this.phase) * this.swing;
+            this.phase += this.swingSpeed;
+            this.rotation += this.rotSpeed;
+
+            if (this.y > H + 50) {
+                this.reset();
+            }
+        }
     }
-});
+
+    // ---- Bánh sinh nhật ----
+    class BirthdayCake {
+        constructor() {
+            this.x = W / 2;
+            this.y = H / 2 + 60;
+            this.scale = Math.min(W, H) / 500;
+            this.layers = 3;
+            this.decorations = [];
+            this.candles = [];
+
+            for (let i = 0; i < 7; i++) {
+                this.candles.push({
+                    x: (i - 3) * 22 * this.scale,
+                    y: 0,
+                    height: 40 * this.scale + Math.random() * 10 * this.scale,
+                    width: 8 * this.scale,
+                    color: ['#ff6b6b', '#feca57', '#48dbfb', '#ff9ff3', '#54a0ff', '#ff9f43', '#00d2d3'][i % 7],
+                    flame: {
+                        size: 12 * this.scale + Math.random() * 4 * this.scale,
+                        flicker: Math.random() * 0.5
+                    }
+                });
+            }
+
+            for (let i = 0; i < 30; i++) {
+                this.decorations.push({
+                    x: (Math.random() - 0.5) * 200 * this.scale,
+                    y: Math.random() * 60 * this.scale - 30 * this.scale,
+                    size: 4 * this.scale + Math.random() * 6 * this.scale,
+                    color: ['#ff6b6b', '#feca57', '#48dbfb', '#ff9ff3', '#54a0ff', '#ff9f43', '#00d2d3'][Math.floor(Math.random() * 7)]
+                });
+            }
+        }
+
+        draw() {
+            ctx.save();
+            ctx.translate(this.x, this.y);
+            ctx.scale(this.scale, this.scale);
+
+            const gradient = ctx.createRadialGradient(0, -30, 10, 0, -30, 180);
+            gradient.addColorStop(0, 'rgba(255, 215, 0, 0.08)');
+            gradient.addColorStop(0.5, 'rgba(255, 215, 0, 0.04)');
+            gradient.addColorStop(1, 'rgba(255, 215, 0, 0)');
+            ctx.fillStyle = gradient;
+            ctx.beginPath();
+            ctx.arc(0, -30, 180, 0, Math.PI * 2);
+            ctx.fill();
+
+            const layerColors = ['#f8c8d8', '#f5b8c8', '#f2a8b8'];
+            const layerHeights = [50, 45, 40];
+            const layerWidths = [180, 160, 140];
+
+            for (let i = 0; i < this.layers; i++) {
+                const yOffset = -i * 40;
+                const w = layerWidths[i];
+                const h = layerHeights[i];
+
+                ctx.shadowColor = 'rgba(0,0,0,0.1)';
+                ctx.shadowBlur = 20;
+                ctx.shadowOffsetY = 5;
+
+                const grad = ctx.createLinearGradient(-w / 2, yOffset - h / 2, w / 2, yOffset + h / 2);
+                grad.addColorStop(0, layerColors[i]);
+                grad.addColorStop(0.5, '#fff0f5');
+                grad.addColorStop(1, layerColors[i]);
+
+                ctx.fillStyle = grad;
+                ctx.beginPath();
+                ctx.roundRect(-w / 2, yOffset - h / 2, w, h, 12);
+                ctx.fill();
+
+                ctx.shadowBlur = 0;
+                ctx.strokeStyle = 'rgba(255,255,255,0.3)';
+                ctx.lineWidth = 2;
+                ctx.beginPath();
+                ctx.roundRect(-w / 2, yOffset - h / 2, w, h, 12);
+                ctx.stroke();
+
+                if (i < this.layers - 1) {
+                    for (let j = 0; j < 12; j++) {
+                        const dotX = -w / 2 + 20 + j * ((w - 40) / 11);
+                        ctx.beginPath();
+                        ctx.arc(dotX, yOffset - h / 2, 6, 0, Math.PI * 2);
+                        ctx.fillStyle = 'rgba(255,255,255,0.6)';
+                        ctx.fill();
+                    }
+                }
+            }
+
+            this.decorations.forEach(dec => {
+                ctx.shadowBlur = 0;
+                ctx.fillStyle = dec.color;
+                ctx.beginPath();
+                ctx.arc(dec.x, -this.layers * 40 + 30 + dec.y, dec.size, 0, Math.PI * 2);
+                ctx.fill();
+                ctx.strokeStyle = 'rgba(255,255,255,0.3)';
+                ctx.lineWidth = 1;
+                ctx.stroke();
+            });
+
+            const candleY = -this.layers * 40 + 20;
+            this.candles.forEach((candle, idx) => {
+                const x = candle.x;
+
+                ctx.shadowColor = 'rgba(0,0,0,0.15)';
+                ctx.shadowBlur = 10;
+                ctx.shadowOffsetY = 3;
+
+                ctx.fillStyle = candle.color;
+                ctx.beginPath();
+                ctx.roundRect(x - candle.width / 2, candleY - candle.height, candle.width, candle.height, 3);
+                ctx.fill();
+
+                ctx.shadowBlur = 0;
+                ctx.strokeStyle = 'rgba(255,255,255,0.2)';
+                ctx.lineWidth = 1;
+                for (let s = 0; s < 3; s++) {
+                    const sy = candleY - candle.height + 8 + s * 12;
+                    ctx.beginPath();
+                    ctx.moveTo(x - candle.width / 2 + 2, sy);
+                    ctx.lineTo(x + candle.width / 2 - 2, sy);
+                    ctx.stroke();
+                }
+
+                const flameSize = candle.flame.size * (0.8 + Math.sin(Date.now() / 150 + idx) * 0.2);
+                const flickerX = Math.sin(Date.now() / 100 + idx * 2) * 2;
+
+                ctx.shadowColor = 'rgba(255, 200, 50, 0.3)';
+                ctx.shadowBlur = 30;
+
+                const grad2 = ctx.createRadialGradient(
+                    x + flickerX, candleY - candle.height - flameSize * 0.3, 0,
+                    x + flickerX, candleY - candle.height - flameSize * 0.3, flameSize * 0.8
+                );
+                grad2.addColorStop(0, 'rgba(255, 255, 200, 0.9)');
+                grad2.addColorStop(0.3, 'rgba(255, 200, 50, 0.8)');
+                grad2.addColorStop(0.7, 'rgba(255, 150, 0, 0.6)');
+                grad2.addColorStop(1, 'rgba(255, 100, 0, 0)');
+
+                ctx.fillStyle = grad2;
+                ctx.beginPath();
+                ctx.ellipse(x + flickerX, candleY - candle.height - flameSize * 0.3, flameSize * 0.6, flameSize, 0, 0, Math.PI * 2);
+                ctx.fill();
+
+                ctx.shadowBlur = 20;
+                ctx.fillStyle = 'rgba(255, 255, 255, 0.6)';
+                ctx.beginPath();
+                ctx.ellipse(x + flickerX * 0.5, candleY - candle.height - flameSize * 0.4, flameSize * 0.2, flameSize * 0.4, 0, 0, Math.PI * 2);
+                ctx.fill();
+            });
+
+            ctx.restore();
+        }
+    }
+
+    if (!CanvasRenderingContext2D.prototype.roundRect) {
+        CanvasRenderingContext2D.prototype.roundRect = function (x, y, w, h, r) {
+            if (r > w / 2) r = w / 2;
+            if (r > h / 2) r = h / 2;
+            this.moveTo(x + r, y);
+            this.lineTo(x + w - r, y);
+            this.quadraticCurveTo(x + w, y, x + w, y + r);
+            this.lineTo(x + w, y + h - r);
+            this.quadraticCurveTo(x + w, y + h, x + w - r, y + h);
+            this.lineTo(x + r, y + h);
+            this.quadraticCurveTo(x, y + h, x, y + h - r);
+            this.lineTo(x, y + r);
+            this.quadraticCurveTo(x, y, x + r, y);
+            return this;
+        };
+    }
+
+    let flowers = [];
+    let cake = null;
+    let effectStarted = false;
+
+    startBirthdayEffect = function () {
+        if (effectStarted) return;
+        effectStarted = true;
+
+        for (let i = 0; i < (isSmallScreenCanvas() ? 25 : 40); i++) {
+            const flower = new Flower();
+            flower.y = Math.random() * H;
+            flowers.push(flower);
+        }
+
+        cake = new BirthdayCake();
+        animate();
+    };
+
+    function isSmallScreenCanvas() {
+        return window.innerWidth < 500;
+    }
+
+    function animate() {
+        ctx.clearRect(0, 0, W, H);
+
+        if (cake) {
+            cake.draw();
+        }
+
+        flowers.forEach(flower => {
+            flower.update();
+            flower.draw();
+        });
+
+        requestAnimationFrame(animate);
+    }
+
+    window.addEventListener('resize', () => {
+        resizeCanvas();
+        if (cake) {
+            cake.x = W / 2;
+            cake.y = H / 2 + 60;
+        }
+    });
+} catch (err) {
+    console.warn('Hiệu ứng bánh sinh nhật/hoa không khởi động được (bỏ qua, không ảnh hưởng phần lá thư):', err);
+}
