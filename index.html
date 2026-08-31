@@ -78,33 +78,55 @@
             </div>
 
             <!-- Hiển thị mật khẩu nhập -->
-            <div class="display" id="display">❤️</div>
+            <div class="display" id="display">❤</div>
             <p id="errorMsg" class="error hidden">❌ Sai mật khẩu rồi! Thử lại nhé!</p>
         </div>
     </div>
 
     <!-- ===== TRANG LÁ THƯ ===== -->
     <div class="container hidden" id="letterPage">
+
+        <!-- Lớp trái tim / hoa bay nền cho trang thư -->
+        <div class="letter-hearts-layer" id="letterHeartsLayer"></div>
+
         <div class="card">
-            <div class="emoji-big">💌</div>
-            <h1>🎉 Những Lá Thư Cho Chị!</h1>
-            <p class="sub-message" id="letterCounter">Lá thư 1 / 5</p>
 
-            <!-- Nội dung lá thư -->
-            <div class="letter-display" id="letterDisplay">
-                <div class="letter-emoji-big" id="letterEmoji">💖</div>
-                <div class="letter-content-full" id="letterContent">Chị à, em chúc chị luôn vui vẻ và hạnh phúc! Chị xứng đáng với những điều tốt đẹp nhất trên đời này. 🌸</div>
+            <!-- Hiệu ứng phong bì mở thư, chạy 1 lần khi vừa mở khoá -->
+            <div class="envelope-intro" id="envelopeIntro">
+                <div class="envelope-scene">
+                    <div class="envelope-body"></div>
+                    <div class="envelope-letter">💌</div>
+                    <div class="envelope-flap"></div>
+                    <span class="envelope-sparkle s1">✨</span>
+                    <span class="envelope-sparkle s2">💕</span>
+                    <span class="envelope-sparkle s3">✨</span>
+                </div>
+                <p class="envelope-text">Đang mở thư cho chị... 💕</p>
             </div>
 
-            <!-- Nút điều hướng -->
-            <div class="letter-nav">
-                <button class="nav-btn" id="prevBtn">⬅️ Trước</button>
-                <span class="page-dot" id="pageDot">● ○ ○ ○ ○</span>
-                <button class="nav-btn" id="nextBtn">Sau ➡️</button>
+            <!-- Nội dung thư, ẩn cho tới khi hiệu ứng phong bì chạy xong -->
+            <div class="letter-main hidden" id="letterMain">
+                <div class="emoji-big">💌</div>
+                <h1>🎉 Những Lá Thư Cho Chị!</h1>
+                <p class="sub-message" id="letterCounter">Lá thư 1 / 5</p>
+
+                <!-- Nội dung lá thư -->
+                <div class="letter-display" id="letterDisplay">
+                    <div class="letter-emoji-big" id="letterEmoji">💖</div>
+                    <div class="letter-content-full" id="letterContent">Chị à, em chúc chị luôn vui vẻ và hạnh phúc! Chị xứng đáng với những điều tốt đẹp nhất trên đời này. 🌸</div>
+                </div>
+
+                <!-- Nút điều hướng -->
+                <div class="letter-nav">
+                    <button class="nav-btn" id="prevBtn">⬅ Trước</button>
+                    <span class="page-dot" id="pageDot">● ○ ○ ○ ○</span>
+                    <button class="nav-btn" id="nextBtn">Sau ➡</button>
+                </div>
             </div>
+
         </div>
     </div>
 
-    <script src="script.js?v=2"></script>
+    <script src="script.js?v=3"></script>
 </body>
 </html>
