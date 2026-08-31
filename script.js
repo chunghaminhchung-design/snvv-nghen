@@ -41,8 +41,9 @@ document.addEventListener('visibilitychange', () => {
     }
 });
 
-// ===== COUNTDOWN - CHỜ ĐẾN NGÀY 4/9 =====
-const TARGET_DATE = new Date('2026-09-04T00:00:00').getTime();
+// ===== COUNTDOWN - CHỜ ĐẾN NGÀY 4/9/2026 =====
+// Set mốc thời gian: 00:00 ngày 4/9/2026 (giờ Việt Nam UTC+7)
+const TARGET_DATE = new Date('2026-09-04T00:00:00+07:00').getTime();
 
 const countdownPage = document.getElementById('countdownPage');
 const loginPage = document.getElementById('loginPage');
@@ -59,11 +60,12 @@ function updateCountdown() {
     const now = new Date().getTime();
     const diff = TARGET_DATE - now;
 
+    console.log('Thời gian còn lại (ms):', diff); // Kiểm tra log
+
     if (diff <= 0) {
         // Đã đến ngày 4/9 -> mở khóa
         countdownPage.classList.add('hidden');
         loginPage.classList.remove('hidden');
-        // Bắt đầu hiệu ứng bánh + hoa
         startBirthdayEffect();
         return;
     }
@@ -82,7 +84,7 @@ function updateCountdown() {
     daysLeftEl.textContent = days;
 
     // Đổi thông báo khi gần đến ngày
-    if (days === 0) {
+    if (days === 0 && hours < 24) {
         countdownMessage.innerHTML = '🎉 Hôm nay là ngày 4/9 rồi! Sắp mở được quà rồi! 💝';
     } else if (days <= 3) {
         countdownMessage.innerHTML = `💖 Còn ${days} ngày nữa thôi! Chị chuẩn bị tinh thần nhé! 🎂`;
@@ -113,7 +115,6 @@ function handleKey(val) {
             errorMsg.classList.add('hidden');
             input = '';
             display.textContent = '❤️';
-            // Bắt đầu tự động chuyển lá thư
             startAutoSlide();
         } else {
             errorMsg.classList.remove('hidden');
