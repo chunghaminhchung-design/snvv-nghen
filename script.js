@@ -44,6 +44,7 @@ document.addEventListener('visibilitychange', () => {
 // ===== COUNTDOWN - CHỜ ĐẾN NGÀY 4/9/2026 =====
 // Set mốc thời gian: 00:00 ngày 4/9/2026 (giờ Việt Nam UTC+7)
 const targetDate = new Date(2026, 8, 4, 0, 0, 0); // 4/9/2026
+const TARGET_DATE = targetDate.getTime(); // <-- FIX: biến này bị thiếu, khiến diff luôn NaN
 
 const countdownPage = document.getElementById('countdownPage');
 const loginPage = document.getElementById('loginPage');
@@ -59,8 +60,6 @@ const countdownMessage = document.getElementById('countdownMessage');
 function updateCountdown() {
     const now = new Date().getTime();
     const diff = TARGET_DATE - now;
-
-    console.log('Thời gian còn lại (ms):', diff); // Kiểm tra log
 
     if (diff <= 0) {
         // Đã đến ngày 4/9 -> mở khóa
@@ -187,16 +186,16 @@ function updateLetter(index) {
     letterEmoji.textContent = letter.emoji;
     letterContent.textContent = letter.content;
     letterCounter.textContent = `Lá thư ${index + 1} / ${letters.length}`;
-    
+
     let dots = '';
     for (let i = 0; i < letters.length; i++) {
         dots += i === index ? '●' : '○';
     }
     pageDot.textContent = dots;
-    
+
     prevBtn.disabled = index === 0;
     nextBtn.disabled = index === letters.length - 1;
-    
+
     const display = document.getElementById('letterDisplay');
     display.style.animation = 'none';
     requestAnimationFrame(() => {
@@ -301,7 +300,7 @@ class Flower {
         this.reset();
         this.y = Math.random() * -H;
     }
-    
+
     reset() {
         this.x = Math.random() * W;
         this.y = -20;
@@ -317,7 +316,7 @@ class Flower {
         this.centerColor = '#ffd93d';
         this.type = Math.floor(Math.random() * 3);
     }
-    
+
     randomColor() {
         const colors = [
             '#ff6b6b', '#ff9ff3', '#feca57', '#ff9f43',
@@ -326,15 +325,15 @@ class Flower {
         ];
         return colors[Math.floor(Math.random() * colors.length)];
     }
-    
+
     draw() {
         ctx.save();
         ctx.translate(this.x, this.y);
         ctx.rotate(this.rotation);
         ctx.globalAlpha = this.opacity;
-        
+
         const s = this.size;
-        
+
         if (this.type === 0) {
             for (let i = 0; i < 5; i++) {
                 const angle = (i / 5) * Math.PI * 2;
@@ -369,21 +368,21 @@ class Flower {
                 ctx.restore();
             }
         }
-        
+
         ctx.beginPath();
         ctx.arc(0, 0, s * 0.2, 0, Math.PI * 2);
         ctx.fillStyle = this.centerColor;
         ctx.fill();
-        
+
         ctx.restore();
     }
-    
+
     update() {
         this.y += this.speed;
         this.x += Math.sin(this.phase) * this.swing;
         this.phase += this.swingSpeed;
         this.rotation += this.rotSpeed;
-        
+
         if (this.y > H + 50) {
             this.reset();
         }
@@ -398,7 +397,7 @@ class BirthdayCake {
         this.layers = 3;
         this.decorations = [];
         this.candles = [];
-        
+
         for (let i = 0; i < 7; i++) {
             this.candles.push({
                 x: (i - 3) * 22 * this.scale,
@@ -412,7 +411,7 @@ class BirthdayCake {
                 }
             });
         }
-        
+
         for (let i = 0; i < 30; i++) {
             this.decorations.push({
                 x: (Math.random() - 0.5) * 200 * this.scale,
@@ -422,12 +421,12 @@ class BirthdayCake {
             });
         }
     }
-    
+
     draw() {
         ctx.save();
         ctx.translate(this.x, this.y);
         ctx.scale(this.scale, this.scale);
-        
+
         const gradient = ctx.createRadialGradient(0, -30, 10, 0, -30, 180);
         gradient.addColorStop(0, 'rgba(255, 215, 0, 0.08)');
         gradient.addColorStop(0.5, 'rgba(255, 215, 0, 0.04)');
@@ -436,37 +435,37 @@ class BirthdayCake {
         ctx.beginPath();
         ctx.arc(0, -30, 180, 0, Math.PI * 2);
         ctx.fill();
-        
+
         const layerColors = ['#f8c8d8', '#f5b8c8', '#f2a8b8'];
         const layerHeights = [50, 45, 40];
         const layerWidths = [180, 160, 140];
-        
+
         for (let i = 0; i < this.layers; i++) {
             const yOffset = -i * 40;
             const w = layerWidths[i];
             const h = layerHeights[i];
-            
+
             ctx.shadowColor = 'rgba(0,0,0,0.1)';
             ctx.shadowBlur = 20;
             ctx.shadowOffsetY = 5;
-            
+
             const grad = ctx.createLinearGradient(-w/2, yOffset - h/2, w/2, yOffset + h/2);
             grad.addColorStop(0, layerColors[i]);
             grad.addColorStop(0.5, '#fff0f5');
             grad.addColorStop(1, layerColors[i]);
-            
+
             ctx.fillStyle = grad;
             ctx.beginPath();
             ctx.roundRect(-w/2, yOffset - h/2, w, h, 12);
             ctx.fill();
-            
+
             ctx.shadowBlur = 0;
             ctx.strokeStyle = 'rgba(255,255,255,0.3)';
             ctx.lineWidth = 2;
             ctx.beginPath();
             ctx.roundRect(-w/2, yOffset - h/2, w, h, 12);
             ctx.stroke();
-            
+
             if (i < this.layers - 1) {
                 for (let j = 0; j < 12; j++) {
                     const dotX = -w/2 + 20 + j * ((w - 40) / 11);
@@ -477,7 +476,7 @@ class BirthdayCake {
                 }
             }
         }
-        
+
         this.decorations.forEach(dec => {
             ctx.shadowBlur = 0;
             ctx.fillStyle = dec.color;
@@ -488,20 +487,20 @@ class BirthdayCake {
             ctx.lineWidth = 1;
             ctx.stroke();
         });
-        
+
         const candleY = -this.layers * 40 + 20;
         this.candles.forEach((candle, idx) => {
             const x = candle.x;
-            
+
             ctx.shadowColor = 'rgba(0,0,0,0.15)';
             ctx.shadowBlur = 10;
             ctx.shadowOffsetY = 3;
-            
+
             ctx.fillStyle = candle.color;
             ctx.beginPath();
             ctx.roundRect(x - candle.width/2, candleY - candle.height, candle.width, candle.height, 3);
             ctx.fill();
-            
+
             ctx.shadowBlur = 0;
             ctx.strokeStyle = 'rgba(255,255,255,0.2)';
             ctx.lineWidth = 1;
@@ -512,13 +511,13 @@ class BirthdayCake {
                 ctx.lineTo(x + candle.width/2 - 2, sy);
                 ctx.stroke();
             }
-            
+
             const flameSize = candle.flame.size * (0.8 + Math.sin(Date.now() / 150 + idx) * 0.2);
             const flickerX = Math.sin(Date.now() / 100 + idx * 2) * 2;
-            
+
             ctx.shadowColor = 'rgba(255, 200, 50, 0.3)';
             ctx.shadowBlur = 30;
-            
+
             const grad2 = ctx.createRadialGradient(
                 x + flickerX, candleY - candle.height - flameSize * 0.3, 0,
                 x + flickerX, candleY - candle.height - flameSize * 0.3, flameSize * 0.8
@@ -527,19 +526,19 @@ class BirthdayCake {
             grad2.addColorStop(0.3, 'rgba(255, 200, 50, 0.8)');
             grad2.addColorStop(0.7, 'rgba(255, 150, 0, 0.6)');
             grad2.addColorStop(1, 'rgba(255, 100, 0, 0)');
-            
+
             ctx.fillStyle = grad2;
             ctx.beginPath();
             ctx.ellipse(x + flickerX, candleY - candle.height - flameSize * 0.3, flameSize * 0.6, flameSize, 0, 0, Math.PI * 2);
             ctx.fill();
-            
+
             ctx.shadowBlur = 20;
             ctx.fillStyle = 'rgba(255, 255, 255, 0.6)';
             ctx.beginPath();
             ctx.ellipse(x + flickerX * 0.5, candleY - candle.height - flameSize * 0.4, flameSize * 0.2, flameSize * 0.4, 0, 0, Math.PI * 2);
             ctx.fill();
         });
-        
+
         ctx.restore();
     }
 }
@@ -551,29 +550,29 @@ let effectStarted = false;
 function startBirthdayEffect() {
     if (effectStarted) return;
     effectStarted = true;
-    
+
     for (let i = 0; i < (isSmallScreen() ? 25 : 40); i++) {
         const flower = new Flower();
         flower.y = Math.random() * H;
         flowers.push(flower);
     }
-    
+
     cake = new BirthdayCake();
     animate();
 }
 
 function animate() {
     ctx.clearRect(0, 0, W, H);
-    
+
     if (cake) {
         cake.draw();
     }
-    
+
     flowers.forEach(flower => {
         flower.update();
         flower.draw();
     });
-    
+
     requestAnimationFrame(animate);
 }
 
