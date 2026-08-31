@@ -43,7 +43,7 @@ document.addEventListener('visibilitychange', () => {
 
 // ===== COUNTDOWN - CHỜ ĐẾN NGÀY 4/9/2026 =====
 // Set mốc thời gian: 00:00 ngày 4/9/2026 (giờ Việt Nam UTC+7)
-const TARGET_DATE = new Date('2026-09-04T00:00:00+07:00').getTime();
+const targetDate = new Date(2026, 8, 4, 0, 0, 0); // 4/9/2026
 
 const countdownPage = document.getElementById('countdownPage');
 const loginPage = document.getElementById('loginPage');
