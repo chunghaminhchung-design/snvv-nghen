@@ -14,8 +14,40 @@
     <!-- Canvas bánh sinh nhật + hoa rơi -->
     <canvas id="birthdayCanvas"></canvas>
 
+    <!-- ===== TRANG CHỜ ĐẾM NGƯỢC ===== -->
+    <div class="container" id="countdownPage">
+        <div class="card countdown-card">
+            <div class="emoji-big">⏳</div>
+            <h1>🎂 Sắp đến sinh nhật chị rồi!</h1>
+            <p class="sub-message">Còn đúng <strong id="daysLeft">0</strong> ngày nữa là đến ngày đặc biệt!</p>
+            
+            <div class="countdown-container">
+                <div class="countdown-box">
+                    <span class="countdown-number" id="countdownDays">00</span>
+                    <span class="countdown-label">Ngày</span>
+                </div>
+                <div class="countdown-box">
+                    <span class="countdown-number" id="countdownHours">00</span>
+                    <span class="countdown-label">Giờ</span>
+                </div>
+                <div class="countdown-box">
+                    <span class="countdown-number" id="countdownMinutes">00</span>
+                    <span class="countdown-label">Phút</span>
+                </div>
+                <div class="countdown-box">
+                    <span class="countdown-number" id="countdownSeconds">00</span>
+                    <span class="countdown-label">Giây</span>
+                </div>
+            </div>
+
+            <div class="countdown-message" id="countdownMessage">
+                💝 Hãy chờ đến ngày 4/9 nhé! Món quà đang chờ chị! 
+            </div>
+        </div>
+    </div>
+
     <!-- ===== TRANG ĐĂNG NHẬP ===== -->
-    <div class="container" id="loginPage">
+    <div class="container hidden" id="loginPage">
         <div class="card">
             <div class="emoji-big">🔐</div>
             <h1>🎂 Nhập mật khẩu</h1>
