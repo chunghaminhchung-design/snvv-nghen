@@ -85,6 +85,8 @@ body {
     text-align: center;
     box-shadow: 0 25px 60px rgba(0,0,0,0.15);
     border: 1px solid rgba(255,255,255,0.3);
+    position: relative;
+    z-index: 2;
 }
 
 /* ---- COUNTDOWN ---- */
@@ -230,6 +232,176 @@ h1 {
     display: none;
 }
 
+/* ===== TRANG LÁ THƯ - LỚP TRÁI TIM BAY ===== */
+.letter-hearts-layer {
+    position: fixed;
+    inset: 0;
+    pointer-events: none;
+    z-index: 1;
+    overflow: hidden;
+}
+
+.floating-heart {
+    position: absolute;
+    bottom: -40px;
+    opacity: 0;
+    animation: floatHeart linear forwards;
+    filter: drop-shadow(0 2px 4px rgba(214, 51, 108, 0.2));
+}
+
+@keyframes floatHeart {
+    0% {
+        transform: translateY(0) translateX(0) rotate(0deg);
+        opacity: 0;
+    }
+    10% { opacity: 0.9; }
+    85% { opacity: 0.85; }
+    100% {
+        transform: translateY(-115vh) translateX(var(--drift, 20px)) rotate(360deg);
+        opacity: 0;
+    }
+}
+
+/* ===== HIỆU ỨNG PHONG BÌ MỞ THƯ ===== */
+.envelope-intro {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 50px 0 40px;
+}
+
+.envelope-intro.hidden {
+    display: none;
+}
+
+.envelope-scene {
+    position: relative;
+    width: 170px;
+    height: 118px;
+    margin: 0 auto 22px;
+    perspective: 600px;
+    animation: envelopeFlyIn 1s cubic-bezier(0.34, 1.56, 0.64, 1) both;
+}
+
+@keyframes envelopeFlyIn {
+    0% {
+        transform: translateY(130px) scale(0.4) rotate(-18deg);
+        opacity: 0;
+    }
+    65% {
+        transform: translateY(-8px) scale(1.05) rotate(4deg);
+        opacity: 1;
+    }
+    100% {
+        transform: translateY(0) scale(1) rotate(0deg);
+        opacity: 1;
+    }
+}
+
+.envelope-body {
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(135deg, #ffd6e5, #ffb8d0);
+    border-radius: 12px;
+    box-shadow: 0 18px 34px rgba(214, 51, 108, 0.28);
+}
+
+.envelope-body::before {
+    content: '';
+    position: absolute;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    height: 65%;
+    background: linear-gradient(to top, rgba(255,255,255,0.35), transparent);
+    border-radius: 0 0 12px 12px;
+}
+
+.envelope-letter {
+    position: absolute;
+    left: 50%;
+    top: 34px;
+    transform: translate(-50%, 0) scale(0.6);
+    font-size: 42px;
+    z-index: 2;
+    opacity: 0;
+    animation: letterPopUp 0.7s ease 0.95s forwards;
+}
+
+@keyframes letterPopUp {
+    0% {
+        transform: translate(-50%, 0) scale(0.6);
+        opacity: 0;
+    }
+    60% {
+        transform: translate(-50%, -58px) scale(1.12);
+        opacity: 1;
+    }
+    100% {
+        transform: translate(-50%, -48px) scale(1);
+        opacity: 1;
+    }
+}
+
+.envelope-flap {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 64px;
+    background: linear-gradient(135deg, #ff9fc3, #ff7fae);
+    clip-path: polygon(0 0, 50% 68%, 100% 0);
+    transform-origin: top center;
+    border-radius: 12px 12px 0 0;
+    z-index: 3;
+    box-shadow: 0 4px 8px rgba(214, 51, 108, 0.15);
+    animation: flapOpen 0.5s ease 0.6s forwards;
+}
+
+@keyframes flapOpen {
+    0% { transform: rotateX(0deg); }
+    100% { transform: rotateX(180deg); }
+}
+
+.envelope-sparkle {
+    position: absolute;
+    font-size: 18px;
+    opacity: 0;
+    animation: sparklePop 1.4s ease 1.3s forwards;
+}
+
+.envelope-sparkle.s1 { top: -10px; left: -14px; animation-delay: 1.3s; }
+.envelope-sparkle.s2 { top: -6px; right: -18px; animation-delay: 1.5s; }
+.envelope-sparkle.s3 { bottom: -12px; left: 50%; animation-delay: 1.7s; }
+
+@keyframes sparklePop {
+    0% { transform: scale(0) rotate(0deg); opacity: 0; }
+    40% { transform: scale(1.2) rotate(20deg); opacity: 1; }
+    100% { transform: scale(0.9) rotate(-10deg) translateY(-14px); opacity: 0; }
+}
+
+.envelope-text {
+    font-size: 15px;
+    color: #d6336c;
+    font-weight: 600;
+    opacity: 0;
+    animation: fadeInText 0.6s ease 1.5s forwards;
+}
+
+@keyframes fadeInText {
+    to { opacity: 1; }
+}
+
+/* ---- Nội dung thư chính (hiện ra sau hiệu ứng phong bì) ---- */
+.letter-main.hidden {
+    display: none;
+}
+
+.letter-main {
+    animation: fadeSlide 0.5s ease;
+}
+
 /* ===== LÁ THƯ ===== */
 .letter-display {
     background: linear-gradient(145deg, #fff5f7, #ffe8ee);
@@ -350,4 +522,11 @@ h1 {
     .countdown-label {
         font-size: 10px;
     }
-}
+    .envelope-scene {
+        width: 140px;
+        height: 98px;
+    }
+    .envelope-letter {
+        font-size: 34px;
+        top: 28px;
+    }
