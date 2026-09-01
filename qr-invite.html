@@ -1,1 +1,233 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>🎂 Thiệp Mời Sinh Nhật</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
 
+        body {
+            background: linear-gradient(135deg, #fbc2eb, #a6c1ee);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            font-family: 'Segoe UI', Tahoma, sans-serif;
+            padding: 20px;
+        }
+
+        .invite-card {
+            background: white;
+            border-radius: 30px;
+            padding: 45px 35px;
+            max-width: 480px;
+            width: 100%;
+            text-align: center;
+            box-shadow: 0 25px 60px rgba(0,0,0,0.2);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .invite-card::before {
+            content: '🎉';
+            position: absolute;
+            font-size: 120px;
+            opacity: 0.06;
+            top: -20px;
+            right: -20px;
+            transform: rotate(20deg);
+        }
+
+        .invite-card::after {
+            content: '🎂';
+            position: absolute;
+            font-size: 100px;
+            opacity: 0.06;
+            bottom: -10px;
+            left: -20px;
+            transform: rotate(-15deg);
+        }
+
+        .cake-big {
+            font-size: 72px;
+            display: block;
+            margin-bottom: 6px;
+        }
+
+        .invite-card h1 {
+            color: #d6336c;
+            font-size: 28px;
+            margin-bottom: 6px;
+        }
+
+        .invite-card .sub {
+            color: #888;
+            font-size: 16px;
+            margin-bottom: 20px;
+        }
+
+        .qr-wrapper {
+            background: #f8f0f3;
+            border-radius: 20px;
+            padding: 20px;
+            display: inline-block;
+            border: 3px dashed #f0c8d8;
+            margin: 10px 0 16px;
+        }
+
+        .qr-wrapper img {
+            border-radius: 12px;
+            display: block;
+            width: 200px;
+            height: 200px;
+        }
+
+        .invite-card .link-text {
+            color: #666;
+            font-size: 14px;
+            word-break: break-all;
+            background: #f5f0f2;
+            padding: 10px 14px;
+            border-radius: 12px;
+            margin: 10px 0 16px;
+            font-family: monospace;
+        }
+
+        .invite-card .note {
+            color: #d6336c;
+            font-size: 17px;
+            font-weight: 600;
+            margin-bottom: 16px;
+        }
+
+        .btn-group {
+            display: flex;
+            gap: 12px;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+
+        .btn-group button {
+            background: #d6336c;
+            color: white;
+            border: none;
+            padding: 12px 30px;
+            border-radius: 40px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: 0.2s;
+        }
+
+        .btn-group button:hover {
+            transform: scale(1.04);
+            background: #b82a5a;
+        }
+
+        .btn-group button.secondary {
+            background: #6c5ce7;
+        }
+
+        .btn-group button.secondary:hover {
+            background: #5a4bd1;
+        }
+
+        .btn-group button:active {
+            transform: scale(0.95);
+        }
+
+        /* ---- Trang trí hoa nhỏ ---- */
+        .flower-deco {
+            position: absolute;
+            font-size: 30px;
+            opacity: 0.2;
+        }
+        .flower-deco.f1 { top: 10px; left: 10px; }
+        .flower-deco.f2 { bottom: 10px; right: 10px; }
+        .flower-deco.f3 { top: 50%; left: 5px; transform: translateY(-50%); }
+        .flower-deco.f4 { top: 50%; right: 5px; transform: translateY(-50%); }
+
+        @media print {
+            body {
+                background: white;
+                padding: 0;
+            }
+            .invite-card {
+                box-shadow: none;
+                border: 2px solid #ddd;
+                border-radius: 16px;
+                padding: 30px 20px;
+            }
+            .btn-group {
+                display: none !important;
+            }
+            .invite-card::before,
+            .invite-card::after {
+                opacity: 0.04;
+            }
+            .flower-deco {
+                opacity: 0.1;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .invite-card {
+                padding: 30px 18px;
+            }
+            .qr-wrapper img {
+                width: 160px;
+                height: 160px;
+            }
+            .invite-card h1 {
+                font-size: 22px;
+            }
+            .cake-big {
+                font-size: 56px;
+            }
+            .btn-group button {
+                padding: 10px 20px;
+                font-size: 14px;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="invite-card">
+        <!-- Trang trí hoa -->
+        <span class="flower-deco f1">🌸</span>
+        <span class="flower-deco f2">🌺</span>
+        <span class="flower-deco f3">🌷</span>
+        <span class="flower-deco f4">🌻</span>
+
+        <span class="cake-big">🎂</span>
+        <h1>🎉 Mời Chị Đến Nhận Quà!</h1>
+        <p class="sub">💝 Món quà bất ngờ dành riêng cho chị</p>
+
+        <div class="qr-wrapper">
+            <img src="https://api.qrserver.com/v1/create-qr-code/?size=250x250&data=https://chunghaminhchung-design.github.io/snvv-nghen/" alt="QR Code" />
+        </div>
+
+        <p class="note">📱 Quét mã để mở quà tặng!</p>
+
+        <div class="link-text">
+            chunghaminhchung-design.github.io/snvv-nghen/
+        </div>
+
+        <div class="btn-group">
+            <button onclick="window.print()">🖨️ In thiệp</button>
+            <button class="secondary" onclick="window.open('https://chunghaminhchung-design.github.io/snvv-nghen/', '_blank')">🔗 Mở quà ngay</button>
+        </div>
+
+        <p style="margin-top: 14px; color: #aaa; font-size: 13px;">
+            🎂 Mở từ ngày 4/9 với mật khẩu <strong style="color:#d6336c;">492006</strong>
+        </p>
+    </div>
+
+</body>
+</html>
