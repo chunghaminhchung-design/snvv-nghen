@@ -1,76 +1,110 @@
 <!DOCTYPE html>
-<html>
+<html lang="vi">
 <head>
-    <meta charset="UTF-8">
-    <title>🎂 Thiệp Mời Sinh Nhật</title>
-    <style>
-        body {
-            background: linear-gradient(135deg, #fbc2eb, #a6c1ee);
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            min-height: 100vh;
-            font-family: Arial, sans-serif;
-            margin: 0;
-            padding: 20px;
-        }
-        .card-invite {
-            background: white;
-            border-radius: 30px;
-            padding: 40px;
-            max-width: 500px;
-            text-align: center;
-            box-shadow: 0 20px 60px rgba(0,0,0,0.2);
-        }
-        .card-invite h1 {
-            color: #d6336c;
-            font-size: 28px;
-        }
-        .card-invite .cake-emoji {
-            font-size: 80px;
-        }
-        .card-invite .qr-code {
-            margin: 20px 0;
-        }
-        .card-invite .qr-code img {
-            border-radius: 16px;
-            border: 3px solid #f0d0e0;
-        }
-        .card-invite .note {
-            color: #777;
-            font-size: 16px;
-            margin-top: 10px;
-        }
-        .card-invite .btn-print {
-            background: #d6336c;
-            color: white;
-            border: none;
-            padding: 12px 30px;
-            border-radius: 30px;
-            font-size: 18px;
-            cursor: pointer;
-            margin-top: 15px;
-        }
-        @media print {
-            .btn-print { display: none; }
-            .card-invite { box-shadow: none; border: 2px solid #ddd; }
-        }
-    </style>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    <title>🎂 Chúc Mừng Sinh Nhật Chị!</title>
+    <link rel="stylesheet" href="style.css" />
 </head>
 <body>
-    <div class="card-invite">
-        <div class="cake-emoji">🎂</div>
-        <h1>🎉 Mời Chị Đến Nhận Quà!</h1>
-        <p>Quét mã QR bên dưới để mở bất ngờ nhé! 💝</p>
-        
-        <div class="qr-code">
-            <img src="https://api.qrserver.com/v1/create-qr-code/?size=250x250&data=https://chunghaminhchung-design.github.io/snvv-nghen/" alt="QR Code" />
+
+    <!-- Bong bóng nền -->
+    <div class="bubble-layer" id="bubbleLayer"></div>
+
+    <!-- Canvas bánh sinh nhật + hoa rơi -->
+    <canvas id="birthdayCanvas"></canvas>
+
+    <!-- ===== TRANG CHỜ ĐẾM NGƯỢC ===== -->
+    <div class="container" id="countdownPage">
+        <div class="card countdown-card">
+            <div class="emoji-big">⏳</div>
+            <h1>🎂 Sắp đến sinh nhật chị rồi!</h1>
+            <p class="sub-message">Còn đúng <strong id="daysLeft">0</strong> ngày nữa là đến ngày đặc biệt!</p>
+            
+            <div class="countdown-container">
+                <div class="countdown-box">
+                    <span class="countdown-number" id="countdownDays">00</span>
+                    <span class="countdown-label">Ngày</span>
+                </div>
+                <div class="countdown-box">
+                    <span class="countdown-number" id="countdownHours">00</span>
+                    <span class="countdown-label">Giờ</span>
+                </div>
+                <div class="countdown-box">
+                    <span class="countdown-number" id="countdownMinutes">00</span>
+                    <span class="countdown-label">Phút</span>
+                </div>
+                <div class="countdown-box">
+                    <span class="countdown-number" id="countdownSeconds">00</span>
+                    <span class="countdown-label">Giây</span>
+                </div>
+            </div>
+
+            <div class="countdown-message" id="countdownMessage">
+                💝 Hãy chờ đến ngày 4/9 nhé! Món quà đang chờ chị! 
+            </div>
         </div>
-        
-        <p class="note">📱 Quét mã hoặc truy cập:<br>
-        <strong>chunghaminhchung-design.github.io/snvv-nghen</strong></p>
-        
-        <button class="btn-print" onclick="window.print()">🖨️ In thiệp</button>
     </div>
+
+    <!-- ===== TRANG ĐĂNG NHẬP ===== -->
+    <div class="container hidden" id="loginPage">
+        <div class="card">
+            <div class="emoji-big">🔐</div>
+            <h1>🎂 Nhập mật khẩu</h1>
+            <p class="sub-message">Nhập mã để nhận quà từ em nhé!</p>
+
+            <!-- Bàn phím số -->
+            <div class="keypad">
+                <div class="key-row">
+                    <button class="key" data-value="1">1</button>
+                    <button class="key" data-value="2">2</button>
+                    <button class="key" data-value="3">3</button>
+                </div>
+                <div class="key-row">
+                    <button class="key" data-value="4">4</button>
+                    <button class="key" data-value="5">5</button>
+                    <button class="key" data-value="6">6</button>
+                </div>
+                <div class="key-row">
+                    <button class="key" data-value="7">7</button>
+                    <button class="key" data-value="8">8</button>
+                    <button class="key" data-value="9">9</button>
+                </div>
+                <div class="key-row">
+                    <button class="key key-clear" data-value="clear">⌫</button>
+                    <button class="key" data-value="0">0</button>
+                    <button class="key key-enter" data-value="enter">↵</button>
+                </div>
+            </div>
+
+            <!-- Hiển thị mật khẩu nhập -->
+            <div class="display" id="display">❤️</div>
+            <p id="errorMsg" class="error hidden">❌ Sai mật khẩu rồi! Thử lại nhé!</p>
+        </div>
+    </div>
+
+    <!-- ===== TRANG LÁ THƯ ===== -->
+    <div class="container hidden" id="letterPage">
+        <div class="card">
+            <div class="emoji-big">💌</div>
+            <h1>🎉 Những Lá Thư Cho Chị!</h1>
+            <p class="sub-message" id="letterCounter">Lá thư 1 / 5</p>
+
+            <!-- Nội dung lá thư -->
+            <div class="letter-display" id="letterDisplay">
+                <div class="letter-emoji-big" id="letterEmoji">💖</div>
+                <div class="letter-content-full" id="letterContent">Chị à, em chúc chị luôn vui vẻ và hạnh phúc! Chị xứng đáng với những điều tốt đẹp nhất trên đời này. 🌸</div>
+            </div>
+
+            <!-- Nút điều hướng -->
+            <div class="letter-nav">
+                <button class="nav-btn" id="prevBtn">⬅️ Trước</button>
+                <span class="page-dot" id="pageDot">● ○ ○ ○ ○</span>
+                <button class="nav-btn" id="nextBtn">Sau ➡️</button>
+            </div>
+        </div>
+    </div>
+
+    <script src="script.js"></script>
 </body>
 </html>
