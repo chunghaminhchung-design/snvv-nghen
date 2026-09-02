@@ -42,9 +42,6 @@ document.addEventListener('visibilitychange', () => {
 });
 
 // ===== TẮT ĐẾM NGƯỢC - CHUYỂN THẲNG VÀO TRANG CHÍNH =====
-// Set ngày trong quá khứ để luôn mở khóa
-const TARGET_DATE = new Date('2024-01-01T00:00:00+07:00').getTime();
-
 const countdownPage = document.getElementById('countdownPage');
 const loginPage = document.getElementById('loginPage');
 const quizPage = document.getElementById('quizPage');
@@ -72,13 +69,14 @@ function handleKey(val) {
             input = '';
             display.textContent = '❤️';
             startQuiz();
+            return;
         } else {
             errorMsg.classList.remove('hidden');
             input = '';
             display.textContent = '❤️';
             setTimeout(() => errorMsg.classList.add('hidden'), 2000);
+            return;
         }
-        return;
     } else {
         if (input.length < 6) {
             input += val;
@@ -87,20 +85,25 @@ function handleKey(val) {
     display.textContent = input.length > 0 ? input : '❤️';
 }
 
+// Gán sự kiện cho các phím bấm trên màn hình
 document.querySelectorAll('.key').forEach(btn => {
-    btn.addEventListener('click', () => {
-        const val = btn.dataset.value;
+    btn.addEventListener('click', function() {
+        const val = this.dataset.value;
         handleKey(val);
     });
 });
 
-document.addEventListener('keydown', (e) => {
+// Gán sự kiện cho bàn phím vật lý
+document.addEventListener('keydown', function(e) {
     const key = e.key;
     if (key >= '0' && key <= '9') {
+        e.preventDefault();
         handleKey(key);
     } else if (key === 'Backspace') {
+        e.preventDefault();
         handleKey('clear');
     } else if (key === 'Enter') {
+        e.preventDefault();
         handleKey('enter');
     }
 });
@@ -163,7 +166,9 @@ function renderQuestion() {
         btn.classList.add('option-btn');
         btn.textContent = opt;
         btn.dataset.index = index;
-        btn.addEventListener('click', () => handleAnswer(index));
+        btn.addEventListener('click', function() {
+            handleAnswer(parseInt(this.dataset.index));
+        });
         optionsContainer.appendChild(btn);
     });
 
@@ -198,7 +203,7 @@ function handleAnswer(index) {
     if (index === q.correct) {
         resultText.textContent = '✅ Đúng rồi! Chị giỏi quá! 🌟';
     } else {
-        resultText.textContent = `❌ Sai rồi! Đáp án đúng là ${q.options[q.correct]}`;
+        resultText.textContent = '❌ Sai rồi! Đáp án đúng là ' + q.options[q.correct];
     }
     quizResult.classList.remove('hidden');
 
@@ -281,7 +286,7 @@ function growLoveText() {
     document.head.appendChild(style);
 
     overlay.style.pointerEvents = 'auto';
-    overlay.addEventListener('click', () => {
+    overlay.addEventListener('click', function() {
         overlay.remove();
         quizPage.classList.add('hidden');
         letterPage.classList.remove('hidden');
@@ -377,9 +382,9 @@ function showTransferPage() {
 
         const accountNumber = document.getElementById('accountNumber').textContent;
         const accountName = document.getElementById('accountName').textContent;
-        const content = `Chúc mừng sinh nhật em ❤️`;
+        const content = 'Chúc mừng sinh nhật em ❤️';
         
-        alert(`💝 Cảm ơn chị rất nhiều!\n\nSố tiền: ${Number(amount).toLocaleString()} VND\nNgân hàng: MB Bank\nSố TK: ${accountNumber}\nChủ TK: ${accountName}\nNội dung: ${content}\n\nChị vui lòng chuyển khoản qua MB Bank app nhé! 💕`);
+        alert('💝 Cảm ơn chị rất nhiều!\n\nSố tiền: ' + Number(amount).toLocaleString() + ' VND\nNgân hàng: MB Bank\nSố TK: ' + accountNumber + '\nChủ TK: ' + accountName + '\nNội dung: ' + content + '\n\nChị vui lòng chuyển khoản qua MB Bank app nhé! 💕');
     });
 
     const style2 = document.createElement('style');
@@ -421,7 +426,7 @@ function updateLetter(index) {
     const letter = letters[index];
     letterEmoji.textContent = letter.emoji;
     letterContent.textContent = letter.content;
-    letterCounter.textContent = `Lá thư ${index + 1} / ${letters.length}`;
+    letterCounter.textContent = 'Lá thư ' + (index + 1) + ' / ' + letters.length;
     
     let dots = '';
     for (let i = 0; i < letters.length; i++) {
@@ -434,7 +439,7 @@ function updateLetter(index) {
     
     const display = document.getElementById('letterDisplay');
     display.style.animation = 'none';
-    requestAnimationFrame(() => {
+    requestAnimationFrame(function() {
         display.style.animation = 'fadeSlide 0.4s ease';
     });
 }
@@ -464,7 +469,7 @@ function stopAutoSlide() {
     }
 }
 
-prevBtn.addEventListener('click', () => {
+prevBtn.addEventListener('click', function() {
     if (currentLetter > 0) {
         currentLetter--;
         updateLetter(currentLetter);
@@ -473,7 +478,7 @@ prevBtn.addEventListener('click', () => {
     }
 });
 
-nextBtn.addEventListener('click', () => {
+nextBtn.addEventListener('click', function() {
     if (currentLetter < letters.length - 1) {
         currentLetter++;
         updateLetter(currentLetter);
@@ -482,18 +487,18 @@ nextBtn.addEventListener('click', () => {
     }
 });
 
-document.getElementById('letterDisplay').addEventListener('mouseenter', () => {
+document.getElementById('letterDisplay').addEventListener('mouseenter', function() {
     stopAutoSlide();
 });
 
-document.getElementById('letterDisplay').addEventListener('mouseleave', () => {
+document.getElementById('letterDisplay').addEventListener('mouseleave', function() {
     if (!letterPage.classList.contains('hidden')) {
         startAutoSlide();
     }
 });
 
 let paused = false;
-document.addEventListener('touchstart', (e) => {
+document.addEventListener('touchstart', function(e) {
     if (letterPage.classList.contains('hidden')) return;
     if (!paused) {
         stopAutoSlide();
@@ -503,21 +508,6 @@ document.addEventListener('touchstart', (e) => {
         paused = false;
     }
 });
-
-const observer = new MutationObserver(() => {
-    if (!letterPage.classList.contains('hidden')) {
-        currentLetter = 0;
-        updateLetter(0);
-        startAutoSlide();
-    }
-});
-observer.observe(letterPage, { attributes: true, attributeFilter: ['class'] });
-
-if (!letterPage.classList.contains('hidden')) {
-    currentLetter = 0;
-    updateLetter(0);
-    startAutoSlide();
-}
 
 // ===== BÁNH SINH NHẬT + HOA RƠI =====
 const canvas = document.getElementById('birthdayCanvas');
@@ -713,7 +703,7 @@ class BirthdayCake {
             }
         }
         
-        this.decorations.forEach(dec => {
+        this.decorations.forEach(function(dec) {
             ctx.shadowBlur = 0;
             ctx.fillStyle = dec.color;
             ctx.beginPath();
@@ -722,10 +712,10 @@ class BirthdayCake {
             ctx.strokeStyle = 'rgba(255,255,255,0.3)';
             ctx.lineWidth = 1;
             ctx.stroke();
-        });
+        }.bind(this));
         
         const candleY = -this.layers * 40 + 20;
-        this.candles.forEach((candle, idx) => {
+        this.candles.forEach(function(candle, idx) {
             const x = candle.x;
             
             ctx.shadowColor = 'rgba(0,0,0,0.15)';
@@ -773,7 +763,7 @@ class BirthdayCake {
             ctx.beginPath();
             ctx.ellipse(x + flickerX * 0.5, candleY - candle.height - flameSize * 0.4, flameSize * 0.2, flameSize * 0.4, 0, 0, Math.PI * 2);
             ctx.fill();
-        });
+        }.bind(this));
         
         ctx.restore();
     }
@@ -804,7 +794,7 @@ function animate() {
         cake.draw();
     }
     
-    flowers.forEach(flower => {
+    flowers.forEach(function(flower) {
         flower.update();
         flower.draw();
     });
@@ -829,7 +819,7 @@ if (!CanvasRenderingContext2D.prototype.roundRect) {
     };
 }
 
-window.addEventListener('resize', () => {
+window.addEventListener('resize', function() {
     resizeCanvas();
     if (cake) {
         cake.x = W / 2;
