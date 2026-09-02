@@ -41,56 +41,19 @@ document.addEventListener('visibilitychange', () => {
     }
 });
 
-// ===== COUNTDOWN - CHỜ ĐẾN NGÀY 4/9/2026 =====
-const TARGET_DATE = new Date('2026-09-04T00:00:00+07:00').getTime();
+// ===== TẮT ĐẾM NGƯỢC - CHUYỂN THẲNG VÀO TRANG CHÍNH =====
+// Set ngày trong quá khứ để luôn mở khóa
+const TARGET_DATE = new Date('2024-01-01T00:00:00+07:00').getTime();
 
 const countdownPage = document.getElementById('countdownPage');
 const loginPage = document.getElementById('loginPage');
 const quizPage = document.getElementById('quizPage');
 const letterPage = document.getElementById('letterPage');
 
-const daysEl = document.getElementById('countdownDays');
-const hoursEl = document.getElementById('countdownHours');
-const minutesEl = document.getElementById('countdownMinutes');
-const secondsEl = document.getElementById('countdownSeconds');
-const daysLeftEl = document.getElementById('daysLeft');
-const countdownMessage = document.getElementById('countdownMessage');
-
-function updateCountdown() {
-    const now = new Date().getTime();
-    const diff = TARGET_DATE - now;
-
-    if (diff <= 0) {
-        countdownPage.classList.add('hidden');
-        loginPage.classList.remove('hidden');
-        startBirthdayEffect();
-        return;
-    }
-
-    const days = Math.floor(diff / (1000 * 60 * 60 * 24));
-    const hours = Math.floor((diff % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
-    const minutes = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60));
-    const seconds = Math.floor((diff % (1000 * 60)) / 1000);
-
-    daysEl.textContent = String(days).padStart(2, '0');
-    hoursEl.textContent = String(hours).padStart(2, '0');
-    minutesEl.textContent = String(minutes).padStart(2, '0');
-    secondsEl.textContent = String(seconds).padStart(2, '0');
-    daysLeftEl.textContent = days;
-
-    if (days === 0 && hours < 24) {
-        countdownMessage.innerHTML = '🎉 Hôm nay là ngày 4/9 rồi! Sắp mở được quà rồi! 💝';
-    } else if (days <= 3) {
-        countdownMessage.innerHTML = `💖 Còn ${days} ngày nữa thôi! Chị chuẩn bị tinh thần nhé! 🎂`;
-    } else if (days <= 7) {
-        countdownMessage.innerHTML = `🌸 Chỉ còn ${days} ngày nữa là đến sinh nhật chị! Hồi hộp quá!`;
-    } else {
-        countdownMessage.innerHTML = '💝 Hãy chờ đến ngày 4/9 nhé! Món quà đang chờ chị! 🎁';
-    }
-}
-
-updateCountdown();
-setInterval(updateCountdown, 1000);
+// Luôn ẩn countdown và hiện login
+countdownPage.classList.add('hidden');
+loginPage.classList.remove('hidden');
+startBirthdayEffect();
 
 // ===== MẬT KHẨU =====
 const PASSWORD = '492006';
@@ -193,10 +156,8 @@ function renderQuestion() {
     questionText.textContent = q.question;
     questionCounter.textContent = `Câu ${currentQuestion + 1} / ${questions.length}`;
 
-    // Xóa các nút cũ
     optionsContainer.innerHTML = '';
 
-    // Tạo các nút đáp án
     q.options.forEach((opt, index) => {
         const btn = document.createElement('button');
         btn.classList.add('option-btn');
@@ -213,19 +174,15 @@ function handleAnswer(index) {
     const q = questions[currentQuestion];
     const btns = optionsContainer.querySelectorAll('.option-btn');
 
-    // Nếu là câu cuối (câu hỏi quý em)
     if (q.isFinal) {
         if (index === 0) {
-            // Chọn "Có" - hiện QR và form chuyển tiền
             showLoveQR();
         } else {
-            // Chọn "Không" - chữ "Có" to dần
             growLoveText();
         }
         return;
     }
 
-    // Câu hỏi thường
     btns.forEach((btn, i) => {
         btn.disabled = true;
         if (i === q.correct) {
@@ -238,7 +195,6 @@ function handleAnswer(index) {
         }
     });
 
-    // Hiển thị kết quả
     if (index === q.correct) {
         resultText.textContent = '✅ Đúng rồi! Chị giỏi quá! 🌟';
     } else {
@@ -246,13 +202,11 @@ function handleAnswer(index) {
     }
     quizResult.classList.remove('hidden');
 
-    // Sau 1.5s chuyển sang câu tiếp theo
     setTimeout(() => {
         if (currentQuestion < questions.length - 1) {
             currentQuestion++;
             renderQuestion();
         } else {
-            // Đã hết câu hỏi - sang trang lá thư
             quizPage.classList.add('hidden');
             letterPage.classList.remove('hidden');
             currentLetter = 0;
@@ -265,13 +219,11 @@ function handleAnswer(index) {
 // ===== XỬ LÝ CÂU CUỐI: "CÓ" =====
 function showLoveQR() {
     quizPage.classList.add('hidden');
-    // Tạo trang hiển thị QR + form chuyển tiền
     showTransferPage();
 }
 
 // ===== XỬ LÝ CÂU CUỐI: "KHÔNG" =====
 function growLoveText() {
-    // Tạo chữ "CÓ" to dần phủ hết màn hình
     const overlay = document.createElement('div');
     overlay.id = 'loveOverlay';
     overlay.style.cssText = `
@@ -302,7 +254,6 @@ function growLoveText() {
     overlay.appendChild(text);
     document.body.appendChild(overlay);
 
-    // Sau 2s, vẫn giữ nguyên và tiếp tục to hơn
     setTimeout(() => {
         text.style.fontSize = '60px';
         setTimeout(() => {
@@ -316,7 +267,6 @@ function growLoveText() {
         }, 500);
     }, 1000);
 
-    // Thêm keyframe animation
     const style = document.createElement('style');
     style.textContent = `
         @keyframes growLove {
@@ -330,7 +280,6 @@ function growLoveText() {
     `;
     document.head.appendChild(style);
 
-    // Khi bấm vào màn hình sẽ tắt và chuyển sang trang thư
     overlay.style.pointerEvents = 'auto';
     overlay.addEventListener('click', () => {
         overlay.remove();
@@ -344,7 +293,6 @@ function growLoveText() {
 
 // ===== TRANG CHUYỂN TIỀN =====
 function showTransferPage() {
-    // Tạo overlay chuyển tiền
     const overlay = document.createElement('div');
     overlay.id = 'transferOverlay';
     overlay.style.cssText = `
@@ -420,7 +368,6 @@ function showTransferPage() {
     overlay.appendChild(card);
     document.body.appendChild(overlay);
 
-    // Xử lý nút chuyển khoản
     document.getElementById('transferBtn').addEventListener('click', function() {
         const amount = document.getElementById('transferAmount').value;
         if (!amount || amount <= 0) {
@@ -428,20 +375,13 @@ function showTransferPage() {
             return;
         }
 
-        // Tạo link chuyển khoản MB Bank
         const accountNumber = document.getElementById('accountNumber').textContent;
         const accountName = document.getElementById('accountName').textContent;
         const content = `Chúc mừng sinh nhật em ❤️`;
         
-        // Link chuyển khoản MB Bank (nếu có API)
-        // Hoặc copy thông tin để chị chuyển thủ công
         alert(`💝 Cảm ơn chị rất nhiều!\n\nSố tiền: ${Number(amount).toLocaleString()} VND\nNgân hàng: MB Bank\nSố TK: ${accountNumber}\nChủ TK: ${accountName}\nNội dung: ${content}\n\nChị vui lòng chuyển khoản qua MB Bank app nhé! 💕`);
-        
-        // Mở app MB Bank nếu có thể (deep link)
-        // window.location.href = `mbank://transfer?amount=${amount}&account=${accountNumber}`;
     });
 
-    // Thêm animation cho card
     const style2 = document.createElement('style');
     style2.textContent = `
         @keyframes fadeSlide {
@@ -896,9 +836,3 @@ window.addEventListener('resize', () => {
         cake.y = H / 2 + 60;
     }
 });
-
-if (new Date().getTime() >= TARGET_DATE) {
-    countdownPage.classList.add('hidden');
-    loginPage.classList.remove('hidden');
-    startBirthdayEffect();
-}
