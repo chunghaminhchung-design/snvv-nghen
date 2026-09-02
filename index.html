@@ -4,55 +4,378 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
     <title>🎂 Chúc Mừng Sinh Nhật Chị!</title>
-    <link rel="stylesheet" href="style.css" />
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, sans-serif;
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: linear-gradient(135deg, #fbc2eb 0%, #a6c1ee 100%);
+            overflow: hidden;
+            position: relative;
+        }
+
+        .bubble-layer {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: 0;
+            overflow: hidden;
+        }
+
+        .bubble {
+            position: absolute;
+            bottom: -80px;
+            border-radius: 50%;
+            background: radial-gradient(circle at 30% 30%, rgba(255,255,255,0.6), rgba(255,255,255,0.1));
+            box-shadow: inset 0 0 15px rgba(255,255,255,0.3);
+            animation: rise linear infinite;
+            opacity: 0.6;
+        }
+
+        @keyframes rise {
+            0% {
+                transform: translateY(0) scale(1) rotate(0deg);
+                opacity: 0.6;
+            }
+            100% {
+                transform: translateY(-110vh) scale(1.3) rotate(720deg);
+                opacity: 0;
+            }
+        }
+
+        #birthdayCanvas {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: 1;
+        }
+
+        .container {
+            position: relative;
+            z-index: 2;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            min-height: 100vh;
+            padding: 20px;
+            width: 100%;
+        }
+
+        .container.hidden {
+            display: none !important;
+        }
+
+        .card {
+            background: rgba(255, 255, 255, 0.85);
+            backdrop-filter: blur(12px);
+            border-radius: 40px;
+            padding: 40px 35px;
+            max-width: 500px;
+            width: 100%;
+            text-align: center;
+            box-shadow: 0 25px 60px rgba(0,0,0,0.15);
+            border: 1px solid rgba(255,255,255,0.3);
+        }
+
+        .emoji-big {
+            font-size: 52px;
+            margin-bottom: 6px;
+        }
+
+        h1 {
+            font-size: 26px;
+            color: #d6336c;
+            margin-bottom: 8px;
+        }
+
+        .sub-message {
+            font-size: 16px;
+            color: #777;
+            margin-bottom: 18px;
+        }
+
+        .keypad {
+            margin: 14px 0 12px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .key-row {
+            display: flex;
+            gap: 10px;
+            justify-content: center;
+        }
+
+        .key {
+            width: 58px;
+            height: 58px;
+            border-radius: 18px;
+            border: none;
+            background: rgba(255, 255, 255, 0.8);
+            font-size: 24px;
+            font-weight: 600;
+            color: #333;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.06);
+            cursor: pointer;
+            transition: all 0.15s ease;
+            border: 1px solid rgba(255,255,255,0.5);
+            user-select: none;
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        .key:active {
+            transform: scale(0.92);
+            background: #f0d0e0;
+        }
+
+        .key-clear {
+            color: #e74c3c;
+            font-size: 20px;
+        }
+
+        .key-enter {
+            background: #d6336c;
+            color: #fff;
+            font-size: 20px;
+        }
+
+        .key-enter:active {
+            background: #b82a5a;
+        }
+
+        .display {
+            font-size: 28px;
+            font-weight: 600;
+            color: #d6336c;
+            background: rgba(255,240,245,0.6);
+            padding: 10px 0;
+            border-radius: 20px;
+            min-height: 50px;
+            margin: 6px 0 10px;
+            letter-spacing: 4px;
+            border: 1px dashed #f0b8c8;
+        }
+
+        .error {
+            color: #e74c3c;
+            font-size: 15px;
+            margin-top: 6px;
+            font-weight: 600;
+        }
+
+        .error.hidden {
+            display: none;
+        }
+
+        /* QUIZ */
+        .quiz-container {
+            margin: 10px 0;
+        }
+
+        .question-text {
+            font-size: 20px;
+            font-weight: 600;
+            color: #333;
+            margin-bottom: 16px;
+            line-height: 1.5;
+            min-height: 60px;
+        }
+
+        .options {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        .option-btn {
+            background: rgba(255, 255, 255, 0.7);
+            border: 2px solid rgba(214, 51, 108, 0.15);
+            border-radius: 16px;
+            padding: 14px 18px;
+            font-size: 16px;
+            color: #333;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            text-align: left;
+            width: 100%;
+        }
+
+        .option-btn:hover {
+            background: rgba(214, 51, 108, 0.08);
+            border-color: #d6336c;
+        }
+
+        .option-btn:active {
+            transform: scale(0.97);
+        }
+
+        .option-btn.selected {
+            background: #d6336c;
+            color: #fff;
+            border-color: #d6336c;
+        }
+
+        .option-btn.correct {
+            background: #2ecc71;
+            color: #fff;
+            border-color: #2ecc71;
+        }
+
+        .option-btn.wrong {
+            background: #e74c3c;
+            color: #fff;
+            border-color: #e74c3c;
+        }
+
+        .result-text {
+            font-size: 22px;
+            font-weight: 700;
+            color: #d6336c;
+            margin: 10px 0;
+        }
+
+        /* LÁ THƯ */
+        .letter-display {
+            background: linear-gradient(145deg, #fff5f7, #ffe8ee);
+            border-radius: 24px;
+            padding: 30px 20px;
+            min-height: 200px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            border: 2px solid rgba(214, 51, 108, 0.15);
+            margin: 10px 0 16px;
+            animation: fadeSlide 0.4s ease;
+        }
+
+        @keyframes fadeSlide {
+            0% {
+                opacity: 0;
+                transform: translateY(10px) scale(0.95);
+            }
+            100% {
+                opacity: 1;
+                transform: translateY(0) scale(1);
+            }
+        }
+
+        .letter-emoji-big {
+            font-size: 56px;
+            margin-bottom: 14px;
+        }
+
+        .letter-content-full {
+            font-size: 18px;
+            color: #444;
+            line-height: 1.7;
+            max-width: 400px;
+            font-weight: 500;
+        }
+
+        .letter-nav {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 12px;
+            margin: 10px 0 18px;
+        }
+
+        .nav-btn {
+            background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+            border: none;
+            padding: 10px 22px;
+            border-radius: 30px;
+            font-size: 15px;
+            font-weight: 600;
+            color: #fff;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            box-shadow: 0 4px 15px rgba(245, 87, 108, 0.3);
+            border: 1px solid rgba(255,255,255,0.2);
+            flex: 1;
+        }
+
+        .nav-btn:active {
+            transform: scale(0.93);
+        }
+
+        .nav-btn:disabled {
+            opacity: 0.4;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        .page-dot {
+            font-size: 18px;
+            letter-spacing: 4px;
+            color: #d6336c;
+            min-width: 80px;
+        }
+
+        @media (max-width: 500px) {
+            .card {
+                padding: 28px 18px;
+            }
+            h1 {
+                font-size: 22px;
+            }
+            .key {
+                width: 50px;
+                height: 50px;
+                font-size: 20px;
+            }
+            .display {
+                font-size: 24px;
+            }
+            .letter-emoji-big {
+                font-size: 44px;
+            }
+            .letter-content-full {
+                font-size: 16px;
+            }
+            .nav-btn {
+                font-size: 13px;
+                padding: 8px 14px;
+            }
+            .page-dot {
+                font-size: 14px;
+                min-width: 60px;
+            }
+            .question-text {
+                font-size: 17px;
+            }
+            .option-btn {
+                font-size: 14px;
+                padding: 12px 14px;
+            }
+        }
+    </style>
 </head>
 <body>
 
     <!-- Bong bóng nền -->
     <div class="bubble-layer" id="bubbleLayer"></div>
-
-    <!-- Canvas bánh sinh nhật + hoa rơi -->
     <canvas id="birthdayCanvas"></canvas>
 
-    <!-- ===== TRANG CHỜ ĐẾM NGƯỢC ===== -->
-    <div class="container" id="countdownPage">
-        <div class="card countdown-card">
-            <div class="emoji-big">⏳</div>
-            <h1>🎂 Sắp đến sinh nhật chị rồi!</h1>
-            <p class="sub-message">Còn đúng <strong id="daysLeft">0</strong> ngày nữa là đến ngày đặc biệt!</p>
-            
-            <div class="countdown-container">
-                <div class="countdown-box">
-                    <span class="countdown-number" id="countdownDays">00</span>
-                    <span class="countdown-label">Ngày</span>
-                </div>
-                <div class="countdown-box">
-                    <span class="countdown-number" id="countdownHours">00</span>
-                    <span class="countdown-label">Giờ</span>
-                </div>
-                <div class="countdown-box">
-                    <span class="countdown-number" id="countdownMinutes">00</span>
-                    <span class="countdown-label">Phút</span>
-                </div>
-                <div class="countdown-box">
-                    <span class="countdown-number" id="countdownSeconds">00</span>
-                    <span class="countdown-label">Giây</span>
-                </div>
-            </div>
-
-            <div class="countdown-message" id="countdownMessage">
-                💝 Hãy chờ đến ngày 4/9 nhé! Món quà đang chờ chị! 
-            </div>
-
-            <div class="qr-mini">
-                <img src="https://api.qrserver.com/v1/create-qr-code/?size=80x80&data=https://chunghaminhchung-design.github.io/snvv-nghen/" alt="QR" />
-                <span>📱 Quét mã để mở quà</span>
-            </div>
-        </div>
-    </div>
-
     <!-- ===== TRANG ĐĂNG NHẬP ===== -->
-    <div class="container hidden" id="loginPage">
+    <div class="container" id="loginPage">
         <div class="card">
             <div class="emoji-big">🔐</div>
             <h1>🎂 Nhập mật khẩu</h1>
@@ -60,24 +383,24 @@
 
             <div class="keypad">
                 <div class="key-row">
-                    <button class="key" data-value="1">1</button>
-                    <button class="key" data-value="2">2</button>
-                    <button class="key" data-value="3">3</button>
+                    <button class="key" data-value="1" onclick="pressKey('1')">1</button>
+                    <button class="key" data-value="2" onclick="pressKey('2')">2</button>
+                    <button class="key" data-value="3" onclick="pressKey('3')">3</button>
                 </div>
                 <div class="key-row">
-                    <button class="key" data-value="4">4</button>
-                    <button class="key" data-value="5">5</button>
-                    <button class="key" data-value="6">6</button>
+                    <button class="key" data-value="4" onclick="pressKey('4')">4</button>
+                    <button class="key" data-value="5" onclick="pressKey('5')">5</button>
+                    <button class="key" data-value="6" onclick="pressKey('6')">6</button>
                 </div>
                 <div class="key-row">
-                    <button class="key" data-value="7">7</button>
-                    <button class="key" data-value="8">8</button>
-                    <button class="key" data-value="9">9</button>
+                    <button class="key" data-value="7" onclick="pressKey('7')">7</button>
+                    <button class="key" data-value="8" onclick="pressKey('8')">8</button>
+                    <button class="key" data-value="9" onclick="pressKey('9')">9</button>
                 </div>
                 <div class="key-row">
-                    <button class="key key-clear" data-value="clear">⌫</button>
-                    <button class="key" data-value="0">0</button>
-                    <button class="key key-enter" data-value="enter">↵</button>
+                    <button class="key key-clear" onclick="pressKey('clear')">⌫</button>
+                    <button class="key" data-value="0" onclick="pressKey('0')">0</button>
+                    <button class="key key-enter" onclick="pressKey('enter')">↵</button>
                 </div>
             </div>
 
@@ -95,12 +418,7 @@
 
             <div class="quiz-container">
                 <div class="question-text" id="questionText">Câu hỏi sẽ hiển thị ở đây...</div>
-                <div class="options" id="optionsContainer">
-                    <button class="option-btn" data-index="0">A. ...</button>
-                    <button class="option-btn" data-index="1">B. ...</button>
-                    <button class="option-btn" data-index="2">C. ...</button>
-                    <button class="option-btn" data-index="3">D. ...</button>
-                </div>
+                <div class="options" id="optionsContainer"></div>
             </div>
 
             <div id="quizResult" class="hidden">
@@ -129,6 +447,514 @@
         </div>
     </div>
 
-    <script src="script.js"></script>
-</body>
-</html>
+    <script>
+        // ===== BONG BÓNG =====
+        const bubbleLayer = document.getElementById('bubbleLayer');
+        let floatingTimer = null;
+
+        function isSmallScreen() {
+            return window.innerWidth < 500;
+        }
+
+        function createBubble() {
+            const bubble = document.createElement('div');
+            bubble.classList.add('bubble');
+            const size = 20 + Math.random() * 45;
+            bubble.style.width = size + 'px';
+            bubble.style.height = size + 'px';
+            bubble.style.left = Math.random() * 100 + '%';
+            bubble.style.animationDuration = 12 + Math.random() * 18 + 's';
+            bubble.style.animationDelay = Math.random() * 5 + 's';
+            bubble.style.opacity = 0.3 + Math.random() * 0.4;
+            bubbleLayer.appendChild(bubble);
+            setTimeout(() => bubble.remove(), 28000);
+        }
+
+        function startFloating() {
+            if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+            floatingTimer = setInterval(createBubble, isSmallScreen() ? 2800 : 1200);
+        }
+
+        function stopFloating() {
+            clearInterval(floatingTimer);
+            floatingTimer = null;
+            bubbleLayer.innerHTML = '';
+        }
+
+        startFloating();
+
+        document.addEventListener('visibilitychange', function() {
+            if (document.hidden) {
+                stopFloating();
+            } else {
+                startFloating();
+            }
+        });
+
+        // ===== TẮT ĐẾM NGƯỢC =====
+        document.getElementById('loginPage').classList.remove('hidden');
+
+        // ===== MẬT KHẨU =====
+        var PASSWORD = '492006';
+        var display = document.getElementById('display');
+        var errorMsg = document.getElementById('errorMsg');
+        var input = '';
+
+        // Hàm xử lý phím bấm - GLOBAL để onclick gọi được
+        window.pressKey = function(val) {
+            if (val === 'clear') {
+                input = input.slice(0, -1);
+            } else if (val === 'enter') {
+                if (input === PASSWORD) {
+                    document.getElementById('loginPage').classList.add('hidden');
+                    document.getElementById('quizPage').classList.remove('hidden');
+                    errorMsg.classList.add('hidden');
+                    input = '';
+                    display.textContent = '❤️';
+                    startQuiz();
+                    startBirthdayEffect();
+                    return;
+                } else {
+                    errorMsg.classList.remove('hidden');
+                    input = '';
+                    display.textContent = '❤️';
+                    setTimeout(function() {
+                        errorMsg.classList.add('hidden');
+                    }, 2000);
+                    return;
+                }
+            } else {
+                if (input.length < 6) {
+                    input += val;
+                }
+            }
+            display.textContent = input.length > 0 ? input : '❤️';
+        };
+
+        // Bàn phím vật lý
+        document.addEventListener('keydown', function(e) {
+            var key = e.key;
+            if (key >= '0' && key <= '9') {
+                e.preventDefault();
+                pressKey(key);
+            } else if (key === 'Backspace') {
+                e.preventDefault();
+                pressKey('clear');
+            } else if (key === 'Enter') {
+                e.preventDefault();
+                pressKey('enter');
+            }
+        });
+
+        // ===== QUIZ =====
+        var questions = [
+            {
+                question: "👉 [Câu hỏi 1 - Anh/chị tự điền]",
+                options: ["A. Đáp án A", "B. Đáp án B", "C. Đáp án C", "D. Đáp án D"],
+                correct: 0
+            },
+            {
+                question: "👉 [Câu hỏi 2 - Anh/chị tự điền]",
+                options: ["A. Đáp án A", "B. Đáp án B", "C. Đáp án C", "D. Đáp án D"],
+                correct: 1
+            },
+            {
+                question: "👉 [Câu hỏi 3 - Anh/chị tự điền]",
+                options: ["A. Đáp án A", "B. Đáp án B", "C. Đáp án C", "D. Đáp án D"],
+                correct: 2
+            },
+            {
+                question: "👉 [Câu hỏi 4 - Anh/chị tự điền]",
+                options: ["A. Đáp án A", "B. Đáp án B", "C. Đáp án C", "D. Đáp án D"],
+                correct: 3
+            },
+            {
+                question: "💖 Chị có quý em không?",
+                options: ["Có 💕", "Không 😢"],
+                correct: 0,
+                isFinal: true
+            }
+        ];
+
+        var currentQuestion = 0;
+        var questionText = document.getElementById('questionText');
+        var optionsContainer = document.getElementById('optionsContainer');
+        var questionCounter = document.getElementById('questionCounter');
+        var quizResult = document.getElementById('quizResult');
+        var resultText = document.getElementById('resultText');
+
+        function startQuiz() {
+            currentQuestion = 0;
+            quizResult.classList.add('hidden');
+            renderQuestion();
+        }
+
+        function renderQuestion() {
+            var q = questions[currentQuestion];
+            questionText.textContent = q.question;
+            questionCounter.textContent = 'Câu ' + (currentQuestion + 1) + ' / ' + questions.length;
+
+            optionsContainer.innerHTML = '';
+
+            q.options.forEach(function(opt, index) {
+                var btn = document.createElement('button');
+                btn.classList.add('option-btn');
+                btn.textContent = opt;
+                btn.dataset.index = index;
+                btn.onclick = function() {
+                    handleAnswer(parseInt(this.dataset.index));
+                };
+                optionsContainer.appendChild(btn);
+            });
+
+            quizResult.classList.add('hidden');
+        }
+
+        function handleAnswer(index) {
+            var q = questions[currentQuestion];
+            var btns = optionsContainer.querySelectorAll('.option-btn');
+
+            if (q.isFinal) {
+                if (index === 0) {
+                    showLoveQR();
+                } else {
+                    growLoveText();
+                }
+                return;
+            }
+
+            btns.forEach(function(btn, i) {
+                btn.disabled = true;
+                if (i === q.correct) {
+                    btn.classList.add('correct');
+                } else if (i === index && i !== q.correct) {
+                    btn.classList.add('wrong');
+                }
+                if (i === index) {
+                    btn.classList.add('selected');
+                }
+            });
+
+            if (index === q.correct) {
+                resultText.textContent = '✅ Đúng rồi! Chị giỏi quá! 🌟';
+            } else {
+                resultText.textContent = '❌ Sai rồi! Đáp án đúng là ' + q.options[q.correct];
+            }
+            quizResult.classList.remove('hidden');
+
+            setTimeout(function() {
+                if (currentQuestion < questions.length - 1) {
+                    currentQuestion++;
+                    renderQuestion();
+                } else {
+                    document.getElementById('quizPage').classList.add('hidden');
+                    document.getElementById('letterPage').classList.remove('hidden');
+                    currentLetter = 0;
+                    updateLetter(0);
+                    startAutoSlide();
+                }
+            }, 1500);
+        }
+
+        // ===== XỬ LÝ "CÓ" =====
+        function showLoveQR() {
+            document.getElementById('quizPage').classList.add('hidden');
+            showTransferPage();
+        }
+
+        // ===== XỬ LÝ "KHÔNG" =====
+        function growLoveText() {
+            var overlay = document.createElement('div');
+            overlay.id = 'loveOverlay';
+            overlay.style.cssText = `
+                position: fixed;
+                top: 0;
+                left: 0;
+                width: 100%;
+                height: 100%;
+                z-index: 9999;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                background: rgba(214, 51, 108, 0.95);
+                pointer-events: none;
+                animation: growLove 0.5s ease forwards;
+            `;
+
+            var text = document.createElement('div');
+            text.textContent = '💖 CÓ 💖';
+            text.style.cssText = `
+                font-size: 40px;
+                font-weight: 900;
+                color: #fff;
+                text-shadow: 0 0 30px rgba(255,255,255,0.5);
+                animation: pulseLove 1s ease infinite;
+            `;
+
+            overlay.appendChild(text);
+            document.body.appendChild(overlay);
+
+            setTimeout(function() {
+                text.style.fontSize = '60px';
+                setTimeout(function() {
+                    text.style.fontSize = '80px';
+                    setTimeout(function() {
+                        text.style.fontSize = '120px';
+                        setTimeout(function() {
+                            text.style.fontSize = '200px';
+                        }, 500);
+                    }, 500);
+                }, 500);
+            }, 1000);
+
+            var style = document.createElement('style');
+            style.textContent = `
+                @keyframes growLove {
+                    0% { transform: scale(0.5); opacity: 0; }
+                    100% { transform: scale(1); opacity: 1; }
+                }
+                @keyframes pulseLove {
+                    0%, 100% { transform: scale(1); }
+                    50% { transform: scale(1.1); }
+                }
+            `;
+            document.head.appendChild(style);
+
+            overlay.style.pointerEvents = 'auto';
+            overlay.onclick = function() {
+                overlay.remove();
+                document.getElementById('quizPage').classList.add('hidden');
+                document.getElementById('letterPage').classList.remove('hidden');
+                currentLetter = 0;
+                updateLetter(0);
+                startAutoSlide();
+            };
+        }
+
+        // ===== TRANG CHUYỂN TIỀN =====
+        function showTransferPage() {
+            var overlay = document.createElement('div');
+            overlay.id = 'transferOverlay';
+            overlay.style.cssText = `
+                position: fixed;
+                top: 0;
+                left: 0;
+                width: 100%;
+                height: 100%;
+                z-index: 9999;
+                background: rgba(0,0,0,0.7);
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                padding: 20px;
+                overflow-y: auto;
+            `;
+
+            var card = document.createElement('div');
+            card.style.cssText = `
+                background: #fff;
+                border-radius: 30px;
+                padding: 30px 25px;
+                max-width: 420px;
+                width: 100%;
+                text-align: center;
+                box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+                animation: fadeSlide 0.3s ease;
+                max-height: 90vh;
+                overflow-y: auto;
+            `;
+
+            card.innerHTML = `
+                <div style="font-size: 48px; margin-bottom: 6px;">💝</div>
+                <h2 style="color: #d6336c; font-size: 24px; margin-bottom: 4px;">Chị thương em bao nhiêu?</h2>
+                <p style="color: #888; font-size: 14px; margin-bottom: 16px;">Số tiền chị chuyển sẽ thể hiện tình cảm dành cho em đó! 💕</p>
+
+                <div style="margin: 12px 0;">
+                    <img src="https://api.qrserver.com/v1/create-qr-code/?size=200x200&data=MBANK_QR_CODE_HERE" 
+                         alt="QR Code MB Bank" 
+                         style="width: 180px; height: 180px; border-radius: 16px; border: 3px solid #f0d0e0;" />
+                    <p style="font-size: 12px; color: #999; margin-top: 6px;">📱 Quét mã QR để chuyển khoản</p>
+                </div>
+
+                <div style="margin: 12px 0;">
+                    <p style="font-size: 14px; color: #666;">Ngân hàng: <strong>MB Bank</strong></p>
+                    <p style="font-size: 14px; color: #666;">Số tài khoản: <strong id="accountNumber">[Số TK của anh/chị]</strong></p>
+                    <p style="font-size: 14px; color: #666;">Chủ tài khoản: <strong id="accountName">[Tên chủ TK]</strong></p>
+                </div>
+
+                <div style="margin: 12px 0;">
+                    <label style="font-size: 14px; color: #666; display: block; text-align: left; margin-bottom: 4px;">
+                        💰 Số tiền (VND):
+                    </label>
+                    <input type="number" id="transferAmount" 
+                           placeholder="Nhập số tiền..." 
+                           style="width: 100%; padding: 12px 16px; border: 2px solid #f0d0e0; border-radius: 16px; font-size: 18px; outline: none; transition: 0.2s;"
+                           onfocus="this.style.borderColor='#d6336c'"
+                           onblur="this.style.borderColor='#f0d0e0'" />
+                    <p style="font-size: 12px; color: #999; margin-top: 4px;">💡 Số tiền sẽ tùy vào mức độ quý mến của chị dành cho em!</p>
+                </div>
+
+                <button id="transferBtn" 
+                        style="width: 100%; padding: 14px; background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%); border: none; border-radius: 30px; font-size: 18px; font-weight: 600; color: #fff; cursor: pointer; box-shadow: 0 8px 25px rgba(245, 87, 108, 0.35); transition: 0.2s; margin-top: 8px;">
+                    💸 Chuyển khoản ngay
+                </button>
+
+                <button onclick="document.getElementById('transferOverlay').remove(); document.getElementById('quizPage').classList.add('hidden'); document.getElementById('letterPage').classList.remove('hidden'); currentLetter=0; updateLetter(0); startAutoSlide();" 
+                        style="width: 100%; padding: 12px; background: transparent; border: 2px solid #ddd; border-radius: 30px; font-size: 16px; color: #888; cursor: pointer; margin-top: 10px; transition: 0.2s;">
+                    ❌ Bỏ qua, đọc thư sau
+                </button>
+            `;
+
+            overlay.appendChild(card);
+            document.body.appendChild(overlay);
+
+            document.getElementById('transferBtn').addEventListener('click', function() {
+                var amount = document.getElementById('transferAmount').value;
+                if (!amount || amount <= 0) {
+                    alert('💝 Chị ơi, hãy nhập số tiền em nhé!');
+                    return;
+                }
+                var accountNumber = document.getElementById('accountNumber').textContent;
+                var accountName = document.getElementById('accountName').textContent;
+                alert('💝 Cảm ơn chị rất nhiều!\n\nSố tiền: ' + Number(amount).toLocaleString() + ' VND\nNgân hàng: MB Bank\nSố TK: ' + accountNumber + '\nChủ TK: ' + accountName + '\n\nChị vui lòng chuyển khoản qua MB Bank app nhé! 💕');
+            });
+
+            var style2 = document.createElement('style');
+            style2.textContent = `
+                @keyframes fadeSlide {
+                    0% { opacity: 0; transform: translateY(20px) scale(0.95); }
+                    100% { opacity: 1; transform: translateY(0) scale(1); }
+                }
+            `;
+            document.head.appendChild(style2);
+        }
+
+        // ===== LÁ THƯ =====
+        var letters = [
+            { emoji: '💖', content: 'Chị à, em chúc chị luôn vui vẻ và hạnh phúc! Chị xứng đáng với những điều tốt đẹp nhất trên đời này. 🌸' },
+            { emoji: '🌟', content: 'Cảm ơn chị vì luôn bên em, chăm sóc và yêu thương em. Em may mắn khi có chị trong cuộc đời! 🥰' },
+            { emoji: '🌈', content: 'Chúc chị năm mới tuổi mới thật nhiều niềm vui, sức khỏe và thành công trong mọi dự định! 🎊' },
+            { emoji: '🌺', content: 'Chị luôn là nguồn cảm hứng và là hình mẫu của em. Em yêu chị rất nhiều! Mong chị luôn xinh đẹp và rạng rỡ! ✨' },
+            { emoji: '🎁', content: 'Tuổi mới, chị hãy sống thật vui và thật ý nghĩa nhé! Em luôn ủng hộ và yêu thương chị! 💕' }
+        ];
+
+        var currentLetter = 0;
+        var autoSlideTimer = null;
+        var letterEmoji = document.getElementById('letterEmoji');
+        var letterContent = document.getElementById('letterContent');
+        var letterCounter = document.getElementById('letterCounter');
+        var pageDot = document.getElementById('pageDot');
+        var prevBtn = document.getElementById('prevBtn');
+        var nextBtn = document.getElementById('nextBtn');
+
+        function updateLetter(index) {
+            var letter = letters[index];
+            letterEmoji.textContent = letter.emoji;
+            letterContent.textContent = letter.content;
+            letterCounter.textContent = 'Lá thư ' + (index + 1) + ' / ' + letters.length;
+
+            var dots = '';
+            for (var i = 0; i < letters.length; i++) {
+                dots += i === index ? '●' : '○';
+            }
+            pageDot.textContent = dots;
+
+            prevBtn.disabled = index === 0;
+            nextBtn.disabled = index === letters.length - 1;
+
+            var display = document.getElementById('letterDisplay');
+            display.style.animation = 'none';
+            requestAnimationFrame(function() {
+                display.style.animation = 'fadeSlide 0.4s ease';
+            });
+        }
+
+        function nextLetter() {
+            if (currentLetter < letters.length - 1) {
+                currentLetter++;
+                updateLetter(currentLetter);
+            } else {
+                currentLetter = 0;
+                updateLetter(currentLetter);
+            }
+        }
+
+        function startAutoSlide() {
+            if (autoSlideTimer) {
+                clearInterval(autoSlideTimer);
+                autoSlideTimer = null;
+            }
+            autoSlideTimer = setInterval(nextLetter, 4000);
+        }
+
+        function stopAutoSlide() {
+            if (autoSlideTimer) {
+                clearInterval(autoSlideTimer);
+                autoSlideTimer = null;
+            }
+        }
+
+        prevBtn.addEventListener('click', function() {
+            if (currentLetter > 0) {
+                currentLetter--;
+                updateLetter(currentLetter);
+                stopAutoSlide();
+                setTimeout(startAutoSlide, 5000);
+            }
+        });
+
+        nextBtn.addEventListener('click', function() {
+            if (currentLetter < letters.length - 1) {
+                currentLetter++;
+                updateLetter(currentLetter);
+                stopAutoSlide();
+                setTimeout(startAutoSlide, 5000);
+            }
+        });
+
+        document.getElementById('letterDisplay').addEventListener('mouseenter', function() {
+            stopAutoSlide();
+        });
+
+        document.getElementById('letterDisplay').addEventListener('mouseleave', function() {
+            if (!document.getElementById('letterPage').classList.contains('hidden')) {
+                startAutoSlide();
+            }
+        });
+
+        var paused = false;
+        document.addEventListener('touchstart', function(e) {
+            if (document.getElementById('letterPage').classList.contains('hidden')) return;
+            if (!paused) {
+                stopAutoSlide();
+                paused = true;
+            } else {
+                startAutoSlide();
+                paused = false;
+            }
+        });
+
+        // ===== BÁNH SINH NHẬT + HOA =====
+        var canvas = document.getElementById('birthdayCanvas');
+        var ctx = canvas.getContext('2d');
+
+        var W, H;
+
+        function resizeCanvas() {
+            W = canvas.width = window.innerWidth;
+            H = canvas.height = window.innerHeight;
+        }
+        resizeCanvas();
+        window.addEventListener('resize', resizeCanvas);
+
+        function Flower() {
+            this.reset = function() {
+                this.x = Math.random() * W;
+                this.y = -20;
+                this.size = 15 + Math.random() * 25;
+                this.speed = 0.8 + Math.random() * 1.5;
+                this.swing = 0.3 + Math.random() * 0.6;
+                this.swingSpeed = 0.02 + Math.random() * 0.03;
+                this.phase = Math.random() * Math.PI * 2;
+                this.rotation = Math.random() * Math.PI * 2;
+                this.rotSpeed = 0.01 +
