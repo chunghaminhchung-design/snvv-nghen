@@ -33,7 +33,7 @@ function stopFloating() {
 
 startFloating();
 
-document.addEventListener('visibilitychange', () => {
+document.addEventListener('visibilitychange', function() {
     if (document.hidden) {
         stopFloating();
     } else {
@@ -41,16 +41,8 @@ document.addEventListener('visibilitychange', () => {
     }
 });
 
-// ===== TẮT ĐẾM NGƯỢC - CHUYỂN THẲNG VÀO TRANG CHÍNH =====
-const countdownPage = document.getElementById('countdownPage');
-const loginPage = document.getElementById('loginPage');
-const quizPage = document.getElementById('quizPage');
-const letterPage = document.getElementById('letterPage');
-
-// Luôn ẩn countdown và hiện login
-countdownPage.classList.add('hidden');
-loginPage.classList.remove('hidden');
-startBirthdayEffect();
+// ===== TẮT ĐẾM NGƯỢC - CHUYỂN THẲNG VÀO LOGIN =====
+document.getElementById('loginPage').classList.remove('hidden');
 
 // ===== MẬT KHẨU =====
 const PASSWORD = '492006';
@@ -58,23 +50,27 @@ const display = document.getElementById('display');
 const errorMsg = document.getElementById('errorMsg');
 let input = '';
 
-function handleKey(val) {
+// Hàm xử lý phím bấm - GLOBAL để onclick gọi được
+window.pressKey = function(val) {
     if (val === 'clear') {
         input = input.slice(0, -1);
     } else if (val === 'enter') {
         if (input === PASSWORD) {
-            loginPage.classList.add('hidden');
-            quizPage.classList.remove('hidden');
+            document.getElementById('loginPage').classList.add('hidden');
+            document.getElementById('quizPage').classList.remove('hidden');
             errorMsg.classList.add('hidden');
             input = '';
             display.textContent = '❤️';
             startQuiz();
+            startBirthdayEffect();
             return;
         } else {
             errorMsg.classList.remove('hidden');
             input = '';
             display.textContent = '❤️';
-            setTimeout(() => errorMsg.classList.add('hidden'), 2000);
+            setTimeout(function() {
+                errorMsg.classList.add('hidden');
+            }, 2000);
             return;
         }
     } else {
@@ -83,28 +79,20 @@ function handleKey(val) {
         }
     }
     display.textContent = input.length > 0 ? input : '❤️';
-}
+};
 
-// Gán sự kiện cho các phím bấm trên màn hình
-document.querySelectorAll('.key').forEach(btn => {
-    btn.addEventListener('click', function() {
-        const val = this.dataset.value;
-        handleKey(val);
-    });
-});
-
-// Gán sự kiện cho bàn phím vật lý
+// Bàn phím vật lý
 document.addEventListener('keydown', function(e) {
     const key = e.key;
     if (key >= '0' && key <= '9') {
         e.preventDefault();
-        handleKey(key);
+        window.pressKey(key);
     } else if (key === 'Backspace') {
         e.preventDefault();
-        handleKey('clear');
+        window.pressKey('clear');
     } else if (key === 'Enter') {
         e.preventDefault();
-        handleKey('enter');
+        window.pressKey('enter');
     }
 });
 
@@ -139,8 +127,6 @@ const questions = [
 ];
 
 let currentQuestion = 0;
-let quizCompleted = false;
-
 const questionText = document.getElementById('questionText');
 const optionsContainer = document.getElementById('optionsContainer');
 const questionCounter = document.getElementById('questionCounter');
@@ -149,7 +135,6 @@ const resultText = document.getElementById('resultText');
 
 function startQuiz() {
     currentQuestion = 0;
-    quizCompleted = false;
     quizResult.classList.add('hidden');
     renderQuestion();
 }
@@ -157,18 +142,18 @@ function startQuiz() {
 function renderQuestion() {
     const q = questions[currentQuestion];
     questionText.textContent = q.question;
-    questionCounter.textContent = `Câu ${currentQuestion + 1} / ${questions.length}`;
+    questionCounter.textContent = 'Câu ' + (currentQuestion + 1) + ' / ' + questions.length;
 
     optionsContainer.innerHTML = '';
 
-    q.options.forEach((opt, index) => {
+    q.options.forEach(function(opt, index) {
         const btn = document.createElement('button');
         btn.classList.add('option-btn');
         btn.textContent = opt;
         btn.dataset.index = index;
-        btn.addEventListener('click', function() {
+        btn.onclick = function() {
             handleAnswer(parseInt(this.dataset.index));
-        });
+        };
         optionsContainer.appendChild(btn);
     });
 
@@ -188,7 +173,7 @@ function handleAnswer(index) {
         return;
     }
 
-    btns.forEach((btn, i) => {
+    btns.forEach(function(btn, i) {
         btn.disabled = true;
         if (i === q.correct) {
             btn.classList.add('correct');
@@ -207,13 +192,13 @@ function handleAnswer(index) {
     }
     quizResult.classList.remove('hidden');
 
-    setTimeout(() => {
+    setTimeout(function() {
         if (currentQuestion < questions.length - 1) {
             currentQuestion++;
             renderQuestion();
         } else {
-            quizPage.classList.add('hidden');
-            letterPage.classList.remove('hidden');
+            document.getElementById('quizPage').classList.add('hidden');
+            document.getElementById('letterPage').classList.remove('hidden');
             currentLetter = 0;
             updateLetter(0);
             startAutoSlide();
@@ -221,13 +206,13 @@ function handleAnswer(index) {
     }, 1500);
 }
 
-// ===== XỬ LÝ CÂU CUỐI: "CÓ" =====
+// ===== XỬ LÝ "CÓ" =====
 function showLoveQR() {
-    quizPage.classList.add('hidden');
+    document.getElementById('quizPage').classList.add('hidden');
     showTransferPage();
 }
 
-// ===== XỬ LÝ CÂU CUỐI: "KHÔNG" =====
+// ===== XỬ LÝ "KHÔNG" =====
 function growLoveText() {
     const overlay = document.createElement('div');
     overlay.id = 'loveOverlay';
@@ -259,13 +244,13 @@ function growLoveText() {
     overlay.appendChild(text);
     document.body.appendChild(overlay);
 
-    setTimeout(() => {
+    setTimeout(function() {
         text.style.fontSize = '60px';
-        setTimeout(() => {
+        setTimeout(function() {
             text.style.fontSize = '80px';
-            setTimeout(() => {
+            setTimeout(function() {
                 text.style.fontSize = '120px';
-                setTimeout(() => {
+                setTimeout(function() {
                     text.style.fontSize = '200px';
                 }, 500);
             }, 500);
@@ -286,14 +271,14 @@ function growLoveText() {
     document.head.appendChild(style);
 
     overlay.style.pointerEvents = 'auto';
-    overlay.addEventListener('click', function() {
+    overlay.onclick = function() {
         overlay.remove();
-        quizPage.classList.add('hidden');
-        letterPage.classList.remove('hidden');
+        document.getElementById('quizPage').classList.add('hidden');
+        document.getElementById('letterPage').classList.remove('hidden');
         currentLetter = 0;
         updateLetter(0);
         startAutoSlide();
-    });
+    };
 }
 
 // ===== TRANG CHUYỂN TIỀN =====
@@ -364,7 +349,7 @@ function showTransferPage() {
             💸 Chuyển khoản ngay
         </button>
 
-        <button onclick="document.getElementById('transferOverlay').remove(); quizPage.classList.add('hidden'); letterPage.classList.remove('hidden'); currentLetter=0; updateLetter(0); startAutoSlide();" 
+        <button onclick="document.getElementById('transferOverlay').remove(); document.getElementById('quizPage').classList.add('hidden'); document.getElementById('letterPage').classList.remove('hidden'); currentLetter=0; updateLetter(0); startAutoSlide();" 
                 style="width: 100%; padding: 12px; background: transparent; border: 2px solid #ddd; border-radius: 30px; font-size: 16px; color: #888; cursor: pointer; margin-top: 10px; transition: 0.2s;">
             ❌ Bỏ qua, đọc thư sau
         </button>
@@ -379,12 +364,9 @@ function showTransferPage() {
             alert('💝 Chị ơi, hãy nhập số tiền em nhé!');
             return;
         }
-
         const accountNumber = document.getElementById('accountNumber').textContent;
         const accountName = document.getElementById('accountName').textContent;
-        const content = 'Chúc mừng sinh nhật em ❤️';
-        
-        alert('💝 Cảm ơn chị rất nhiều!\n\nSố tiền: ' + Number(amount).toLocaleString() + ' VND\nNgân hàng: MB Bank\nSố TK: ' + accountNumber + '\nChủ TK: ' + accountName + '\nNội dung: ' + content + '\n\nChị vui lòng chuyển khoản qua MB Bank app nhé! 💕');
+        alert('💝 Cảm ơn chị rất nhiều!\n\nSố tiền: ' + Number(amount).toLocaleString() + ' VND\nNgân hàng: MB Bank\nSố TK: ' + accountNumber + '\nChủ TK: ' + accountName + '\n\nChị vui lòng chuyển khoản qua MB Bank app nhé! 💕');
     });
 
     const style2 = document.createElement('style');
@@ -392,13 +374,6 @@ function showTransferPage() {
         @keyframes fadeSlide {
             0% { opacity: 0; transform: translateY(20px) scale(0.95); }
             100% { opacity: 1; transform: translateY(0) scale(1); }
-        }
-        #transferOverlay::-webkit-scrollbar {
-            width: 4px;
-        }
-        #transferOverlay::-webkit-scrollbar-thumb {
-            background: #d6336c;
-            border-radius: 4px;
         }
     `;
     document.head.appendChild(style2);
@@ -427,16 +402,16 @@ function updateLetter(index) {
     letterEmoji.textContent = letter.emoji;
     letterContent.textContent = letter.content;
     letterCounter.textContent = 'Lá thư ' + (index + 1) + ' / ' + letters.length;
-    
+
     let dots = '';
     for (let i = 0; i < letters.length; i++) {
         dots += i === index ? '●' : '○';
     }
     pageDot.textContent = dots;
-    
+
     prevBtn.disabled = index === 0;
     nextBtn.disabled = index === letters.length - 1;
-    
+
     const display = document.getElementById('letterDisplay');
     display.style.animation = 'none';
     requestAnimationFrame(function() {
@@ -492,14 +467,14 @@ document.getElementById('letterDisplay').addEventListener('mouseenter', function
 });
 
 document.getElementById('letterDisplay').addEventListener('mouseleave', function() {
-    if (!letterPage.classList.contains('hidden')) {
+    if (!document.getElementById('letterPage').classList.contains('hidden')) {
         startAutoSlide();
     }
 });
 
 let paused = false;
 document.addEventListener('touchstart', function(e) {
-    if (letterPage.classList.contains('hidden')) return;
+    if (document.getElementById('letterPage').classList.contains('hidden')) return;
     if (!paused) {
         stopAutoSlide();
         paused = true;
@@ -509,11 +484,12 @@ document.addEventListener('touchstart', function(e) {
     }
 });
 
-// ===== BÁNH SINH NHẬT + HOA RƠI =====
+// ===== BÁNH SINH NHẬT + HOA =====
 const canvas = document.getElementById('birthdayCanvas');
 const ctx = canvas.getContext('2d');
 
 let W, H;
+
 function resizeCanvas() {
     W = canvas.width = window.innerWidth;
     H = canvas.height = window.innerHeight;
@@ -521,13 +497,8 @@ function resizeCanvas() {
 resizeCanvas();
 window.addEventListener('resize', resizeCanvas);
 
-class Flower {
-    constructor() {
-        this.reset();
-        this.y = Math.random() * -H;
-    }
-    
-    reset() {
+function Flower() {
+    this.reset = function() {
         this.x = Math.random() * W;
         this.y = -20;
         this.size = 15 + Math.random() * 25;
@@ -541,25 +512,21 @@ class Flower {
         this.petalColor = this.randomColor();
         this.centerColor = '#ffd93d';
         this.type = Math.floor(Math.random() * 3);
-    }
-    
-    randomColor() {
-        const colors = [
-            '#ff6b6b', '#ff9ff3', '#feca57', '#ff9f43',
-            '#ff4757', '#ff6348', '#ff7f50', '#ff6b81',
-            '#ffcccc', '#ffb8b8', '#ffd93d', '#ffda79'
-        ];
+    };
+
+    this.randomColor = function() {
+        const colors = ['#ff6b6b', '#ff9ff3', '#feca57', '#ff9f43', '#ff4757', '#ff6348', '#ff7f50', '#ff6b81', '#ffcccc', '#ffb8b8', '#ffd93d', '#ffda79'];
         return colors[Math.floor(Math.random() * colors.length)];
-    }
-    
-    draw() {
+    };
+
+    this.draw = function() {
         ctx.save();
         ctx.translate(this.x, this.y);
         ctx.rotate(this.rotation);
         ctx.globalAlpha = this.opacity;
-        
+
         const s = this.size;
-        
+
         if (this.type === 0) {
             for (let i = 0; i < 5; i++) {
                 const angle = (i / 5) * Math.PI * 2;
@@ -594,65 +561,65 @@ class Flower {
                 ctx.restore();
             }
         }
-        
+
         ctx.beginPath();
         ctx.arc(0, 0, s * 0.2, 0, Math.PI * 2);
         ctx.fillStyle = this.centerColor;
         ctx.fill();
-        
+
         ctx.restore();
-    }
-    
-    update() {
+    };
+
+    this.update = function() {
         this.y += this.speed;
         this.x += Math.sin(this.phase) * this.swing;
         this.phase += this.swingSpeed;
         this.rotation += this.rotSpeed;
-        
+
         if (this.y > H + 50) {
             this.reset();
         }
-    }
+    };
+
+    this.reset();
 }
 
-class BirthdayCake {
-    constructor() {
-        this.x = W / 2;
-        this.y = H / 2 + 60;
-        this.scale = Math.min(W, H) / 500;
-        this.layers = 3;
-        this.decorations = [];
-        this.candles = [];
-        
-        for (let i = 0; i < 7; i++) {
-            this.candles.push({
-                x: (i - 3) * 22 * this.scale,
-                y: 0,
-                height: 40 * this.scale + Math.random() * 10 * this.scale,
-                width: 8 * this.scale,
-                color: ['#ff6b6b', '#feca57', '#48dbfb', '#ff9ff3', '#54a0ff', '#ff9f43', '#00d2d3'][i % 7],
-                flame: {
-                    size: 12 * this.scale + Math.random() * 4 * this.scale,
-                    flicker: Math.random() * 0.5
-                }
-            });
-        }
-        
-        for (let i = 0; i < 30; i++) {
-            this.decorations.push({
-                x: (Math.random() - 0.5) * 200 * this.scale,
-                y: Math.random() * 60 * this.scale - 30 * this.scale,
-                size: 4 * this.scale + Math.random() * 6 * this.scale,
-                color: ['#ff6b6b', '#feca57', '#48dbfb', '#ff9ff3', '#54a0ff', '#ff9f43', '#00d2d3'][Math.floor(Math.random() * 7)]
-            });
-        }
+function BirthdayCake() {
+    this.x = W / 2;
+    this.y = H / 2 + 60;
+    this.scale = Math.min(W, H) / 500;
+    this.layers = 3;
+    this.decorations = [];
+    this.candles = [];
+
+    for (let i = 0; i < 7; i++) {
+        this.candles.push({
+            x: (i - 3) * 22 * this.scale,
+            y: 0,
+            height: 40 * this.scale + Math.random() * 10 * this.scale,
+            width: 8 * this.scale,
+            color: ['#ff6b6b', '#feca57', '#48dbfb', '#ff9ff3', '#54a0ff', '#ff9f43', '#00d2d3'][i % 7],
+            flame: {
+                size: 12 * this.scale + Math.random() * 4 * this.scale,
+                flicker: Math.random() * 0.5
+            }
+        });
     }
-    
-    draw() {
+
+    for (let i = 0; i < 30; i++) {
+        this.decorations.push({
+            x: (Math.random() - 0.5) * 200 * this.scale,
+            y: Math.random() * 60 * this.scale - 30 * this.scale,
+            size: 4 * this.scale + Math.random() * 6 * this.scale,
+            color: ['#ff6b6b', '#feca57', '#48dbfb', '#ff9ff3', '#54a0ff', '#ff9f43', '#00d2d3'][Math.floor(Math.random() * 7)]
+        });
+    }
+
+    this.draw = function() {
         ctx.save();
         ctx.translate(this.x, this.y);
         ctx.scale(this.scale, this.scale);
-        
+
         const gradient = ctx.createRadialGradient(0, -30, 10, 0, -30, 180);
         gradient.addColorStop(0, 'rgba(255, 215, 0, 0.08)');
         gradient.addColorStop(0.5, 'rgba(255, 215, 0, 0.04)');
@@ -661,48 +628,48 @@ class BirthdayCake {
         ctx.beginPath();
         ctx.arc(0, -30, 180, 0, Math.PI * 2);
         ctx.fill();
-        
+
         const layerColors = ['#f8c8d8', '#f5b8c8', '#f2a8b8'];
         const layerHeights = [50, 45, 40];
         const layerWidths = [180, 160, 140];
-        
+
         for (let i = 0; i < this.layers; i++) {
             const yOffset = -i * 40;
             const w = layerWidths[i];
             const h = layerHeights[i];
-            
+
             ctx.shadowColor = 'rgba(0,0,0,0.1)';
             ctx.shadowBlur = 20;
             ctx.shadowOffsetY = 5;
-            
-            const grad = ctx.createLinearGradient(-w/2, yOffset - h/2, w/2, yOffset + h/2);
+
+            const grad = ctx.createLinearGradient(-w / 2, yOffset - h / 2, w / 2, yOffset + h / 2);
             grad.addColorStop(0, layerColors[i]);
             grad.addColorStop(0.5, '#fff0f5');
             grad.addColorStop(1, layerColors[i]);
-            
+
             ctx.fillStyle = grad;
             ctx.beginPath();
-            ctx.roundRect(-w/2, yOffset - h/2, w, h, 12);
+            ctx.roundRect(-w / 2, yOffset - h / 2, w, h, 12);
             ctx.fill();
-            
+
             ctx.shadowBlur = 0;
             ctx.strokeStyle = 'rgba(255,255,255,0.3)';
             ctx.lineWidth = 2;
             ctx.beginPath();
-            ctx.roundRect(-w/2, yOffset - h/2, w, h, 12);
+            ctx.roundRect(-w / 2, yOffset - h / 2, w, h, 12);
             ctx.stroke();
-            
+
             if (i < this.layers - 1) {
                 for (let j = 0; j < 12; j++) {
-                    const dotX = -w/2 + 20 + j * ((w - 40) / 11);
+                    const dotX = -w / 2 + 20 + j * ((w - 40) / 11);
                     ctx.beginPath();
-                    ctx.arc(dotX, yOffset - h/2, 6, 0, Math.PI * 2);
+                    ctx.arc(dotX, yOffset - h / 2, 6, 0, Math.PI * 2);
                     ctx.fillStyle = 'rgba(255,255,255,0.6)';
                     ctx.fill();
                 }
             }
         }
-        
+
         this.decorations.forEach(function(dec) {
             ctx.shadowBlur = 0;
             ctx.fillStyle = dec.color;
@@ -713,37 +680,37 @@ class BirthdayCake {
             ctx.lineWidth = 1;
             ctx.stroke();
         }.bind(this));
-        
+
         const candleY = -this.layers * 40 + 20;
         this.candles.forEach(function(candle, idx) {
             const x = candle.x;
-            
+
             ctx.shadowColor = 'rgba(0,0,0,0.15)';
             ctx.shadowBlur = 10;
             ctx.shadowOffsetY = 3;
-            
+
             ctx.fillStyle = candle.color;
             ctx.beginPath();
-            ctx.roundRect(x - candle.width/2, candleY - candle.height, candle.width, candle.height, 3);
+            ctx.roundRect(x - candle.width / 2, candleY - candle.height, candle.width, candle.height, 3);
             ctx.fill();
-            
+
             ctx.shadowBlur = 0;
             ctx.strokeStyle = 'rgba(255,255,255,0.2)';
             ctx.lineWidth = 1;
             for (let s = 0; s < 3; s++) {
                 const sy = candleY - candle.height + 8 + s * 12;
                 ctx.beginPath();
-                ctx.moveTo(x - candle.width/2 + 2, sy);
-                ctx.lineTo(x + candle.width/2 - 2, sy);
+                ctx.moveTo(x - candle.width / 2 + 2, sy);
+                ctx.lineTo(x + candle.width / 2 - 2, sy);
                 ctx.stroke();
             }
-            
+
             const flameSize = candle.flame.size * (0.8 + Math.sin(Date.now() / 150 + idx) * 0.2);
             const flickerX = Math.sin(Date.now() / 100 + idx * 2) * 2;
-            
+
             ctx.shadowColor = 'rgba(255, 200, 50, 0.3)';
             ctx.shadowBlur = 30;
-            
+
             const grad2 = ctx.createRadialGradient(
                 x + flickerX, candleY - candle.height - flameSize * 0.3, 0,
                 x + flickerX, candleY - candle.height - flameSize * 0.3, flameSize * 0.8
@@ -752,21 +719,21 @@ class BirthdayCake {
             grad2.addColorStop(0.3, 'rgba(255, 200, 50, 0.8)');
             grad2.addColorStop(0.7, 'rgba(255, 150, 0, 0.6)');
             grad2.addColorStop(1, 'rgba(255, 100, 0, 0)');
-            
+
             ctx.fillStyle = grad2;
             ctx.beginPath();
             ctx.ellipse(x + flickerX, candleY - candle.height - flameSize * 0.3, flameSize * 0.6, flameSize, 0, 0, Math.PI * 2);
             ctx.fill();
-            
+
             ctx.shadowBlur = 20;
             ctx.fillStyle = 'rgba(255, 255, 255, 0.6)';
             ctx.beginPath();
             ctx.ellipse(x + flickerX * 0.5, candleY - candle.height - flameSize * 0.4, flameSize * 0.2, flameSize * 0.4, 0, 0, Math.PI * 2);
             ctx.fill();
         }.bind(this));
-        
+
         ctx.restore();
-    }
+    };
 }
 
 let flowers = [];
@@ -776,36 +743,36 @@ let effectStarted = false;
 function startBirthdayEffect() {
     if (effectStarted) return;
     effectStarted = true;
-    
+
     for (let i = 0; i < (isSmallScreen() ? 25 : 40); i++) {
         const flower = new Flower();
         flower.y = Math.random() * H;
         flowers.push(flower);
     }
-    
+
     cake = new BirthdayCake();
     animate();
 }
 
 function animate() {
     ctx.clearRect(0, 0, W, H);
-    
+
     if (cake) {
         cake.draw();
     }
-    
+
     flowers.forEach(function(flower) {
         flower.update();
         flower.draw();
     });
-    
+
     requestAnimationFrame(animate);
 }
 
 if (!CanvasRenderingContext2D.prototype.roundRect) {
     CanvasRenderingContext2D.prototype.roundRect = function(x, y, w, h, r) {
-        if (r > w/2) r = w/2;
-        if (r > h/2) r = h/2;
+        if (r > w / 2) r = w / 2;
+        if (r > h / 2) r = h / 2;
         this.moveTo(x + r, y);
         this.lineTo(x + w - r, y);
         this.quadraticCurveTo(x + w, y, x + w, y + r);
@@ -826,3 +793,5 @@ window.addEventListener('resize', function() {
         cake.y = H / 2 + 60;
     }
 });
+
+startBirthdayEffect();
