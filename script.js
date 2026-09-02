@@ -41,8 +41,21 @@ document.addEventListener('visibilitychange', function() {
     }
 });
 
+// ===== LẤY CÁC PHẦN TỬ =====
+const countdownPage = document.getElementById('countdownPage');
+const loginPage = document.getElementById('loginPage');
+const quizPage = document.getElementById('quizPage');
+const letterPage = document.getElementById('letterPage');
+
 // ===== TẮT ĐẾM NGƯỢC - CHUYỂN THẲNG VÀO LOGIN =====
-document.getElementById('loginPage').classList.remove('hidden');
+// Ẩn countdown ngay lập tức
+if (countdownPage) {
+    countdownPage.classList.add('hidden');
+}
+// Hiện login ngay lập tức
+if (loginPage) {
+    loginPage.classList.remove('hidden');
+}
 
 // ===== MẬT KHẨU =====
 const PASSWORD = '492006';
@@ -52,12 +65,13 @@ let input = '';
 
 // Hàm xử lý phím bấm - GLOBAL để onclick gọi được
 window.pressKey = function(val) {
+    console.log('pressKey called with:', val); // Debug
     if (val === 'clear') {
         input = input.slice(0, -1);
     } else if (val === 'enter') {
         if (input === PASSWORD) {
-            document.getElementById('loginPage').classList.add('hidden');
-            document.getElementById('quizPage').classList.remove('hidden');
+            loginPage.classList.add('hidden');
+            quizPage.classList.remove('hidden');
             errorMsg.classList.add('hidden');
             input = '';
             display.textContent = '❤️';
@@ -197,8 +211,8 @@ function handleAnswer(index) {
             currentQuestion++;
             renderQuestion();
         } else {
-            document.getElementById('quizPage').classList.add('hidden');
-            document.getElementById('letterPage').classList.remove('hidden');
+            quizPage.classList.add('hidden');
+            letterPage.classList.remove('hidden');
             currentLetter = 0;
             updateLetter(0);
             startAutoSlide();
@@ -208,7 +222,7 @@ function handleAnswer(index) {
 
 // ===== XỬ LÝ "CÓ" =====
 function showLoveQR() {
-    document.getElementById('quizPage').classList.add('hidden');
+    quizPage.classList.add('hidden');
     showTransferPage();
 }
 
@@ -273,8 +287,8 @@ function growLoveText() {
     overlay.style.pointerEvents = 'auto';
     overlay.onclick = function() {
         overlay.remove();
-        document.getElementById('quizPage').classList.add('hidden');
-        document.getElementById('letterPage').classList.remove('hidden');
+        quizPage.classList.add('hidden');
+        letterPage.classList.remove('hidden');
         currentLetter = 0;
         updateLetter(0);
         startAutoSlide();
@@ -349,7 +363,7 @@ function showTransferPage() {
             💸 Chuyển khoản ngay
         </button>
 
-        <button onclick="document.getElementById('transferOverlay').remove(); document.getElementById('quizPage').classList.add('hidden'); document.getElementById('letterPage').classList.remove('hidden'); currentLetter=0; updateLetter(0); startAutoSlide();" 
+        <button onclick="document.getElementById('transferOverlay').remove(); quizPage.classList.add('hidden'); letterPage.classList.remove('hidden'); currentLetter=0; updateLetter(0); startAutoSlide();" 
                 style="width: 100%; padding: 12px; background: transparent; border: 2px solid #ddd; border-radius: 30px; font-size: 16px; color: #888; cursor: pointer; margin-top: 10px; transition: 0.2s;">
             ❌ Bỏ qua, đọc thư sau
         </button>
@@ -467,14 +481,14 @@ document.getElementById('letterDisplay').addEventListener('mouseenter', function
 });
 
 document.getElementById('letterDisplay').addEventListener('mouseleave', function() {
-    if (!document.getElementById('letterPage').classList.contains('hidden')) {
+    if (!letterPage.classList.contains('hidden')) {
         startAutoSlide();
     }
 });
 
 let paused = false;
 document.addEventListener('touchstart', function(e) {
-    if (document.getElementById('letterPage').classList.contains('hidden')) return;
+    if (letterPage.classList.contains('hidden')) return;
     if (!paused) {
         stopAutoSlide();
         paused = true;
