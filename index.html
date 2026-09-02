@@ -43,6 +43,11 @@
             <div class="countdown-message" id="countdownMessage">
                 💝 Hãy chờ đến ngày 4/9 nhé! Món quà đang chờ chị! 
             </div>
+
+            <div class="qr-mini">
+                <img src="https://api.qrserver.com/v1/create-qr-code/?size=80x80&data=https://chunghaminhchung-design.github.io/snvv-nghen/" alt="QR" />
+                <span>📱 Quét mã để mở quà</span>
+            </div>
         </div>
     </div>
 
@@ -53,7 +58,6 @@
             <h1>🎂 Nhập mật khẩu</h1>
             <p class="sub-message">Nhập mã để nhận quà từ em nhé!</p>
 
-            <!-- Bàn phím số -->
             <div class="keypad">
                 <div class="key-row">
                     <button class="key" data-value="1">1</button>
@@ -77,9 +81,31 @@
                 </div>
             </div>
 
-            <!-- Hiển thị mật khẩu nhập -->
             <div class="display" id="display">❤️</div>
             <p id="errorMsg" class="error hidden">❌ Sai mật khẩu rồi! Thử lại nhé!</p>
+        </div>
+    </div>
+
+    <!-- ===== TRANG CÂU HỎI ===== -->
+    <div class="container hidden" id="quizPage">
+        <div class="card">
+            <div class="emoji-big">🤔</div>
+            <h1>📝 Trắc Nghiệm</h1>
+            <p class="sub-message" id="questionCounter">Câu 1 / 5</p>
+
+            <div class="quiz-container">
+                <div class="question-text" id="questionText">Câu hỏi sẽ hiển thị ở đây...</div>
+                <div class="options" id="optionsContainer">
+                    <button class="option-btn" data-index="0">A. ...</button>
+                    <button class="option-btn" data-index="1">B. ...</button>
+                    <button class="option-btn" data-index="2">C. ...</button>
+                    <button class="option-btn" data-index="3">D. ...</button>
+                </div>
+            </div>
+
+            <div id="quizResult" class="hidden">
+                <p class="result-text" id="resultText"></p>
+            </div>
         </div>
     </div>
 
@@ -90,13 +116,11 @@
             <h1>🎉 Những Lá Thư Cho Chị!</h1>
             <p class="sub-message" id="letterCounter">Lá thư 1 / 5</p>
 
-            <!-- Nội dung lá thư -->
             <div class="letter-display" id="letterDisplay">
                 <div class="letter-emoji-big" id="letterEmoji">💖</div>
                 <div class="letter-content-full" id="letterContent">Chị à, em chúc chị luôn vui vẻ và hạnh phúc! Chị xứng đáng với những điều tốt đẹp nhất trên đời này. 🌸</div>
             </div>
 
-            <!-- Nút điều hướng -->
             <div class="letter-nav">
                 <button class="nav-btn" id="prevBtn">⬅️ Trước</button>
                 <span class="page-dot" id="pageDot">● ○ ○ ○ ○</span>
