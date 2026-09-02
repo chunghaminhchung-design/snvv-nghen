@@ -230,7 +230,73 @@ h1 {
     display: none;
 }
 
-/* ===== LÁ THƯ ===== */
+/* ---- QUIZ ---- */
+.quiz-container {
+    margin: 10px 0;
+}
+
+.question-text {
+    font-size: 20px;
+    font-weight: 600;
+    color: #333;
+    margin-bottom: 16px;
+    line-height: 1.5;
+    min-height: 60px;
+}
+
+.options {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.option-btn {
+    background: rgba(255, 255, 255, 0.7);
+    border: 2px solid rgba(214, 51, 108, 0.15);
+    border-radius: 16px;
+    padding: 14px 18px;
+    font-size: 16px;
+    color: #333;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    text-align: left;
+}
+
+.option-btn:hover {
+    background: rgba(214, 51, 108, 0.08);
+    border-color: #d6336c;
+}
+
+.option-btn:active {
+    transform: scale(0.97);
+}
+
+.option-btn.selected {
+    background: #d6336c;
+    color: #fff;
+    border-color: #d6336c;
+}
+
+.option-btn.correct {
+    background: #2ecc71;
+    color: #fff;
+    border-color: #2ecc71;
+}
+
+.option-btn.wrong {
+    background: #e74c3c;
+    color: #fff;
+    border-color: #e74c3c;
+}
+
+.result-text {
+    font-size: 22px;
+    font-weight: 700;
+    color: #d6336c;
+    margin: 10px 0;
+}
+
+/* ---- LÁ THƯ ---- */
 .letter-display {
     background: linear-gradient(145deg, #fff5f7, #ffe8ee);
     border-radius: 24px;
@@ -379,5 +445,12 @@ h1 {
     }
     .qr-mini span {
         font-size: 11px;
+    }
+    .question-text {
+        font-size: 17px;
+    }
+    .option-btn {
+        font-size: 14px;
+        padding: 12px 14px;
     }
 }
