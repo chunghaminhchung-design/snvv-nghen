@@ -1,8 +1,8 @@
 <!DOCTYPE html>
 <html lang="vi">
 <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>🎂 Chúc Mừng Sinh Nhật Chị!</title>
     <style>
         * {
@@ -10,527 +10,453 @@
             padding: 0;
             box-sizing: border-box;
         }
-
         body {
-            font-family: 'Segoe UI', Tahoma, sans-serif;
+            font-family: Arial, sans-serif;
             min-height: 100vh;
             display: flex;
             align-items: center;
             justify-content: center;
-            background: linear-gradient(135deg, #fbc2eb 0%, #a6c1ee 100%);
-            overflow: hidden;
-            position: relative;
-        }
-
-        .bubble-layer {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            pointer-events: none;
-            z-index: 0;
+            background: linear-gradient(135deg, #fbc2eb, #a6c1ee);
             overflow: hidden;
         }
-
-        .bubble {
-            position: absolute;
-            bottom: -80px;
-            border-radius: 50%;
-            background: radial-gradient(circle at 30% 30%, rgba(255,255,255,0.6), rgba(255,255,255,0.1));
-            box-shadow: inset 0 0 15px rgba(255,255,255,0.3);
-            animation: rise linear infinite;
-            opacity: 0.6;
-        }
-
-        @keyframes rise {
-            0% {
-                transform: translateY(0) scale(1) rotate(0deg);
-                opacity: 0.6;
-            }
-            100% {
-                transform: translateY(-110vh) scale(1.3) rotate(720deg);
-                opacity: 0;
-            }
-        }
-
-        #birthdayCanvas {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            pointer-events: none;
-            z-index: 1;
-        }
-
-        .container {
-            position: relative;
-            z-index: 2;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            min-height: 100vh;
-            padding: 20px;
-            width: 100%;
-        }
-
-        .container.hidden {
-            display: none !important;
-        }
-
         .card {
-            background: rgba(255, 255, 255, 0.85);
-            backdrop-filter: blur(12px);
-            border-radius: 40px;
-            padding: 40px 35px;
-            max-width: 500px;
+            background: rgba(255, 255, 255, 0.9);
+            border-radius: 30px;
+            padding: 30px 25px;
+            max-width: 420px;
             width: 100%;
             text-align: center;
-            box-shadow: 0 25px 60px rgba(0,0,0,0.15);
-            border: 1px solid rgba(255,255,255,0.3);
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.15);
+            z-index: 10;
+            position: relative;
         }
-
+        .hidden {
+            display: none !important;
+        }
         .emoji-big {
-            font-size: 52px;
-            margin-bottom: 6px;
+            font-size: 50px;
         }
-
         h1 {
-            font-size: 26px;
+            font-size: 24px;
             color: #d6336c;
-            margin-bottom: 8px;
+            margin: 8px 0;
         }
-
-        .sub-message {
-            font-size: 16px;
+        .sub {
+            font-size: 15px;
             color: #777;
-            margin-bottom: 18px;
+            margin-bottom: 16px;
         }
-
         .keypad {
-            margin: 14px 0 12px;
             display: flex;
             flex-direction: column;
-            align-items: center;
             gap: 8px;
+            align-items: center;
+            margin: 12px 0;
         }
-
         .key-row {
             display: flex;
             gap: 10px;
-            justify-content: center;
         }
-
         .key {
-            width: 58px;
-            height: 58px;
-            border-radius: 18px;
+            width: 55px;
+            height: 55px;
+            border-radius: 16px;
             border: none;
-            background: rgba(255, 255, 255, 0.8);
-            font-size: 24px;
-            font-weight: 600;
-            color: #333;
-            box-shadow: 0 4px 10px rgba(0,0,0,0.06);
+            font-size: 22px;
+            font-weight: bold;
+            background: white;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.08);
             cursor: pointer;
-            transition: all 0.15s ease;
-            border: 1px solid rgba(255,255,255,0.5);
-            user-select: none;
-            -webkit-tap-highlight-color: transparent;
+            transition: 0.1s;
+            border: 1px solid #eee;
         }
-
         .key:active {
             transform: scale(0.92);
             background: #f0d0e0;
         }
-
         .key-clear {
             color: #e74c3c;
-            font-size: 20px;
         }
-
         .key-enter {
             background: #d6336c;
-            color: #fff;
-            font-size: 20px;
+            color: white;
         }
-
-        .key-enter:active {
-            background: #b82a5a;
-        }
-
         .display {
             font-size: 28px;
-            font-weight: 600;
+            font-weight: bold;
             color: #d6336c;
-            background: rgba(255,240,245,0.6);
-            padding: 10px 0;
-            border-radius: 20px;
+            background: #faf0f3;
+            padding: 10px;
+            border-radius: 16px;
             min-height: 50px;
-            margin: 6px 0 10px;
+            margin: 8px 0;
             letter-spacing: 4px;
-            border: 1px dashed #f0b8c8;
         }
-
         .error {
             color: #e74c3c;
-            font-size: 15px;
+            font-size: 14px;
             margin-top: 6px;
-            font-weight: 600;
         }
-
-        .error.hidden {
-            display: none;
-        }
-
-        .quiz-container {
-            margin: 10px 0;
-        }
-
-        .question-text {
-            font-size: 20px;
-            font-weight: 600;
-            color: #333;
-            margin-bottom: 16px;
-            line-height: 1.5;
-            min-height: 60px;
-        }
-
-        .options {
-            display: flex;
-            flex-direction: column;
-            gap: 10px;
-        }
-
         .option-btn {
-            background: rgba(255, 255, 255, 0.7);
-            border: 2px solid rgba(214, 51, 108, 0.15);
-            border-radius: 16px;
-            padding: 14px 18px;
-            font-size: 16px;
-            color: #333;
-            cursor: pointer;
-            transition: all 0.2s ease;
-            text-align: left;
+            display: block;
             width: 100%;
+            padding: 12px 16px;
+            margin: 6px 0;
+            border-radius: 12px;
+            border: 2px solid #eee;
+            background: white;
+            font-size: 15px;
+            cursor: pointer;
+            transition: 0.2s;
+            text-align: left;
         }
-
         .option-btn:hover {
-            background: rgba(214, 51, 108, 0.08);
             border-color: #d6336c;
+            background: #faf0f3;
         }
-
-        .option-btn:active {
-            transform: scale(0.97);
-        }
-
-        .option-btn.selected {
-            background: #d6336c;
-            color: #fff;
-            border-color: #d6336c;
-        }
-
         .option-btn.correct {
             background: #2ecc71;
-            color: #fff;
+            color: white;
             border-color: #2ecc71;
         }
-
         .option-btn.wrong {
             background: #e74c3c;
-            color: #fff;
+            color: white;
             border-color: #e74c3c;
         }
-
+        .option-btn:disabled {
+            opacity: 0.7;
+            cursor: not-allowed;
+        }
+        .letter-display {
+            background: #fff5f7;
+            border-radius: 20px;
+            padding: 24px 16px;
+            min-height: 150px;
+            margin: 12px 0;
+        }
+        .letter-emoji-big {
+            font-size: 48px;
+        }
+        .letter-content-full {
+            font-size: 17px;
+            color: #444;
+            line-height: 1.6;
+            margin-top: 8px;
+        }
+        .letter-nav {
+            display: flex;
+            gap: 12px;
+            justify-content: center;
+            margin-top: 12px;
+        }
+        .letter-nav button {
+            padding: 10px 24px;
+            border-radius: 30px;
+            border: none;
+            background: #d6336c;
+            color: white;
+            font-size: 15px;
+            cursor: pointer;
+            font-weight: bold;
+        }
+        .letter-nav button:disabled {
+            opacity: 0.4;
+            cursor: not-allowed;
+        }
+        .letter-nav span {
+            font-size: 18px;
+            color: #d6336c;
+            padding: 0 10px;
+        }
         .result-text {
-            font-size: 22px;
-            font-weight: 700;
+            font-size: 18px;
+            font-weight: bold;
             color: #d6336c;
             margin: 10px 0;
         }
-
-        .letter-display {
-            background: linear-gradient(145deg, #fff5f7, #ffe8ee);
-            border-radius: 24px;
-            padding: 30px 20px;
-            min-height: 200px;
+        #transferOverlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.7);
+            z-index: 9999;
             display: flex;
-            flex-direction: column;
             align-items: center;
             justify-content: center;
-            border: 2px solid rgba(214, 51, 108, 0.15);
-            margin: 10px 0 16px;
-            animation: fadeSlide 0.4s ease;
+            padding: 20px;
         }
-
-        @keyframes fadeSlide {
+        #transferOverlay .transfer-card {
+            background: white;
+            border-radius: 30px;
+            padding: 30px 25px;
+            max-width: 400px;
+            width: 100%;
+            text-align: center;
+            animation: popIn 0.3s ease;
+        }
+        @keyframes popIn {
             0% {
+                transform: scale(0.8);
                 opacity: 0;
-                transform: translateY(10px) scale(0.95);
             }
             100% {
+                transform: scale(1);
                 opacity: 1;
-                transform: translateY(0) scale(1);
             }
         }
-
-        .letter-emoji-big {
-            font-size: 56px;
-            margin-bottom: 14px;
-        }
-
-        .letter-content-full {
+        #transferOverlay input {
+            width: 100%;
+            padding: 12px 16px;
+            border: 2px solid #f0d0e0;
+            border-radius: 16px;
             font-size: 18px;
-            color: #444;
-            line-height: 1.7;
-            max-width: 400px;
-            font-weight: 500;
+            margin: 8px 0;
+            outline: none;
         }
-
-        .letter-nav {
+        #transferOverlay input:focus {
+            border-color: #d6336c;
+        }
+        #transferOverlay .btn-primary {
+            width: 100%;
+            padding: 14px;
+            background: linear-gradient(135deg, #f093fb, #f5576c);
+            border: none;
+            border-radius: 30px;
+            font-size: 18px;
+            font-weight: bold;
+            color: white;
+            cursor: pointer;
+            margin-top: 8px;
+        }
+        #transferOverlay .btn-secondary {
+            width: 100%;
+            padding: 12px;
+            background: transparent;
+            border: 2px solid #ddd;
+            border-radius: 30px;
+            font-size: 16px;
+            color: #888;
+            cursor: pointer;
+            margin-top: 10px;
+        }
+        #loveOverlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(214, 51, 108, 0.92);
+            z-index: 9999;
             display: flex;
             align-items: center;
-            justify-content: space-between;
-            gap: 12px;
-            margin: 10px 0 18px;
-        }
-
-        .nav-btn {
-            background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
-            border: none;
-            padding: 10px 22px;
-            border-radius: 30px;
-            font-size: 15px;
-            font-weight: 600;
-            color: #fff;
+            justify-content: center;
             cursor: pointer;
-            transition: all 0.2s ease;
-            box-shadow: 0 4px 15px rgba(245, 87, 108, 0.3);
-            border: 1px solid rgba(255,255,255,0.2);
-            flex: 1;
+            animation: fadeIn 0.3s ease;
         }
-
-        .nav-btn:active {
-            transform: scale(0.93);
+        #loveText {
+            font-size: 40px;
+            font-weight: 900;
+            color: white;
+            text-shadow: 0 0 30px rgba(255, 255, 255, 0.5);
+            transition: all 0.3s ease;
+            user-select: none;
         }
-
-        .nav-btn:disabled {
-            opacity: 0.4;
-            cursor: not-allowed;
-            transform: none;
-        }
-
-        .page-dot {
-            font-size: 18px;
-            letter-spacing: 4px;
-            color: #d6336c;
-            min-width: 80px;
-        }
-
-        @media (max-width: 500px) {
-            .card {
-                padding: 28px 18px;
+        @keyframes fadeIn {
+            0% {
+                transform: scale(0.5);
+                opacity: 0;
             }
-            h1 {
-                font-size: 22px;
+            100% {
+                transform: scale(1);
+                opacity: 1;
+            }
+        }
+        @keyframes trollPop {
+            0% {
+                transform: scale(0.3) rotate(-10deg);
+                opacity: 0;
+            }
+            100% {
+                transform: scale(1) rotate(0deg);
+                opacity: 1;
+            }
+        }
+        .troll-card {
+            background: linear-gradient(135deg, #ff6b6b, #ee5a24);
+            border-radius: 40px;
+            padding: 40px;
+            max-width: 400px;
+            width: 100%;
+            text-align: center;
+            animation: trollPop 0.6s ease;
+        }
+        .troll-card h1 {
+            color: white;
+            font-size: 42px;
+            font-weight: 900;
+        }
+        .troll-card p {
+            color: rgba(255, 255, 255, 0.9);
+            font-size: 18px;
+            margin: 12px 0;
+        }
+        .troll-card button {
+            margin-top: 16px;
+            padding: 14px 40px;
+            background: white;
+            border: none;
+            border-radius: 50px;
+            font-size: 18px;
+            font-weight: bold;
+            color: #ee5a24;
+            cursor: pointer;
+        }
+        @media (max-width: 480px) {
+            .card {
+                padding: 20px 16px;
             }
             .key {
-                width: 50px;
-                height: 50px;
+                width: 48px;
+                height: 48px;
+                font-size: 18px;
+            }
+            .emoji-big {
+                font-size: 40px;
+            }
+            h1 {
                 font-size: 20px;
-            }
-            .display {
-                font-size: 24px;
-            }
-            .letter-emoji-big {
-                font-size: 44px;
-            }
-            .letter-content-full {
-                font-size: 16px;
-            }
-            .nav-btn {
-                font-size: 13px;
-                padding: 8px 14px;
-            }
-            .page-dot {
-                font-size: 14px;
-                min-width: 60px;
-            }
-            .question-text {
-                font-size: 17px;
-            }
-            .option-btn {
-                font-size: 14px;
-                padding: 12px 14px;
             }
         }
     </style>
 </head>
 <body>
 
-    <!-- Bong bóng nền -->
-    <div class="bubble-layer" id="bubbleLayer"></div>
-
-    <!-- Canvas bánh sinh nhật + hoa rơi -->
-    <canvas id="birthdayCanvas"></canvas>
+    <!-- Bong bóng nền đơn giản -->
+    <div id="bubbles" style="position:fixed;top:0;left:0;width:100%;height:100%;pointer-events:none;z-index:0;overflow:hidden;"></div>
 
     <!-- ===== TRANG ĐĂNG NHẬP ===== -->
-    <div class="container" id="loginPage">
-        <div class="card">
-            <div class="emoji-big">🔐</div>
-            <h1>🎂 Nhập mật khẩu</h1>
-            <p class="sub-message">Nhập mã để nhận quà từ em nhé!</p>
+    <div class="card" id="loginPage">
+        <div class="emoji-big">🔐</div>
+        <h1>🎂 Nhập mật khẩu</h1>
+        <p class="sub">Nhập mã để nhận quà từ em nhé!</p>
 
-            <div class="keypad" id="keypadContainer">
-                <div class="key-row">
-                    <button class="key" data-value="1">1</button>
-                    <button class="key" data-value="2">2</button>
-                    <button class="key" data-value="3">3</button>
-                </div>
-                <div class="key-row">
-                    <button class="key" data-value="4">4</button>
-                    <button class="key" data-value="5">5</button>
-                    <button class="key" data-value="6">6</button>
-                </div>
-                <div class="key-row">
-                    <button class="key" data-value="7">7</button>
-                    <button class="key" data-value="8">8</button>
-                    <button class="key" data-value="9">9</button>
-                </div>
-                <div class="key-row">
-                    <button class="key key-clear" data-value="clear">⌫</button>
-                    <button class="key" data-value="0">0</button>
-                    <button class="key key-enter" data-value="enter">↵</button>
-                </div>
+        <div class="keypad">
+            <div class="key-row">
+                <button class="key" onclick="pressKey('1')">1</button>
+                <button class="key" onclick="pressKey('2')">2</button>
+                <button class="key" onclick="pressKey('3')">3</button>
             </div>
-
-            <div class="display" id="display">❤️</div>
-            <p id="errorMsg" class="error hidden">❌ Sai mật khẩu rồi! Thử lại nhé!</p>
+            <div class="key-row">
+                <button class="key" onclick="pressKey('4')">4</button>
+                <button class="key" onclick="pressKey('5')">5</button>
+                <button class="key" onclick="pressKey('6')">6</button>
+            </div>
+            <div class="key-row">
+                <button class="key" onclick="pressKey('7')">7</button>
+                <button class="key" onclick="pressKey('8')">8</button>
+                <button class="key" onclick="pressKey('9')">9</button>
+            </div>
+            <div class="key-row">
+                <button class="key key-clear" onclick="pressKey('clear')">⌫</button>
+                <button class="key" onclick="pressKey('0')">0</button>
+                <button class="key key-enter" onclick="pressKey('enter')">↵</button>
+            </div>
         </div>
+
+        <div class="display" id="display">❤️</div>
+        <div id="errorMsg" class="error hidden">❌ Sai mật khẩu rồi! Thử lại nhé!</div>
     </div>
 
     <!-- ===== TRANG CÂU HỎI ===== -->
-    <div class="container hidden" id="quizPage">
-        <div class="card">
-            <div class="emoji-big">🤔</div>
-            <h1>📝 Trắc Nghiệm</h1>
-            <p class="sub-message" id="questionCounter">Câu 1 / 5</p>
-
-            <div class="quiz-container">
-                <div class="question-text" id="questionText">Câu hỏi sẽ hiển thị ở đây...</div>
-                <div class="options" id="optionsContainer"></div>
-            </div>
-
-            <div id="quizResult" class="hidden">
-                <p class="result-text" id="resultText"></p>
-            </div>
+    <div class="card hidden" id="quizPage">
+        <div class="emoji-big">🤔</div>
+        <h1>📝 Trắc Nghiệm</h1>
+        <p class="sub" id="questionCounter">Câu 1 / 5</p>
+        <div id="questionText" style="font-size:18px;font-weight:600;margin:12px 0;min-height:50px;">Câu hỏi...</div>
+        <div id="optionsContainer"></div>
+        <div id="quizResult" class="hidden">
+            <p class="result-text" id="resultText"></p>
         </div>
     </div>
 
     <!-- ===== TRANG LÁ THƯ ===== -->
-    <div class="container hidden" id="letterPage">
-        <div class="card">
-            <div class="emoji-big">💌</div>
-            <h1>🎉 Những Lá Thư Cho Chị!</h1>
-            <p class="sub-message" id="letterCounter">Lá thư 1 / 5</p>
-
-            <div class="letter-display" id="letterDisplay">
-                <div class="letter-emoji-big" id="letterEmoji">💖</div>
-                <div class="letter-content-full" id="letterContent">Chị à, em chúc chị luôn vui vẻ và hạnh phúc! Chị xứng đáng với những điều tốt đẹp nhất trên đời này. 🌸</div>
-            </div>
-
-            <div class="letter-nav">
-                <button class="nav-btn" id="prevBtn">⬅️ Trước</button>
-                <span class="page-dot" id="pageDot">● ○ ○ ○ ○</span>
-                <button class="nav-btn" id="nextBtn">Sau ➡️</button>
-            </div>
+    <div class="card hidden" id="letterPage">
+        <div class="emoji-big">💌</div>
+        <h1>🎉 Những Lá Thư Cho Chị!</h1>
+        <p class="sub" id="letterCounter">Lá thư 1 / 5</p>
+        <div class="letter-display">
+            <div class="letter-emoji-big" id="letterEmoji">💖</div>
+            <div class="letter-content-full" id="letterContent">Chị à, em chúc chị luôn vui vẻ và hạnh phúc! Chị xứng đáng với những điều tốt đẹp nhất trên đời này. 🌸</div>
+        </div>
+        <div class="letter-nav">
+            <button id="prevBtn">⬅️ Trước</button>
+            <span id="pageDot">● ○ ○ ○ ○</span>
+            <button id="nextBtn">Sau ➡️</button>
         </div>
     </div>
 
     <script>
-        // ============================================
         // ===== BONG BÓNG =====
-        // ============================================
-        const bubbleLayer = document.getElementById('bubbleLayer');
-        let floatingTimer = null;
-
-        function isSmallScreen() {
-            return window.innerWidth < 500;
-        }
-
-        function createBubble() {
-            const bubble = document.createElement('div');
-            bubble.classList.add('bubble');
-            const size = 20 + Math.random() * 45;
-            bubble.style.width = size + 'px';
-            bubble.style.height = size + 'px';
-            bubble.style.left = Math.random() * 100 + '%';
-            bubble.style.animationDuration = 12 + Math.random() * 18 + 's';
-            bubble.style.animationDelay = Math.random() * 5 + 's';
-            bubble.style.opacity = 0.3 + Math.random() * 0.4;
-            bubbleLayer.appendChild(bubble);
-            setTimeout(() => bubble.remove(), 28000);
-        }
-
-        function startFloating() {
-            if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
-            floatingTimer = setInterval(createBubble, isSmallScreen() ? 2800 : 1200);
-        }
-
-        function stopFloating() {
-            clearInterval(floatingTimer);
-            floatingTimer = null;
-            bubbleLayer.innerHTML = '';
-        }
-
-        startFloating();
-
-        document.addEventListener('visibilitychange', function() {
-            if (document.hidden) {
-                stopFloating();
-            } else {
-                startFloating();
+        (function createBubbles() {
+            const container = document.getElementById('bubbles');
+            for (let i = 0; i < 30; i++) {
+                const b = document.createElement('div');
+                const size = 15 + Math.random() * 35;
+                b.style.cssText = `
+                    position:absolute;
+                    bottom:-${size}px;
+                    left:${Math.random()*100}%;
+                    width:${size}px;
+                    height:${size}px;
+                    border-radius:50%;
+                    background:radial-gradient(circle at 30% 30%, rgba(255,255,255,0.5), rgba(255,255,255,0.1));
+                    animation:rise ${12+Math.random()*20}s linear infinite;
+                    animation-delay:${Math.random()*10}s;
+                    opacity:${0.3+Math.random()*0.4};
+                `;
+                container.appendChild(b);
             }
-        });
-
-        // ============================================
-        // ===== LẤY PHẦN TỬ =====
-        // ============================================
-        const loginPage = document.getElementById('loginPage');
-        const quizPage = document.getElementById('quizPage');
-        const letterPage = document.getElementById('letterPage');
-        const display = document.getElementById('display');
-        const errorMsg = document.getElementById('errorMsg');
+            const style = document.createElement('style');
+            style.textContent = `
+                @keyframes rise {
+                    0% { transform: translateY(0) scale(1); opacity: 0.6; }
+                    100% { transform: translateY(-110vh) scale(1.5); opacity: 0; }
+                }
+            `;
+            document.head.appendChild(style);
+        })();
 
         // ============================================
         // ===== MẬT KHẨU =====
         // ============================================
         const PASSWORD = '492006';
         let input = '';
+        const display = document.getElementById('display');
+        const errorMsg = document.getElementById('errorMsg');
+        const loginPage = document.getElementById('loginPage');
+        const quizPage = document.getElementById('quizPage');
+        const letterPage = document.getElementById('letterPage');
 
         function pressKey(val) {
-            console.log('pressKey:', val);
             if (val === 'clear') {
                 input = input.slice(0, -1);
             } else if (val === 'enter') {
                 if (input === PASSWORD) {
-                    // ✅ ĐÚNG: Ẩn login, hiện quiz
                     loginPage.classList.add('hidden');
                     quizPage.classList.remove('hidden');
                     errorMsg.classList.add('hidden');
                     input = '';
                     display.textContent = '❤️';
-                    // Bắt đầu quiz
                     startQuiz();
-                    startBirthdayEffect();
                     return;
                 } else {
                     errorMsg.classList.remove('hidden');
                     input = '';
                     display.textContent = '❤️';
-                    setTimeout(function() {
-                        errorMsg.classList.add('hidden');
-                    }, 2000);
+                    setTimeout(() => errorMsg.classList.add('hidden'), 2000);
                     return;
                 }
             } else {
@@ -541,24 +467,9 @@
             display.textContent = input.length > 0 ? input : '❤️';
         }
 
-        // Gán sự kiện cho các phím trên màn hình
-        document.addEventListener('DOMContentLoaded', function() {
-            const keys = document.querySelectorAll('.key');
-            console.log('Số phím tìm thấy:', keys.length);
-            keys.forEach(function(btn) {
-                btn.addEventListener('click', function(e) {
-                    e.preventDefault();
-                    const val = this.getAttribute('data-value');
-                    console.log('Click phím:', val);
-                    pressKey(val);
-                });
-            });
-        });
-
         // Bàn phím vật lý
         document.addEventListener('keydown', function(e) {
             const key = e.key;
-            console.log('Phím vật lý:', key);
             if (key >= '0' && key <= '9') {
                 e.preventDefault();
                 pressKey(key);
@@ -570,9 +481,6 @@
                 pressKey('enter');
             }
         });
-
-        // Luôn hiện login
-        loginPage.classList.remove('hidden');
 
         // ============================================
         // ===== CÂU HỎI =====
@@ -608,7 +516,6 @@
         const resultText = document.getElementById('resultText');
 
         function startQuiz() {
-            console.log('Bắt đầu quiz!');
             currentQuestion = 0;
             quizResult.classList.add('hidden');
             renderQuestion();
@@ -616,20 +523,16 @@
 
         function renderQuestion() {
             const q = questions[currentQuestion];
-            console.log('Hiện câu:', currentQuestion, q.question);
             questionText.textContent = q.question;
             questionCounter.textContent = 'Câu ' + (currentQuestion + 1) + ' / ' + questions.length;
-
             optionsContainer.innerHTML = '';
 
             q.options.forEach(function(opt, index) {
                 const btn = document.createElement('button');
-                btn.classList.add('option-btn');
+                btn.className = 'option-btn';
                 btn.textContent = opt;
                 btn.dataset.index = index;
-                btn.onclick = function() {
-                    handleAnswer(parseInt(this.dataset.index));
-                };
+                btn.onclick = function() { handleAnswer(parseInt(this.dataset.index)); };
                 optionsContainer.appendChild(btn);
             });
 
@@ -651,14 +554,8 @@
 
             btns.forEach(function(btn, i) {
                 btn.disabled = true;
-                if (i === q.correct) {
-                    btn.classList.add('correct');
-                } else if (i === index && i !== q.correct) {
-                    btn.classList.add('wrong');
-                }
-                if (i === index) {
-                    btn.classList.add('selected');
-                }
+                if (i === q.correct) btn.classList.add('correct');
+                else if (i === index && i !== q.correct) btn.classList.add('wrong');
             });
 
             if (index === q.correct) {
@@ -673,7 +570,6 @@
                     currentQuestion++;
                     renderQuestion();
                 } else {
-                    // HẾT CÂU HỎI: vào lá thư
                     quizPage.classList.add('hidden');
                     letterPage.classList.remove('hidden');
                     currentLetter = 0;
@@ -693,49 +589,11 @@
             if (!loveOverlay) {
                 loveOverlay = document.createElement('div');
                 loveOverlay.id = 'loveOverlay';
-                loveOverlay.style.cssText = `
-                        position: fixed;
-                        top: 0;
-                        left: 0;
-                        width: 100%;
-                        height: 100%;
-                        z-index: 9999;
-                        display: flex;
-                        align-items: center;
-                        justify-content: center;
-                        background: rgba(214, 51, 108, 0.92);
-                        animation: growLoveBg 0.5s ease forwards;
-                        cursor: pointer;
-                    `;
-
                 const text = document.createElement('div');
                 text.id = 'loveText';
                 text.textContent = '💖 CÓ 💖';
-                text.style.cssText = `
-                        font-size: 40px;
-                        font-weight: 900;
-                        color: #fff;
-                        text-shadow: 0 0 30px rgba(255,255,255,0.5);
-                        transition: all 0.3s ease;
-                        user-select: none;
-                    `;
-
                 loveOverlay.appendChild(text);
                 document.body.appendChild(loveOverlay);
-
-                const style = document.createElement('style');
-                style.id = 'loveStyle';
-                style.textContent = `
-                        @keyframes growLoveBg {
-                            0% { transform: scale(0.5); opacity: 0; }
-                            100% { transform: scale(1); opacity: 1; }
-                        }
-                        @keyframes pulseLove {
-                            0%, 100% { transform: scale(1); }
-                            50% { transform: scale(1.1); }
-                        }
-                    `;
-                document.head.appendChild(style);
 
                 loveOverlay.onclick = function() {
                     noClickCount++;
@@ -744,24 +602,16 @@
                         const sizes = [40, 60, 80, 120, 200, 300];
                         const idx = Math.min(noClickCount, sizes.length - 1);
                         textEl.style.fontSize = sizes[idx] + 'px';
-
-                        textEl.style.animation = 'none';
-                        setTimeout(() => {
-                            textEl.style.animation = 'pulseLove 0.5s ease';
-                        }, 10);
-
                         if (noClickCount >= sizes.length - 1) {
                             setTimeout(function() {
-                                if (loveOverlay) {
-                                    loveOverlay.remove();
-                                    loveOverlay = null;
-                                }
+                                loveOverlay.remove();
+                                loveOverlay = null;
                                 quizPage.classList.add('hidden');
                                 letterPage.classList.remove('hidden');
                                 currentLetter = 0;
                                 updateLetter(0);
                                 startAutoSlide();
-                            }, 800);
+                            }, 600);
                         }
                     }
                 };
@@ -776,181 +626,74 @@
         }
 
         // ============================================
-        // ===== TRANG CHUYỂN TIỀN + TROLL =====
+        // ===== TRANSFER + TROLL =====
         // ============================================
         function showTransferPage() {
             const overlay = document.createElement('div');
             overlay.id = 'transferOverlay';
-            overlay.style.cssText = `
-                    position: fixed;
-                    top: 0;
-                    left: 0;
-                    width: 100%;
-                    height: 100%;
-                    z-index: 9999;
-                    background: rgba(0,0,0,0.7);
-                    display: flex;
-                    align-items: center;
-                    justify-content: center;
-                    padding: 20px;
-                    overflow-y: auto;
-                `;
-
-            const card = document.createElement('div');
-            card.style.cssText = `
-                    background: #fff;
-                    border-radius: 30px;
-                    padding: 30px 25px;
-                    max-width: 420px;
-                    width: 100%;
-                    text-align: center;
-                    box-shadow: 0 20px 60px rgba(0,0,0,0.3);
-                    animation: fadeSlide 0.3s ease;
-                    max-height: 90vh;
-                    overflow-y: auto;
-                    position: relative;
-                `;
-
-            card.innerHTML = `
-                    <div style="font-size: 48px; margin-bottom: 6px;">💝</div>
-                    <h2 style="color: #d6336c; font-size: 24px; margin-bottom: 4px;">Chị thương em bao nhiêu?</h2>
-                    <p style="color: #888; font-size: 14px; margin-bottom: 16px;">Số tiền chị chuyển sẽ thể hiện tình cảm dành cho em đó! 💕</p>
-
-                    <div style="margin: 12px 0;">
-                        <img src="https://api.qrserver.com/v1/create-qr-code/?size=200x200&data=MBANK_QR_CODE_HERE" 
-                             alt="QR Code MB Bank" 
-                             style="width: 180px; height: 180px; border-radius: 16px; border: 3px solid #f0d0e0;" />
-                        <p style="font-size: 12px; color: #999; margin-top: 6px;">📱 Quét mã QR để chuyển khoản</p>
+            overlay.innerHTML = `
+                <div class="transfer-card">
+                    <div style="font-size:48px;">💝</div>
+                    <h2 style="color:#d6336c;font-size:22px;margin:4px 0;">Chị thương em bao nhiêu?</h2>
+                    <p style="color:#888;font-size:14px;">Số tiền chị chuyển sẽ thể hiện tình cảm dành cho em đó!</p>
+                    <div style="margin:12px 0;">
+                        <img src="https://api.qrserver.com/v1/create-qr-code/?size=180x180&data=MBANK_QR_CODE_HERE" 
+                             style="width:160px;height:160px;border-radius:16px;border:3px solid #f0d0e0;" />
+                        <p style="font-size:12px;color:#999;">📱 Quét mã QR để chuyển khoản</p>
                     </div>
-
-                    <div style="margin: 12px 0;">
-                        <p style="font-size: 14px; color: #666;">Ngân hàng: <strong>MB Bank</strong></p>
-                        <p style="font-size: 14px; color: #666;">Số tài khoản: <strong id="accountNumber">[Số TK của anh/chị]</strong></p>
-                        <p style="font-size: 14px; color: #666;">Chủ tài khoản: <strong id="accountName">[Tên chủ TK]</strong></p>
+                    <div style="margin:12px 0;">
+                        <p style="font-size:14px;color:#666;">Ngân hàng: <strong>MB Bank</strong></p>
+                        <p style="font-size:14px;color:#666;">Số TK: <strong id="accountNumber">[Số TK]</strong></p>
+                        <p style="font-size:14px;color:#666;">Chủ TK: <strong id="accountName">[Tên chủ TK]</strong></p>
                     </div>
-
-                    <div style="margin: 12px 0;">
-                        <label style="font-size: 14px; color: #666; display: block; text-align: left; margin-bottom: 4px;">
-                            💰 Số tiền (VND):
-                        </label>
-                        <input type="number" id="transferAmount" 
-                               placeholder="Nhập số tiền..." 
-                               style="width: 100%; padding: 12px 16px; border: 2px solid #f0d0e0; border-radius: 16px; font-size: 18px; outline: none; transition: 0.2s;"
-                               onfocus="this.style.borderColor='#d6336c'"
-                               onblur="this.style.borderColor='#f0d0e0'" />
-                        <p style="font-size: 12px; color: #999; margin-top: 4px;">💡 Số tiền sẽ tùy vào mức độ quý mến của chị dành cho em!</p>
+                    <div style="margin:12px 0;">
+                        <label style="font-size:14px;color:#666;display:block;text-align:left;">💰 Số tiền (VND):</label>
+                        <input type="number" id="transferAmount" placeholder="Nhập số tiền..." />
+                        <p style="font-size:12px;color:#999;margin-top:4px;">💡 Số tiền tùy vào mức độ quý mến!</p>
                     </div>
-
-                    <button id="transferBtn" 
-                            style="width: 100%; padding: 14px; background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%); border: none; border-radius: 30px; font-size: 18px; font-weight: 600; color: #fff; cursor: pointer; box-shadow: 0 8px 25px rgba(245, 87, 108, 0.35); transition: 0.2s; margin-top: 8px;">
-                        💸 Chuyển khoản ngay
-                    </button>
-
-                    <button id="skipTransferBtn" 
-                            style="width: 100%; padding: 12px; background: transparent; border: 2px solid #ddd; border-radius: 30px; font-size: 16px; color: #888; cursor: pointer; margin-top: 10px; transition: 0.2s;">
-                        ❌ Bỏ qua, đọc thư sau
-                    </button>
-                `;
-
-            overlay.appendChild(card);
+                    <button class="btn-primary" id="transferBtn">💸 Chuyển khoản ngay</button>
+                    <button class="btn-secondary" id="skipTransferBtn">❌ Bỏ qua, đọc thư sau</button>
+                </div>
+            `;
             document.body.appendChild(overlay);
 
-            document.getElementById('transferBtn').addEventListener('click', function() {
+            document.getElementById('transferBtn').onclick = function() {
                 const amount = document.getElementById('transferAmount').value;
                 if (!amount || amount <= 0) {
                     alert('💝 Chị ơi, hãy nhập số tiền em nhé!');
                     return;
                 }
                 showTrollMessage(overlay);
-            });
+            };
 
-            document.getElementById('skipTransferBtn').addEventListener('click', function() {
+            document.getElementById('skipTransferBtn').onclick = function() {
                 overlay.remove();
                 quizPage.classList.add('hidden');
                 letterPage.classList.remove('hidden');
                 currentLetter = 0;
                 updateLetter(0);
                 startAutoSlide();
-            });
-
-            const style2 = document.createElement('style');
-            style2.textContent = `
-                    @keyframes fadeSlide {
-                        0% { opacity: 0; transform: translateY(20px) scale(0.95); }
-                        100% { opacity: 1; transform: translateY(0) scale(1); }
-                    }
-                `;
-            document.head.appendChild(style2);
+            };
         }
 
         function showTrollMessage(overlay) {
-            overlay.innerHTML = '';
-            overlay.style.cssText = `
-                    position: fixed;
-                    top: 0;
-                    left: 0;
-                    width: 100%;
-                    height: 100%;
-                    z-index: 9999;
-                    background: rgba(0,0,0,0.85);
-                    display: flex;
-                    align-items: center;
-                    justify-content: center;
-                    padding: 20px;
-                    animation: fadeSlide 0.5s ease;
-                `;
-
-            const trollCard = document.createElement('div');
-            trollCard.style.cssText = `
-                    background: linear-gradient(135deg, #ff6b6b, #ee5a24);
-                    border-radius: 40px;
-                    padding: 50px 40px;
-                    max-width: 450px;
-                    width: 100%;
-                    text-align: center;
-                    box-shadow: 0 30px 80px rgba(0,0,0,0.5);
-                    animation: trollPop 0.6s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-                `;
-
-            trollCard.innerHTML = `
-                    <div style="font-size: 80px; margin-bottom: 10px;">🤡</div>
-                    <h1 style="color: #fff; font-size: 48px; font-weight: 900; text-shadow: 0 4px 20px rgba(0,0,0,0.3);">
-                        TROLL!!!
-                    </h1>
-                    <p style="color: rgba(255,255,255,0.9); font-size: 20px; margin: 16px 0 20px; line-height: 1.6;">
-                        🤣 Chị bị lừa rồi! <br>
-                        Đây chỉ là trang web tình cảm thôi! 💕
-                    </p>
-                    <div style="font-size: 60px; margin: 10px 0;">😝</div>
-                    <button id="trollContinueBtn" 
-                            style="margin-top: 16px; padding: 16px 40px; background: #fff; border: none; border-radius: 50px; font-size: 20px; font-weight: 700; color: #ee5a24; cursor: pointer; box-shadow: 0 8px 30px rgba(0,0,0,0.2); transition: 0.2s;">
-                        💌 Đọc thư đi nào!
-                    </button>
-                `;
-
-            overlay.appendChild(trollCard);
-
-            const style = document.createElement('style');
-            style.textContent = `
-                    @keyframes trollPop {
-                        0% { transform: scale(0.3) rotate(-10deg); opacity: 0; }
-                        100% { transform: scale(1) rotate(0deg); opacity: 1; }
-                    }
-                    @keyframes fadeSlide {
-                        0% { opacity: 0; }
-                        100% { opacity: 1; }
-                    }
-                `;
-            document.head.appendChild(style);
-
-            document.getElementById('trollContinueBtn').addEventListener('click', function() {
+            overlay.innerHTML = `
+                <div class="troll-card">
+                    <div style="font-size:72px;">🤡</div>
+                    <h1>TROLL!!!</h1>
+                    <p>🤣 Chị bị lừa rồi!<br>Đây chỉ là trang web tình cảm thôi! 💕</p>
+                    <div style="font-size:56px;">😝</div>
+                    <button id="trollContinueBtn">💌 Đọc thư đi nào!</button>
+                </div>
+            `;
+            document.getElementById('trollContinueBtn').onclick = function() {
                 overlay.remove();
                 quizPage.classList.add('hidden');
                 letterPage.classList.remove('hidden');
                 currentLetter = 0;
                 updateLetter(0);
                 startAutoSlide();
-            });
+            };
         }
 
         // ============================================
@@ -978,21 +721,13 @@
             letterEmoji.textContent = letter.emoji;
             letterContent.textContent = letter.content;
             letterCounter.textContent = 'Lá thư ' + (index + 1) + ' / ' + letters.length;
-
             let dots = '';
             for (let i = 0; i < letters.length; i++) {
                 dots += i === index ? '●' : '○';
             }
             pageDot.textContent = dots;
-
             prevBtn.disabled = index === 0;
             nextBtn.disabled = index === letters.length - 1;
-
-            const display = document.getElementById('letterDisplay');
-            display.style.animation = 'none';
-            requestAnimationFrame(function() {
-                display.style.animation = 'fadeSlide 0.4s ease';
-            });
         }
 
         function nextLetter() {
@@ -1006,382 +741,30 @@
         }
 
         function startAutoSlide() {
-            if (autoSlideTimer) {
-                clearInterval(autoSlideTimer);
-                autoSlideTimer = null;
-            }
+            if (autoSlideTimer) clearInterval(autoSlideTimer);
             autoSlideTimer = setInterval(nextLetter, 4000);
         }
 
-        function stopAutoSlide() {
-            if (autoSlideTimer) {
-                clearInterval(autoSlideTimer);
-                autoSlideTimer = null;
-            }
-        }
-
-        prevBtn.addEventListener('click', function() {
+        prevBtn.onclick = function() {
             if (currentLetter > 0) {
                 currentLetter--;
                 updateLetter(currentLetter);
-                stopAutoSlide();
+                clearInterval(autoSlideTimer);
                 setTimeout(startAutoSlide, 5000);
             }
-        });
+        };
 
-        nextBtn.addEventListener('click', function() {
+        nextBtn.onclick = function() {
             if (currentLetter < letters.length - 1) {
                 currentLetter++;
                 updateLetter(currentLetter);
-                stopAutoSlide();
+                clearInterval(autoSlideTimer);
                 setTimeout(startAutoSlide, 5000);
             }
-        });
+        };
 
-        document.getElementById('letterDisplay').addEventListener('mouseenter', function() {
-            stopAutoSlide();
-        });
-
-        document.getElementById('letterDisplay').addEventListener('mouseleave', function() {
-            if (!letterPage.classList.contains('hidden')) {
-                startAutoSlide();
-            }
-        });
-
-        let paused = false;
-        document.addEventListener('touchstart', function(e) {
-            if (letterPage.classList.contains('hidden')) return;
-            if (!paused) {
-                stopAutoSlide();
-                paused = true;
-            } else {
-                startAutoSlide();
-                paused = false;
-            }
-        });
-
-        // ============================================
-        // ===== BÁNH SINH NHẬT + HOA =====
-        // ============================================
-        const canvas = document.getElementById('birthdayCanvas');
-        const ctx = canvas.getContext('2d');
-
-        let W, H;
-
-        function resizeCanvas() {
-            W = canvas.width = window.innerWidth;
-            H = canvas.height = window.innerHeight;
-        }
-        resizeCanvas();
-        window.addEventListener('resize', resizeCanvas);
-
-        function Flower() {
-            this.reset = function() {
-                this.x = Math.random() * W;
-                this.y = -20;
-                this.size = 15 + Math.random() * 25;
-                this.speed = 0.8 + Math.random() * 1.5;
-                this.swing = 0.3 + Math.random() * 0.6;
-                this.swingSpeed = 0.02 + Math.random() * 0.03;
-                this.phase = Math.random() * Math.PI * 2;
-                this.rotation = Math.random() * Math.PI * 2;
-                this.rotSpeed = 0.01 + Math.random() * 0.03;
-                this.opacity = 0.6 + Math.random() * 0.4;
-                this.petalColor = this.randomColor();
-                this.centerColor = '#ffd93d';
-                this.type = Math.floor(Math.random() * 3);
-            };
-
-            this.randomColor = function() {
-                const colors = ['#ff6b6b', '#ff9ff3', '#feca57', '#ff9f43', '#ff4757', '#ff6348', '#ff7f50', '#ff6b81', '#ffcccc',
-                    '#ffb8b8', '#ffd93d', '#ffda79'
-                ];
-                return colors[Math.floor(Math.random() * colors.length)];
-            };
-
-            this.draw = function() {
-                ctx.save();
-                ctx.translate(this.x, this.y);
-                ctx.rotate(this.rotation);
-                ctx.globalAlpha = this.opacity;
-
-                const s = this.size;
-
-                if (this.type === 0) {
-                    for (let i = 0; i < 5; i++) {
-                        const angle = (i / 5) * Math.PI * 2;
-                        ctx.save();
-                        ctx.rotate(angle);
-                        ctx.beginPath();
-                        ctx.ellipse(0, -s * 0.6, s * 0.4, s * 0.7, 0, 0, Math.PI * 2);
-                        ctx.fillStyle = this.petalColor;
-                        ctx.fill();
-                        ctx.restore();
-                    }
-                } else if (this.type === 1) {
-                    for (let i = 0; i < 6; i++) {
-                        const angle = (i / 6) * Math.PI * 2;
-                        ctx.save();
-                        ctx.rotate(angle);
-                        ctx.beginPath();
-                        ctx.ellipse(0, -s * 0.55, s * 0.35, s * 0.65, 0, 0, Math.PI * 2);
-                        ctx.fillStyle = this.petalColor;
-                        ctx.fill();
-                        ctx.restore();
-                    }
-                } else {
-                    for (let i = 0; i < 8; i++) {
-                        const angle = (i / 8) * Math.PI * 2;
-                        ctx.save();
-                        ctx.rotate(angle);
-                        ctx.beginPath();
-                        ctx.ellipse(0, -s * 0.5, s * 0.3, s * 0.6, 0, 0, Math.PI * 2);
-                        ctx.fillStyle = this.petalColor;
-                        ctx.fill();
-                        ctx.restore();
-                    }
-                }
-
-                ctx.beginPath();
-                ctx.arc(0, 0, s * 0.2, 0, Math.PI * 2);
-                ctx.fillStyle = this.centerColor;
-                ctx.fill();
-
-                ctx.restore();
-            };
-
-            this.update = function() {
-                this.y += this.speed;
-                this.x += Math.sin(this.phase) * this.swing;
-                this.phase += this.swingSpeed;
-                this.rotation += this.rotSpeed;
-
-                if (this.y > H + 50) {
-                    this.reset();
-                }
-            };
-
-            this.reset();
-        }
-
-        function BirthdayCake() {
-            this.x = W / 2;
-            this.y = H / 2 + 60;
-            this.scale = Math.min(W, H) / 500;
-            this.layers = 3;
-            this.decorations = [];
-            this.candles = [];
-
-            for (let i = 0; i < 7; i++) {
-                this.candles.push({
-                    x: (i - 3) * 22 * this.scale,
-                    y: 0,
-                    height: 40 * this.scale + Math.random() * 10 * this.scale,
-                    width: 8 * this.scale,
-                    color: ['#ff6b6b', '#feca57', '#48dbfb', '#ff9ff3', '#54a0ff', '#ff9f43', '#00d2d3'][i % 7],
-                    flame: {
-                        size: 12 * this.scale + Math.random() * 4 * this.scale,
-                        flicker: Math.random() * 0.5
-                    }
-                });
-            }
-
-            for (let i = 0; i < 30; i++) {
-                this.decorations.push({
-                    x: (Math.random() - 0.5) * 200 * this.scale,
-                    y: Math.random() * 60 * this.scale - 30 * this.scale,
-                    size: 4 * this.scale + Math.random() * 6 * this.scale,
-                    color: ['#ff6b6b', '#feca57', '#48dbfb', '#ff9ff3', '#54a0ff', '#ff9f43', '#00d2d3'][Math.floor(Math
-                    .random() * 7)]
-                });
-            }
-
-            this.draw = function() {
-                ctx.save();
-                ctx.translate(this.x, this.y);
-                ctx.scale(this.scale, this.scale);
-
-                const gradient = ctx.createRadialGradient(0, -30, 10, 0, -30, 180);
-                gradient.addColorStop(0, 'rgba(255, 215, 0, 0.08)');
-                gradient.addColorStop(0.5, 'rgba(255, 215, 0, 0.04)');
-                gradient.addColorStop(1, 'rgba(255, 215, 0, 0)');
-                ctx.fillStyle = gradient;
-                ctx.beginPath();
-                ctx.arc(0, -30, 180, 0, Math.PI * 2);
-                ctx.fill();
-
-                const layerColors = ['#f8c8d8', '#f5b8c8', '#f2a8b8'];
-                const layerHeights = [50, 45, 40];
-                const layerWidths = [180, 160, 140];
-
-                for (let i = 0; i < this.layers; i++) {
-                    const yOffset = -i * 40;
-                    const w = layerWidths[i];
-                    const h = layerHeights[i];
-
-                    ctx.shadowColor = 'rgba(0,0,0,0.1)';
-                    ctx.shadowBlur = 20;
-                    ctx.shadowOffsetY = 5;
-
-                    const grad = ctx.createLinearGradient(-w / 2, yOffset - h / 2, w / 2, yOffset + h / 2);
-                    grad.addColorStop(0, layerColors[i]);
-                    grad.addColorStop(0.5, '#fff0f5');
-                    grad.addColorStop(1, layerColors[i]);
-
-                    ctx.fillStyle = grad;
-                    ctx.beginPath();
-                    ctx.roundRect(-w / 2, yOffset - h / 2, w, h, 12);
-                    ctx.fill();
-
-                    ctx.shadowBlur = 0;
-                    ctx.strokeStyle = 'rgba(255,255,255,0.3)';
-                    ctx.lineWidth = 2;
-                    ctx.beginPath();
-                    ctx.roundRect(-w / 2, yOffset - h / 2, w, h, 12);
-                    ctx.stroke();
-
-                    if (i < this.layers - 1) {
-                        for (let j = 0; j < 12; j++) {
-                            const dotX = -w / 2 + 20 + j * ((w - 40) / 11);
-                            ctx.beginPath();
-                            ctx.arc(dotX, yOffset - h / 2, 6, 0, Math.PI * 2);
-                            ctx.fillStyle = 'rgba(255,255,255,0.6)';
-                            ctx.fill();
-                        }
-                    }
-                }
-
-                this.decorations.forEach(function(dec) {
-                    ctx.shadowBlur = 0;
-                    ctx.fillStyle = dec.color;
-                    ctx.beginPath();
-                    ctx.arc(dec.x, -this.layers * 40 + 30 + dec.y, dec.size, 0, Math.PI * 2);
-                    ctx.fill();
-                    ctx.strokeStyle = 'rgba(255,255,255,0.3)';
-                    ctx.lineWidth = 1;
-                    ctx.stroke();
-                }.bind(this));
-
-                const candleY = -this.layers * 40 + 20;
-                this.candles.forEach(function(candle, idx) {
-                    const x = candle.x;
-
-                    ctx.shadowColor = 'rgba(0,0,0,0.15)';
-                    ctx.shadowBlur = 10;
-                    ctx.shadowOffsetY = 3;
-
-                    ctx.fillStyle = candle.color;
-                    ctx.beginPath();
-                    ctx.roundRect(x - candle.width / 2, candleY - candle.height, candle.width, candle.height, 3);
-                    ctx.fill();
-
-                    ctx.shadowBlur = 0;
-                    ctx.strokeStyle = 'rgba(255,255,255,0.2)';
-                    ctx.lineWidth = 1;
-                    for (let s = 0; s < 3; s++) {
-                        const sy = candleY - candle.height + 8 + s * 12;
-                        ctx.beginPath();
-                        ctx.moveTo(x - candle.width / 2 + 2, sy);
-                        ctx.lineTo(x + candle.width / 2 - 2, sy);
-                        ctx.stroke();
-                    }
-
-                    const flameSize = candle.flame.size * (0.8 + Math.sin(Date.now() / 150 + idx) * 0.2);
-                    const flickerX = Math.sin(Date.now() / 100 + idx * 2) * 2;
-
-                    ctx.shadowColor = 'rgba(255, 200, 50, 0.3)';
-                    ctx.shadowBlur = 30;
-
-                    const grad2 = ctx.createRadialGradient(
-                        x + flickerX, candleY - candle.height - flameSize * 0.3, 0,
-                        x + flickerX, candleY - candle.height - flameSize * 0.3, flameSize * 0.8
-                    );
-                    grad2.addColorStop(0, 'rgba(255, 255, 200, 0.9)');
-                    grad2.addColorStop(0.3, 'rgba(255, 200, 50, 0.8)');
-                    grad2.addColorStop(0.7, 'rgba(255, 150, 0, 0.6)');
-                    grad2.addColorStop(1, 'rgba(255, 100, 0, 0)');
-
-                    ctx.fillStyle = grad2;
-                    ctx.beginPath();
-                    ctx.ellipse(x + flickerX, candleY - candle.height - flameSize * 0.3, flameSize * 0.6, flameSize, 0, 0,
-                        Math.PI * 2);
-                    ctx.fill();
-
-                    ctx.shadowBlur = 20;
-                    ctx.fillStyle = 'rgba(255, 255, 255, 0.6)';
-                    ctx.beginPath();
-                    ctx.ellipse(x + flickerX * 0.5, candleY - candle.height - flameSize * 0.4, flameSize * 0.2,
-                        flameSize * 0.4, 0, 0, Math.PI * 2);
-                    ctx.fill();
-                }.bind(this));
-
-                ctx.restore();
-            };
-        }
-
-        let flowers = [];
-        let cake = null;
-        let effectStarted = false;
-
-        function startBirthdayEffect() {
-            if (effectStarted) return;
-            effectStarted = true;
-
-            for (let i = 0; i < (isSmallScreen() ? 25 : 40); i++) {
-                const flower = new Flower();
-                flower.y = Math.random() * H;
-                flowers.push(flower);
-            }
-
-            cake = new BirthdayCake();
-            animate();
-        }
-
-        function animate() {
-            ctx.clearRect(0, 0, W, H);
-
-            if (cake) {
-                cake.draw();
-            }
-
-            flowers.forEach(function(flower) {
-                flower.update();
-                flower.draw();
-            });
-
-            requestAnimationFrame(animate);
-        }
-
-        if (!CanvasRenderingContext2D.prototype.roundRect) {
-            CanvasRenderingContext2D.prototype.roundRect = function(x, y, w, h, r) {
-                if (r > w / 2) r = w / 2;
-                if (r > h / 2) r = h / 2;
-                this.moveTo(x + r, y);
-                this.lineTo(x + w - r, y);
-                this.quadraticCurveTo(x + w, y, x + w, y + r);
-                this.lineTo(x + w, y + h - r);
-                this.quadraticCurveTo(x + w, y + h, x + w - r, y + h);
-                this.lineTo(x + r, y + h);
-                this.quadraticCurveTo(x, y + h, x, y + h - r);
-                this.lineTo(x, y + r);
-                this.quadraticCurveTo(x, y, x + r, y);
-                return this;
-            };
-        }
-
-        window.addEventListener('resize', function() {
-            resizeCanvas();
-            if (cake) {
-                cake.x = W / 2;
-                cake.y = H / 2 + 60;
-            }
-        });
-
-        startBirthdayEffect();
-
-        console.log('🚀 Trang đã sẵn sàng!');
-        console.log('📌 Nhập pass 492006 để vào quiz');
+        // Khởi tạo lá thư đầu tiên
+        updateLetter(0);
     </script>
-
 </body>
 </html>
