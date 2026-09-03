@@ -39,7 +39,6 @@
         #transferOverlay input{width:100%;padding:12px 16px;border:2px solid #f0d0e0;border-radius:16px;font-size:18px;margin:8px 0;outline:none}
         #transferOverlay input:focus{border-color:#d6336c}
         #transferOverlay .btn-primary{width:100%;padding:14px;background:linear-gradient(135deg,#f093fb,#f5576c);border:none;border-radius:30px;font-size:18px;font-weight:bold;color:white;cursor:pointer;margin-top:8px}
-        #transferOverlay .btn-secondary{width:100%;padding:12px;background:transparent;border:2px solid #ddd;border-radius:30px;font-size:16px;color:#888;cursor:pointer;margin-top:10px}
         #loveOverlay{position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(214,51,108,0.92);z-index:9999;display:flex;align-items:center;justify-content:center;cursor:pointer;animation:fadeIn 0.3s ease}
         #loveText{font-size:40px;font-weight:900;color:white;text-shadow:0 0 30px rgba(255,255,255,0.5);transition:all 0.3s ease;user-select:none}
         @keyframes fadeIn{0%{transform:scale(0.5);opacity:0}100%{transform:scale(1);opacity:1}}
@@ -172,11 +171,10 @@
         });
 
         // ===== CÂU HỎI =====
-        // 🔥 SỬA CÂU HỎI VÀ ĐÁP ÁN Ở ĐÂY 🔥
         const questions = [{
             question: "📌 Em sinh năm bao nhiêu?",
             options: ["A. 2000", "B. 2001", "C. 2002", "D. 2003"],
-            correct: 2 // 0=A, 1=B, 2=C, 3=D
+            correct: 2
         }, {
             question: "📌 Màu sắc em yêu thích nhất là gì?",
             options: ["A. Đỏ", "B. Xanh dương", "C. Hồng", "D. Tím"],
@@ -250,7 +248,7 @@
             }, 1500);
         }
 
-        // ===== XỬ LÝ "KHÔNG" =====
+        // ===== XỬ LÝ "KHÔNG" - CHỮ CÓ TO DẦN =====
         let noClickCount = 0;
         let loveOverlay = null;
 
@@ -293,8 +291,7 @@
             showTransferPage();
         }
 
-        // ===== QR + CHUYỂN TIỀN =====
-        // 🔥 SỬA LINK QR + THÔNG TIN TK Ở ĐÂY 🔥
+        // ===== QR + CHUYỂN TIỀN (BỎ NÚT BỎ QUA) =====
         function showTransferPage() {
             const QR_LINK = 'https://img.vietqr.io/image/MB-0388888888-compact.png?amount=0&addInfo=Chuc%20mung%20sinh%20nhat&accountName=NGUYEN%20VAN%20A';
             const overlay = document.createElement('div');
@@ -319,22 +316,14 @@
                         <p style="font-size:12px;color:#999;margin-top:4px;">💡 Số tiền tùy vào mức độ quý mến!</p>
                     </div>
                     <button class="btn-primary" id="transferBtn">💸 Chuyển khoản ngay</button>
-                    <button class="btn-secondary" id="skipTransferBtn">❌ Bỏ qua, đọc thư sau</button>
                 </div>
             `;
             document.body.appendChild(overlay);
+
             document.getElementById('transferBtn').onclick = function() {
                 const amount = document.getElementById('transferAmount').value;
                 if (!amount || amount <= 0) { alert('💝 Chị ơi, hãy nhập số tiền em nhé!'); return; }
                 showTrollMessage(overlay);
-            };
-            document.getElementById('skipTransferBtn').onclick = function() {
-                overlay.remove();
-                quizPage.classList.add('hidden');
-                letterPage.classList.remove('hidden');
-                currentLetter = 0;
-                updateLetter(0);
-                startAutoSlide();
             };
         }
 
