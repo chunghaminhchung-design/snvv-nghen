@@ -5,343 +5,51 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>🎂 Chúc Mừng Sinh Nhật Chị!</title>
     <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
-        body {
-            font-family: Arial, sans-serif;
-            min-height: 100vh;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            background: linear-gradient(135deg, #fbc2eb, #a6c1ee);
-            overflow: hidden;
-        }
-        .card {
-            background: rgba(255, 255, 255, 0.9);
-            border-radius: 30px;
-            padding: 30px 25px;
-            max-width: 420px;
-            width: 100%;
-            text-align: center;
-            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.15);
-            z-index: 10;
-            position: relative;
-        }
-        .hidden {
-            display: none !important;
-        }
-        .emoji-big {
-            font-size: 50px;
-        }
-        h1 {
-            font-size: 24px;
-            color: #d6336c;
-            margin: 8px 0;
-        }
-        .sub {
-            font-size: 15px;
-            color: #777;
-            margin-bottom: 16px;
-        }
-        .keypad {
-            display: flex;
-            flex-direction: column;
-            gap: 8px;
-            align-items: center;
-            margin: 12px 0;
-        }
-        .key-row {
-            display: flex;
-            gap: 10px;
-        }
-        .key {
-            width: 55px;
-            height: 55px;
-            border-radius: 16px;
-            border: none;
-            font-size: 22px;
-            font-weight: bold;
-            background: white;
-            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.08);
-            cursor: pointer;
-            transition: 0.1s;
-            border: 1px solid #eee;
-        }
-        .key:active {
-            transform: scale(0.92);
-            background: #f0d0e0;
-        }
-        .key-clear {
-            color: #e74c3c;
-        }
-        .key-enter {
-            background: #d6336c;
-            color: white;
-        }
-        .display {
-            font-size: 28px;
-            font-weight: bold;
-            color: #d6336c;
-            background: #faf0f3;
-            padding: 10px;
-            border-radius: 16px;
-            min-height: 50px;
-            margin: 8px 0;
-            letter-spacing: 4px;
-        }
-        .error {
-            color: #e74c3c;
-            font-size: 14px;
-            margin-top: 6px;
-        }
-        .option-btn {
-            display: block;
-            width: 100%;
-            padding: 12px 16px;
-            margin: 6px 0;
-            border-radius: 12px;
-            border: 2px solid #eee;
-            background: white;
-            font-size: 15px;
-            cursor: pointer;
-            transition: 0.2s;
-            text-align: left;
-        }
-        .option-btn:hover {
-            border-color: #d6336c;
-            background: #faf0f3;
-        }
-        .option-btn.correct {
-            background: #2ecc71;
-            color: white;
-            border-color: #2ecc71;
-        }
-        .option-btn.wrong {
-            background: #e74c3c;
-            color: white;
-            border-color: #e74c3c;
-        }
-        .option-btn:disabled {
-            opacity: 0.7;
-            cursor: not-allowed;
-        }
-        .letter-display {
-            background: #fff5f7;
-            border-radius: 20px;
-            padding: 24px 16px;
-            min-height: 150px;
-            margin: 12px 0;
-        }
-        .letter-emoji-big {
-            font-size: 48px;
-        }
-        .letter-content-full {
-            font-size: 17px;
-            color: #444;
-            line-height: 1.6;
-            margin-top: 8px;
-        }
-        .letter-nav {
-            display: flex;
-            gap: 12px;
-            justify-content: center;
-            margin-top: 12px;
-        }
-        .letter-nav button {
-            padding: 10px 24px;
-            border-radius: 30px;
-            border: none;
-            background: #d6336c;
-            color: white;
-            font-size: 15px;
-            cursor: pointer;
-            font-weight: bold;
-        }
-        .letter-nav button:disabled {
-            opacity: 0.4;
-            cursor: not-allowed;
-        }
-        .letter-nav span {
-            font-size: 18px;
-            color: #d6336c;
-            padding: 0 10px;
-        }
-        .result-text {
-            font-size: 18px;
-            font-weight: bold;
-            color: #d6336c;
-            margin: 10px 0;
-        }
-        #transferOverlay {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: rgba(0, 0, 0, 0.7);
-            z-index: 9999;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            padding: 20px;
-        }
-        #transferOverlay .transfer-card {
-            background: white;
-            border-radius: 30px;
-            padding: 30px 25px;
-            max-width: 400px;
-            width: 100%;
-            text-align: center;
-            animation: popIn 0.3s ease;
-        }
-        @keyframes popIn {
-            0% {
-                transform: scale(0.8);
-                opacity: 0;
-            }
-            100% {
-                transform: scale(1);
-                opacity: 1;
-            }
-        }
-        #transferOverlay input {
-            width: 100%;
-            padding: 12px 16px;
-            border: 2px solid #f0d0e0;
-            border-radius: 16px;
-            font-size: 18px;
-            margin: 8px 0;
-            outline: none;
-        }
-        #transferOverlay input:focus {
-            border-color: #d6336c;
-        }
-        #transferOverlay .btn-primary {
-            width: 100%;
-            padding: 14px;
-            background: linear-gradient(135deg, #f093fb, #f5576c);
-            border: none;
-            border-radius: 30px;
-            font-size: 18px;
-            font-weight: bold;
-            color: white;
-            cursor: pointer;
-            margin-top: 8px;
-        }
-        #transferOverlay .btn-secondary {
-            width: 100%;
-            padding: 12px;
-            background: transparent;
-            border: 2px solid #ddd;
-            border-radius: 30px;
-            font-size: 16px;
-            color: #888;
-            cursor: pointer;
-            margin-top: 10px;
-        }
-        #loveOverlay {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: rgba(214, 51, 108, 0.92);
-            z-index: 9999;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            cursor: pointer;
-            animation: fadeIn 0.3s ease;
-        }
-        #loveText {
-            font-size: 40px;
-            font-weight: 900;
-            color: white;
-            text-shadow: 0 0 30px rgba(255, 255, 255, 0.5);
-            transition: all 0.3s ease;
-            user-select: none;
-        }
-        @keyframes fadeIn {
-            0% {
-                transform: scale(0.5);
-                opacity: 0;
-            }
-            100% {
-                transform: scale(1);
-                opacity: 1;
-            }
-        }
-        @keyframes trollPop {
-            0% {
-                transform: scale(0.3) rotate(-10deg);
-                opacity: 0;
-            }
-            100% {
-                transform: scale(1) rotate(0deg);
-                opacity: 1;
-            }
-        }
-        .troll-card {
-            background: linear-gradient(135deg, #ff6b6b, #ee5a24);
-            border-radius: 40px;
-            padding: 40px;
-            max-width: 400px;
-            width: 100%;
-            text-align: center;
-            animation: trollPop 0.6s ease;
-        }
-        .troll-card h1 {
-            color: white;
-            font-size: 42px;
-            font-weight: 900;
-        }
-        .troll-card p {
-            color: rgba(255, 255, 255, 0.9);
-            font-size: 18px;
-            margin: 12px 0;
-        }
-        .troll-card button {
-            margin-top: 16px;
-            padding: 14px 40px;
-            background: white;
-            border: none;
-            border-radius: 50px;
-            font-size: 18px;
-            font-weight: bold;
-            color: #ee5a24;
-            cursor: pointer;
-        }
-        .qr-img {
-            width: 180px;
-            height: 180px;
-            border-radius: 16px;
-            border: 3px solid #f0d0e0;
-            object-fit: contain;
-            background: white;
-        }
-        @media (max-width: 480px) {
-            .card {
-                padding: 20px 16px;
-            }
-            .key {
-                width: 48px;
-                height: 48px;
-                font-size: 18px;
-            }
-            .emoji-big {
-                font-size: 40px;
-            }
-            h1 {
-                font-size: 20px;
-            }
-            .qr-img {
-                width: 140px;
-                height: 140px;
-            }
-        }
+        *{margin:0;padding:0;box-sizing:border-box}
+        body{font-family:Arial,sans-serif;min-height:100vh;display:flex;align-items:center;justify-content:center;background:linear-gradient(135deg,#fbc2eb,#a6c1ee);overflow:hidden}
+        .card{background:rgba(255,255,255,0.9);border-radius:30px;padding:30px 25px;max-width:420px;width:100%;text-align:center;box-shadow:0 20px 60px rgba(0,0,0,0.15);z-index:10;position:relative}
+        .hidden{display:none !important}
+        .emoji-big{font-size:50px}
+        h1{font-size:24px;color:#d6336c;margin:8px 0}
+        .sub{font-size:15px;color:#777;margin-bottom:16px}
+        .keypad{display:flex;flex-direction:column;gap:8px;align-items:center;margin:12px 0}
+        .key-row{display:flex;gap:10px}
+        .key{width:55px;height:55px;border-radius:16px;border:none;font-size:22px;font-weight:bold;background:white;box-shadow:0 4px 8px rgba(0,0,0,0.08);cursor:pointer;transition:0.1s;border:1px solid #eee}
+        .key:active{transform:scale(0.92);background:#f0d0e0}
+        .key-clear{color:#e74c3c}
+        .key-enter{background:#d6336c;color:white}
+        .display{font-size:28px;font-weight:bold;color:#d6336c;background:#faf0f3;padding:10px;border-radius:16px;min-height:50px;margin:8px 0;letter-spacing:4px}
+        .error{color:#e74c3c;font-size:14px;margin-top:6px}
+        .option-btn{display:block;width:100%;padding:12px 16px;margin:6px 0;border-radius:12px;border:2px solid #eee;background:white;font-size:15px;cursor:pointer;transition:0.2s;text-align:left}
+        .option-btn:hover{border-color:#d6336c;background:#faf0f3}
+        .option-btn.correct{background:#2ecc71;color:white;border-color:#2ecc71}
+        .option-btn.wrong{background:#e74c3c;color:white;border-color:#e74c3c}
+        .option-btn:disabled{opacity:0.7;cursor:not-allowed}
+        .letter-display{background:#fff5f7;border-radius:20px;padding:24px 16px;min-height:150px;margin:12px 0}
+        .letter-emoji-big{font-size:48px}
+        .letter-content-full{font-size:17px;color:#444;line-height:1.6;margin-top:8px}
+        .letter-nav{display:flex;gap:12px;justify-content:center;margin-top:12px}
+        .letter-nav button{padding:10px 24px;border-radius:30px;border:none;background:#d6336c;color:white;font-size:15px;cursor:pointer;font-weight:bold}
+        .letter-nav button:disabled{opacity:0.4;cursor:not-allowed}
+        .letter-nav span{font-size:18px;color:#d6336c;padding:0 10px}
+        .result-text{font-size:18px;font-weight:bold;color:#d6336c;margin:10px 0}
+        #transferOverlay{position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,0.7);z-index:9999;display:flex;align-items:center;justify-content:center;padding:20px}
+        #transferOverlay .transfer-card{background:white;border-radius:30px;padding:30px 25px;max-width:400px;width:100%;text-align:center;animation:popIn 0.3s ease}
+        @keyframes popIn{0%{transform:scale(0.8);opacity:0}100%{transform:scale(1);opacity:1}}
+        #transferOverlay input{width:100%;padding:12px 16px;border:2px solid #f0d0e0;border-radius:16px;font-size:18px;margin:8px 0;outline:none}
+        #transferOverlay input:focus{border-color:#d6336c}
+        #transferOverlay .btn-primary{width:100%;padding:14px;background:linear-gradient(135deg,#f093fb,#f5576c);border:none;border-radius:30px;font-size:18px;font-weight:bold;color:white;cursor:pointer;margin-top:8px}
+        #transferOverlay .btn-secondary{width:100%;padding:12px;background:transparent;border:2px solid #ddd;border-radius:30px;font-size:16px;color:#888;cursor:pointer;margin-top:10px}
+        #loveOverlay{position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(214,51,108,0.92);z-index:9999;display:flex;align-items:center;justify-content:center;cursor:pointer;animation:fadeIn 0.3s ease}
+        #loveText{font-size:40px;font-weight:900;color:white;text-shadow:0 0 30px rgba(255,255,255,0.5);transition:all 0.3s ease;user-select:none}
+        @keyframes fadeIn{0%{transform:scale(0.5);opacity:0}100%{transform:scale(1);opacity:1}}
+        @keyframes trollPop{0%{transform:scale(0.3) rotate(-10deg);opacity:0}100%{transform:scale(1) rotate(0deg);opacity:1}}
+        .troll-card{background:linear-gradient(135deg,#ff6b6b,#ee5a24);border-radius:40px;padding:40px;max-width:400px;width:100%;text-align:center;animation:trollPop 0.6s ease}
+        .troll-card h1{color:white;font-size:42px;font-weight:900}
+        .troll-card p{color:rgba(255,255,255,0.9);font-size:18px;margin:12px 0}
+        .troll-card button{margin-top:16px;padding:14px 40px;background:white;border:none;border-radius:50px;font-size:18px;font-weight:bold;color:#ee5a24;cursor:pointer}
+        .qr-img{width:180px;height:180px;border-radius:16px;border:3px solid #f0d0e0;object-fit:contain;background:white}
+        @media(max-width:480px){.card{padding:20px 16px}.key{width:48px;height:48px;font-size:18px}.emoji-big{font-size:40px}h1{font-size:20px}.qr-img{width:140px;height:140px}}
     </style>
 </head>
 <body>
@@ -354,7 +62,6 @@
         <div class="emoji-big">🔐</div>
         <h1>🎂 Nhập mật khẩu</h1>
         <p class="sub">Nhập mã để nhận quà từ em nhé!</p>
-
         <div class="keypad">
             <div class="key-row">
                 <button class="key" onclick="pressKey('1')">1</button>
@@ -377,7 +84,6 @@
                 <button class="key key-enter" onclick="pressKey('enter')">↵</button>
             </div>
         </div>
-
         <div class="display" id="display">❤️</div>
         <div id="errorMsg" class="error hidden">❌ Sai mật khẩu rồi! Thử lại nhé!</div>
     </div>
@@ -389,9 +95,7 @@
         <p class="sub" id="questionCounter">Câu 1 / 5</p>
         <div id="questionText" style="font-size:18px;font-weight:600;margin:12px 0;min-height:50px;">Câu hỏi...</div>
         <div id="optionsContainer"></div>
-        <div id="quizResult" class="hidden">
-            <p class="result-text" id="resultText"></p>
-        </div>
+        <div id="quizResult" class="hidden"><p class="result-text" id="resultText"></p></div>
     </div>
 
     <!-- ===== TRANG LÁ THƯ ===== -->
@@ -412,38 +116,24 @@
 
     <script>
         // ===== BONG BÓNG =====
-        (function createBubbles() {
-            const container = document.getElementById('bubbles');
+        (function() {
+            const c = document.getElementById('bubbles');
             for (let i = 0; i < 30; i++) {
                 const b = document.createElement('div');
-                const size = 15 + Math.random() * 35;
-                b.style.cssText = `
-                    position:absolute;
-                    bottom:-${size}px;
-                    left:${Math.random()*100}%;
-                    width:${size}px;
-                    height:${size}px;
-                    border-radius:50%;
-                    background:radial-gradient(circle at 30% 30%, rgba(255,255,255,0.5), rgba(255,255,255,0.1));
-                    animation:rise ${12+Math.random()*20}s linear infinite;
-                    animation-delay:${Math.random()*10}s;
-                    opacity:${0.3+Math.random()*0.4};
-                `;
-                container.appendChild(b);
+                const s = 15 + Math.random() * 35;
+                b.style.cssText = 'position:absolute;bottom:-' + s + 'px;left:' + Math.random() * 100 +
+                    '%;width:' + s + 'px;height:' + s + 'px;border-radius:50%;background:radial-gradient(circle at 30% 30%, rgba(255,255,255,0.5), rgba(255,255,255,0.1));animation:rise ' +
+                    (12 + Math.random() * 20) + 's linear infinite;animation-delay:' + Math.random() * 10 +
+                    's;opacity:' + (0.3 + Math.random() * 0.4) + ';';
+                c.appendChild(b);
             }
             const style = document.createElement('style');
-            style.textContent = `
-                @keyframes rise {
-                    0% { transform: translateY(0) scale(1); opacity: 0.6; }
-                    100% { transform: translateY(-110vh) scale(1.5); opacity: 0; }
-                }
-            `;
+            style.textContent =
+                '@keyframes rise{0%{transform:translateY(0) scale(1);opacity:0.6}100%{transform:translateY(-110vh) scale(1.5);opacity:0}}';
             document.head.appendChild(style);
         })();
 
-        // ============================================
         // ===== MẬT KHẨU =====
-        // ============================================
         const PASSWORD = '492006';
         let input = '';
         const display = document.getElementById('display');
@@ -453,9 +143,7 @@
         const letterPage = document.getElementById('letterPage');
 
         function pressKey(val) {
-            if (val === 'clear') {
-                input = input.slice(0, -1);
-            } else if (val === 'enter') {
+            if (val === 'clear') { input = input.slice(0, -1); } else if (val === 'enter') {
                 if (input === PASSWORD) {
                     loginPage.classList.add('hidden');
                     quizPage.classList.remove('hidden');
@@ -471,36 +159,24 @@
                     setTimeout(() => errorMsg.classList.add('hidden'), 2000);
                     return;
                 }
-            } else {
-                if (input.length < 6) {
-                    input += val;
-                }
-            }
+            } else { if (input.length < 6) { input += val; } }
             display.textContent = input.length > 0 ? input : '❤️';
         }
 
-        // Bàn phím vật lý
         document.addEventListener('keydown', function(e) {
             const key = e.key;
-            if (key >= '0' && key <= '9') {
-                e.preventDefault();
-                pressKey(key);
-            } else if (key === 'Backspace') {
-                e.preventDefault();
-                pressKey('clear');
-            } else if (key === 'Enter') {
-                e.preventDefault();
-                pressKey('enter');
-            }
+            if (key >= '0' && key <= '9') { e.preventDefault();
+                pressKey(key); } else if (key === 'Backspace') { e.preventDefault();
+                pressKey('clear'); } else if (key === 'Enter') { e.preventDefault();
+                pressKey('enter'); }
         });
 
-        // ============================================
         // ===== CÂU HỎI =====
-        // ============================================
+        // 🔥 SỬA CÂU HỎI VÀ ĐÁP ÁN Ở ĐÂY 🔥
         const questions = [{
             question: "📌 Em sinh năm bao nhiêu?",
             options: ["A. 2000", "B. 2001", "C. 2002", "D. 2003"],
-            correct: 2
+            correct: 2 // 0=A, 1=B, 2=C, 3=D
         }, {
             question: "📌 Màu sắc em yêu thích nhất là gì?",
             options: ["A. Đỏ", "B. Xanh dương", "C. Hồng", "D. Tím"],
@@ -527,18 +203,15 @@
         const quizResult = document.getElementById('quizResult');
         const resultText = document.getElementById('resultText');
 
-        function startQuiz() {
-            currentQuestion = 0;
+        function startQuiz() { currentQuestion = 0;
             quizResult.classList.add('hidden');
-            renderQuestion();
-        }
+            renderQuestion(); }
 
         function renderQuestion() {
             const q = questions[currentQuestion];
             questionText.textContent = q.question;
             questionCounter.textContent = 'Câu ' + (currentQuestion + 1) + ' / ' + questions.length;
             optionsContainer.innerHTML = '';
-
             q.options.forEach(function(opt, index) {
                 const btn = document.createElement('button');
                 btn.className = 'option-btn';
@@ -547,43 +220,27 @@
                 btn.onclick = function() { handleAnswer(parseInt(this.dataset.index)); };
                 optionsContainer.appendChild(btn);
             });
-
             quizResult.classList.add('hidden');
         }
 
         function handleAnswer(index) {
             const q = questions[currentQuestion];
             const btns = optionsContainer.querySelectorAll('.option-btn');
-
             if (q.isFinal) {
-                if (index === 0) {
-                    // Ấn "Có" → hiện QR
-                    showLoveQR();
-                } else {
-                    // Ấn "Không" → chữ CÓ to dần từng lần
-                    growLoveText();
-                }
+                if (index === 0) { showLoveQR(); } else { growLoveText(); }
                 return;
             }
-
             btns.forEach(function(btn, i) {
                 btn.disabled = true;
                 if (i === q.correct) btn.classList.add('correct');
                 else if (i === index && i !== q.correct) btn.classList.add('wrong');
             });
-
-            if (index === q.correct) {
-                resultText.textContent = '✅ Đúng rồi! Chị giỏi quá! 🌟';
-            } else {
-                resultText.textContent = '❌ Sai rồi! Đáp án đúng là ' + q.options[q.correct];
-            }
+            if (index === q.correct) { resultText.textContent = '✅ Đúng rồi! Chị giỏi quá! 🌟'; } else { resultText
+                    .textContent = '❌ Sai rồi! Đáp án đúng là ' + q.options[q.correct]; }
             quizResult.classList.remove('hidden');
-
             setTimeout(function() {
-                if (currentQuestion < questions.length - 1) {
-                    currentQuestion++;
-                    renderQuestion();
-                } else {
+                if (currentQuestion < questions.length - 1) { currentQuestion++;
+                    renderQuestion(); } else {
                     quizPage.classList.add('hidden');
                     letterPage.classList.remove('hidden');
                     currentLetter = 0;
@@ -593,16 +250,12 @@
             }, 1500);
         }
 
-        // ============================================
-        // ===== XỬ LÝ CÂU CUỐI: "KHÔNG" =====
-        // Mỗi lần ấn "Không" chữ CÓ to dần lên
-        // ============================================
+        // ===== XỬ LÝ "KHÔNG" =====
         let noClickCount = 0;
         let loveOverlay = null;
 
         function growLoveText() {
             if (!loveOverlay) {
-                // Tạo overlay lần đầu
                 loveOverlay = document.createElement('div');
                 loveOverlay.id = 'loveOverlay';
                 const text = document.createElement('div');
@@ -610,25 +263,18 @@
                 text.textContent = '💖 CÓ 💖';
                 loveOverlay.appendChild(text);
                 document.body.appendChild(loveOverlay);
-
-                // Click vào overlay để tăng size
                 loveOverlay.onclick = function() {
                     noClickCount++;
                     const textEl = document.getElementById('loveText');
                     if (textEl) {
-                        // Các mức size: 40 → 60 → 80 → 120 → 200 → 300
                         const sizes = [40, 60, 80, 120, 200, 300];
                         const idx = Math.min(noClickCount, sizes.length - 1);
                         textEl.style.fontSize = sizes[idx] + 'px';
                         textEl.style.transition = 'font-size 0.3s ease';
-
-                        // Khi đạt size lớn nhất (300px), tự động vào thư
                         if (noClickCount >= sizes.length - 1) {
                             setTimeout(function() {
-                                if (loveOverlay) {
-                                    loveOverlay.remove();
-                                    loveOverlay = null;
-                                }
+                                if (loveOverlay) { loveOverlay.remove();
+                                    loveOverlay = null; }
                                 quizPage.classList.add('hidden');
                                 letterPage.classList.remove('hidden');
                                 currentLetter = 0;
@@ -638,30 +284,19 @@
                         }
                     }
                 };
-            } else {
-                // Nếu overlay đã tồn tại, tự động tăng size (giống như click)
-                loveOverlay.click();
-            }
+            } else { loveOverlay.click(); }
         }
 
-        // ============================================
-        // ===== XỬ LÝ CÂU CUỐI: "CÓ" =====
-        // Hiện QR + form chuyển tiền
-        // ============================================
+        // ===== XỬ LÝ "CÓ" - HIỆN QR =====
         function showLoveQR() {
             quizPage.classList.add('hidden');
             showTransferPage();
         }
 
-        // ============================================
         // ===== QR + CHUYỂN TIỀN =====
-        // ============================================
+        // 🔥 SỬA LINK QR + THÔNG TIN TK Ở ĐÂY 🔥
         function showTransferPage() {
-            // 🔥 THAY LINK QR CỦA ANH/CHỊ VÀO ĐÂY 🔥
-            // Lấy link QR từ app MB Bank hoặc VietQR
             const QR_LINK = 'https://img.vietqr.io/image/MB-0388888888-compact.png?amount=0&addInfo=Chuc%20mung%20sinh%20nhat&accountName=NGUYEN%20VAN%20A';
-            // 👆 Thay link QR thật của anh/chị vào đây
-
             const overlay = document.createElement('div');
             overlay.id = 'transferOverlay';
             overlay.innerHTML = `
@@ -688,16 +323,11 @@
                 </div>
             `;
             document.body.appendChild(overlay);
-
             document.getElementById('transferBtn').onclick = function() {
                 const amount = document.getElementById('transferAmount').value;
-                if (!amount || amount <= 0) {
-                    alert('💝 Chị ơi, hãy nhập số tiền em nhé!');
-                    return;
-                }
+                if (!amount || amount <= 0) { alert('💝 Chị ơi, hãy nhập số tiền em nhé!'); return; }
                 showTrollMessage(overlay);
             };
-
             document.getElementById('skipTransferBtn').onclick = function() {
                 overlay.remove();
                 quizPage.classList.add('hidden');
@@ -708,9 +338,7 @@
             };
         }
 
-        // ============================================
         // ===== TROLL =====
-        // ============================================
         function showTrollMessage(overlay) {
             overlay.innerHTML = `
                 <div class="troll-card">
@@ -731,9 +359,7 @@
             };
         }
 
-        // ============================================
         // ===== LÁ THƯ =====
-        // ============================================
         const letters = [
             { emoji: '💖', content: 'Chị à, em chúc chị luôn vui vẻ và hạnh phúc! Chị xứng đáng với những điều tốt đẹp nhất trên đời này. 🌸' },
             { emoji: '🌟', content: 'Cảm ơn chị vì luôn bên em, chăm sóc và yêu thương em. Em may mắn khi có chị trong cuộc đời! 🥰' },
@@ -757,48 +383,33 @@
             letterContent.textContent = letter.content;
             letterCounter.textContent = 'Lá thư ' + (index + 1) + ' / ' + letters.length;
             let dots = '';
-            for (let i = 0; i < letters.length; i++) {
-                dots += i === index ? '●' : '○';
-            }
+            for (let i = 0; i < letters.length; i++) { dots += i === index ? '●' : '○'; }
             pageDot.textContent = dots;
             prevBtn.disabled = index === 0;
             nextBtn.disabled = index === letters.length - 1;
         }
 
         function nextLetter() {
-            if (currentLetter < letters.length - 1) {
-                currentLetter++;
-                updateLetter(currentLetter);
-            } else {
-                currentLetter = 0;
-                updateLetter(currentLetter);
-            }
+            if (currentLetter < letters.length - 1) { currentLetter++;
+                updateLetter(currentLetter); } else { currentLetter = 0;
+                updateLetter(currentLetter); }
         }
 
-        function startAutoSlide() {
-            if (autoSlideTimer) clearInterval(autoSlideTimer);
-            autoSlideTimer = setInterval(nextLetter, 4000);
-        }
+        function startAutoSlide() { if (autoSlideTimer) clearInterval(autoSlideTimer);
+            autoSlideTimer = setInterval(nextLetter, 4000); }
 
         prevBtn.onclick = function() {
-            if (currentLetter > 0) {
-                currentLetter--;
+            if (currentLetter > 0) { currentLetter--;
                 updateLetter(currentLetter);
                 clearInterval(autoSlideTimer);
-                setTimeout(startAutoSlide, 5000);
-            }
+                setTimeout(startAutoSlide, 5000); }
         };
-
         nextBtn.onclick = function() {
-            if (currentLetter < letters.length - 1) {
-                currentLetter++;
+            if (currentLetter < letters.length - 1) { currentLetter++;
                 updateLetter(currentLetter);
                 clearInterval(autoSlideTimer);
-                setTimeout(startAutoSlide, 5000);
-            }
+                setTimeout(startAutoSlide, 5000); }
         };
-
-        // Khởi tạo lá thư đầu tiên
         updateLetter(0);
     </script>
 </body>
