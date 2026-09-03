@@ -33,7 +33,7 @@ function stopFloating() {
 
 startFloating();
 
-document.addEventListener('visibilitychange', function() {
+document.addEventListener('visibilitychange', () => {
     if (document.hidden) {
         stopFloating();
     } else {
@@ -41,43 +41,48 @@ document.addEventListener('visibilitychange', function() {
     }
 });
 
-// ============================================
-// ===== MẬT KHẨU =====
-// ============================================
+// ===== COUNTDOWN - CHỜ ĐẾN NGÀY 4/9/2026 =====
+const targetDate = new Date(2026, 8, 4, 0, 0, 0); // 4/9/2026
+const TARGET_DATE = targetDate.getTime();
+
+const countdownPage = document.getElementById('countdownPage');
+const quizPage = document.getElementById('quizPage');
+const loginPage = document.getElementById('loginPage');
+const letterPage = document.getElementById('letterPage');
+const transferPage = document.getElementById('transferPage');
+const jumpscareOverlay = document.getElementById('jumpscareOverlay');
+
+const daysEl = document.getElementById('countdownDays');
+const hoursEl = document.getElementById('countdownHours');
+const minutesEl = document.getElementById('countdownMinutes');
+const secondsEl = document.getElementById('countdownSeconds');
+const daysLeftEl = document.getElementById('daysLeft');
+const countdownMessage = document.getElementById('countdownMessage');
+let countdownInterval = null;
+
+// ===== MẬT KHẨU (đặt sớm, chạy trước mọi phần khác để luôn hoạt động) =====
 const PASSWORD = '492006';
 const display = document.getElementById('display');
 const errorMsg = document.getElementById('errorMsg');
-const loginPage = document.getElementById('loginPage');
-const quizPage = document.getElementById('quizPage');
-const letterPage = document.getElementById('letterPage');
-
 let input = '';
 
-// Hàm xử lý phím bấm - Dùng function thường, không arrow
-function pressKey(val) {
-    console.log('pressKey called with:', val);
-    
+function handleKey(val) {
     if (val === 'clear') {
         input = input.slice(0, -1);
     } else if (val === 'enter') {
         if (input === PASSWORD) {
             loginPage.classList.add('hidden');
-            quizPage.classList.remove('hidden');
+            letterPage.classList.remove('hidden');
             errorMsg.classList.add('hidden');
             input = '';
             display.textContent = '❤️';
-            startQuiz();
-            startBirthdayEffect();
-            return;
         } else {
             errorMsg.classList.remove('hidden');
             input = '';
             display.textContent = '❤️';
-            setTimeout(function() {
-                errorMsg.classList.add('hidden');
-            }, 2000);
-            return;
+            setTimeout(() => errorMsg.classList.add('hidden'), 2000);
         }
+        return;
     } else {
         if (input.length < 6) {
             input += val;
@@ -86,432 +91,235 @@ function pressKey(val) {
     display.textContent = input.length > 0 ? input : '❤️';
 }
 
-// === GÁN SỰ KIỆN CHO CÁC PHÍM TRÊN MÀN HÌNH ===
-document.addEventListener('DOMContentLoaded', function() {
-    const keys = document.querySelectorAll('.key');
-    console.log('Found keys:', keys.length);
-    
-    keys.forEach(function(btn) {
-        btn.addEventListener('click', function(e) {
-            e.preventDefault();
-            const val = this.getAttribute('data-value');
-            console.log('Key clicked:', val);
-            pressKey(val);
-        });
+document.querySelectorAll('.key').forEach(btn => {
+    btn.addEventListener('click', () => {
+        const val = btn.dataset.value;
+        handleKey(val);
     });
 });
 
-// === BÀN PHÍM VẬT LÝ ===
-document.addEventListener('keydown', function(e) {
+document.addEventListener('keydown', (e) => {
     const key = e.key;
-    console.log('Physical key pressed:', key);
-    
     if (key >= '0' && key <= '9') {
-        e.preventDefault();
-        pressKey(key);
+        handleKey(key);
     } else if (key === 'Backspace') {
-        e.preventDefault();
-        pressKey('clear');
+        handleKey('clear');
     } else if (key === 'Enter') {
-        e.preventDefault();
-        pressKey('enter');
+        handleKey('enter');
     }
 });
 
-// === LUÔN HIỆN LOGIN ===
-loginPage.classList.remove('hidden');
+function updateCountdown() {
+    const now = new Date().getTime();
+    const diff = TARGET_DATE - now;
 
-// ============================================
-// ===== QUIZ =====
-// ============================================
-const questions = [
-    {
-        question: "👉 [Câu hỏi 1 - Anh/chị tự điền]",
-        options: ["A. Đáp án A", "B. Đáp án B", "C. Đáp án C", "D. Đáp án D"],
-        correct: 0
-    },
-    {
-        question: "👉 [Câu hỏi 2 - Anh/chị tự điền]",
-        options: ["A. Đáp án A", "B. Đáp án B", "C. Đáp án C", "D. Đáp án D"],
-        correct: 1
-    },
-    {
-        question: "👉 [Câu hỏi 3 - Anh/chị tự điền]",
-        options: ["A. Đáp án A", "B. Đáp án B", "C. Đáp án C", "D. Đáp án D"],
-        correct: 2
-    },
-    {
-        question: "👉 [Câu hỏi 4 - Anh/chị tự điền]",
-        options: ["A. Đáp án A", "B. Đáp án B", "C. Đáp án C", "D. Đáp án D"],
-        correct: 3
-    },
-    {
-        question: "💖 Chị có quý em không?",
-        options: ["Có 💕", "Không 😢"],
-        correct: 0,
-        isFinal: true
-    }
-];
-
-let currentQuestion = 0;
-const questionText = document.getElementById('questionText');
-const optionsContainer = document.getElementById('optionsContainer');
-const questionCounter = document.getElementById('questionCounter');
-const quizResult = document.getElementById('quizResult');
-const resultText = document.getElementById('resultText');
-
-function startQuiz() {
-    currentQuestion = 0;
-    quizResult.classList.add('hidden');
-    renderQuestion();
-}
-
-function renderQuestion() {
-    const q = questions[currentQuestion];
-    questionText.textContent = q.question;
-    questionCounter.textContent = 'Câu ' + (currentQuestion + 1) + ' / ' + questions.length;
-
-    optionsContainer.innerHTML = '';
-
-    q.options.forEach(function(opt, index) {
-        const btn = document.createElement('button');
-        btn.classList.add('option-btn');
-        btn.textContent = opt;
-        btn.dataset.index = index;
-        btn.onclick = function() {
-            handleAnswer(parseInt(this.dataset.index));
-        };
-        optionsContainer.appendChild(btn);
-    });
-
-    quizResult.classList.add('hidden');
-}
-
-function handleAnswer(index) {
-    const q = questions[currentQuestion];
-    const btns = optionsContainer.querySelectorAll('.option-btn');
-
-    if (q.isFinal) {
-        if (index === 0) {
-            showLoveQR();
-        } else {
-            growLoveText();
+    if (diff <= 0) {
+        // Đã đến ngày 4/9 -> chuyển sang quiz (hoặc thẳng vào mật khẩu nếu thiếu trang quiz)
+        if (countdownInterval) clearInterval(countdownInterval);
+        countdownPage.classList.add('hidden');
+        if (quizPage) {
+            quizPage.classList.remove('hidden');
+            startQuiz();
+        } else if (loginPage) {
+            loginPage.classList.remove('hidden');
         }
+        startBirthdayEffect();
         return;
     }
 
-    btns.forEach(function(btn, i) {
-        btn.disabled = true;
-        if (i === q.correct) {
-            btn.classList.add('correct');
-        } else if (i === index && i !== q.correct) {
-            btn.classList.add('wrong');
-        }
-        if (i === index) {
-            btn.classList.add('selected');
-        }
+    const days = Math.floor(diff / (1000 * 60 * 60 * 24));
+    const hours = Math.floor((diff % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+    const minutes = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60));
+    const seconds = Math.floor((diff % (1000 * 60)) / 1000);
+
+    daysEl.textContent = String(days).padStart(2, '0');
+    hoursEl.textContent = String(hours).padStart(2, '0');
+    minutesEl.textContent = String(minutes).padStart(2, '0');
+    secondsEl.textContent = String(seconds).padStart(2, '0');
+    daysLeftEl.textContent = days;
+
+    if (days === 0 && hours < 24) {
+        countdownMessage.innerHTML = '🎉 Hôm nay là ngày 4/9 rồi! Sắp mở được quà rồi! 💝';
+    } else if (days <= 3) {
+        countdownMessage.innerHTML = `💖 Còn ${days} ngày nữa thôi! Chị chuẩn bị tinh thần nhé! 🎂`;
+    } else if (days <= 7) {
+        countdownMessage.innerHTML = `🌸 Chỉ còn ${days} ngày nữa là đến sinh nhật chị! Hồi hộp quá!`;
+    } else {
+        countdownMessage.innerHTML = '💝 Hãy chờ đến ngày 4/9 nhé! Món quà đang chờ chị! 🎁';
+    }
+}
+
+updateCountdown();
+countdownInterval = setInterval(updateCountdown, 1000);
+
+// ===== QUIZ 5 CÂU =====
+// SỬA NỘI DUNG CÂU HỎI + ĐÁP ÁN Ở ĐÂY.
+// "correct" là số thứ tự đáp án đúng: 0 = A, 1 = B, 2 = C, 3 = D
+const quizQuestions = [
+    {
+        question: 'Câu 1: (Sửa câu hỏi ở đây)',
+        answers: ['Đáp án A', 'Đáp án B', 'Đáp án C', 'Đáp án D'],
+        correct: 0
+    },
+    {
+        question: 'Câu 2: (Sửa câu hỏi ở đây)',
+        answers: ['Đáp án A', 'Đáp án B', 'Đáp án C', 'Đáp án D'],
+        correct: 0
+    },
+    {
+        question: 'Câu 3: (Sửa câu hỏi ở đây)',
+        answers: ['Đáp án A', 'Đáp án B', 'Đáp án C', 'Đáp án D'],
+        correct: 0
+    },
+    {
+        question: 'Câu 4: (Sửa câu hỏi ở đây)',
+        answers: ['Đáp án A', 'Đáp án B', 'Đáp án C', 'Đáp án D'],
+        correct: 0
+    }
+];
+
+const quizCounter = document.getElementById('quizCounter');
+const quizQuestionBox = document.getElementById('quizQuestionBox');
+const quizQuestionText = document.getElementById('quizQuestionText');
+const quizAnswers = document.getElementById('quizAnswers');
+const quizFeedback = document.getElementById('quizFeedback');
+const quizQ5Box = document.getElementById('quizQ5Box');
+const btnKhong = document.getElementById('btnKhong');
+const btnCoReal = document.getElementById('btnCoReal');
+const q5Overlay = document.getElementById('q5Overlay');
+
+let currentQ = 0;
+let khongClicks = 0;
+
+function renderQuestion() {
+    if (!quizQuestionText || !quizAnswers) return;
+    const q = quizQuestions[currentQ];
+    if (quizCounter) quizCounter.textContent = `Câu ${currentQ + 1} / 5`;
+    quizQuestionText.textContent = q.question;
+
+    const btns = quizAnswers.querySelectorAll('.quiz-answer-btn');
+    btns.forEach((btn, i) => {
+        btn.querySelector('.ans-text').textContent = q.answers[i];
+        btn.classList.remove('correct', 'wrong');
+        btn.disabled = false;
     });
+    quizFeedback.classList.add('hidden');
+}
+
+function selectAnswer(index) {
+    if (!quizAnswers) return;
+    const q = quizQuestions[currentQ];
+    const btns = quizAnswers.querySelectorAll('.quiz-answer-btn');
+    btns.forEach(b => b.disabled = true);
 
     if (index === q.correct) {
-        resultText.textContent = '✅ Đúng rồi! Chị giỏi quá! 🌟';
+        btns[index].classList.add('correct');
+        quizFeedback.textContent = '✅ Chính xác!';
     } else {
-        resultText.textContent = '❌ Sai rồi! Đáp án đúng là ' + q.options[q.correct];
+        btns[index].classList.add('wrong');
+        btns[q.correct].classList.add('correct');
+        quizFeedback.textContent = '❌ Chưa đúng, đáp án đúng là ' + ['A', 'B', 'C', 'D'][q.correct];
     }
-    quizResult.classList.remove('hidden');
+    quizFeedback.classList.remove('hidden');
 
-    setTimeout(function() {
-        if (currentQuestion < questions.length - 1) {
-            currentQuestion++;
+    setTimeout(() => {
+        currentQ++;
+        if (currentQ < quizQuestions.length) {
             renderQuestion();
         } else {
-            quizPage.classList.add('hidden');
-            letterPage.classList.remove('hidden');
-            currentLetter = 0;
-            updateLetter(0);
-            startAutoSlide();
+            // Chuyển sang câu 5 đặc biệt
+            if (quizQuestionBox) quizQuestionBox.classList.add('hidden');
+            if (quizCounter) quizCounter.textContent = 'Câu 5 / 5';
+            if (quizQ5Box) quizQ5Box.classList.remove('hidden');
         }
-    }, 1500);
+    }, 1400);
 }
 
-// ============================================
-// ===== XỬ LÝ CÂU CUỐI =====
-// ============================================
-let noClickCount = 0;
-let loveOverlay = null;
+if (quizAnswers) {
+    quizAnswers.querySelectorAll('.quiz-answer-btn').forEach((btn, i) => {
+        btn.addEventListener('click', () => selectAnswer(i));
+    });
+}
 
-function growLoveText() {
-    if (!loveOverlay) {
-        loveOverlay = document.createElement('div');
-        loveOverlay.id = 'loveOverlay';
-        loveOverlay.style.cssText = `
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            z-index: 9999;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            background: rgba(214, 51, 108, 0.92);
-            animation: growLoveBg 0.5s ease forwards;
-            cursor: pointer;
-        `;
-
-        const text = document.createElement('div');
-        text.id = 'loveText';
-        text.textContent = '💖 CÓ 💖';
-        text.style.cssText = `
-            font-size: 40px;
-            font-weight: 900;
-            color: #fff;
-            text-shadow: 0 0 30px rgba(255,255,255,0.5);
-            transition: all 0.3s ease;
-            user-select: none;
-        `;
-
-        loveOverlay.appendChild(text);
-        document.body.appendChild(loveOverlay);
-
-        const style = document.createElement('style');
-        style.id = 'loveStyle';
-        style.textContent = `
-            @keyframes growLoveBg {
-                0% { transform: scale(0.5); opacity: 0; }
-                100% { transform: scale(1); opacity: 1; }
-            }
-            @keyframes pulseLove {
-                0%, 100% { transform: scale(1); }
-                50% { transform: scale(1.1); }
-            }
-        `;
-        document.head.appendChild(style);
-
-        loveOverlay.onclick = function() {
-            noClickCount++;
-            const textEl = document.getElementById('loveText');
-            if (textEl) {
-                const sizes = [40, 60, 80, 120, 200, 300];
-                const idx = Math.min(noClickCount, sizes.length - 1);
-                textEl.style.fontSize = sizes[idx] + 'px';
-                
-                textEl.style.animation = 'none';
-                setTimeout(() => {
-                    textEl.style.animation = 'pulseLove 0.5s ease';
-                }, 10);
-                
-                if (noClickCount >= sizes.length - 1) {
-                    setTimeout(function() {
-                        if (loveOverlay) {
-                            loveOverlay.remove();
-                            loveOverlay = null;
-                        }
-                        quizPage.classList.add('hidden');
-                        letterPage.classList.remove('hidden');
-                        currentLetter = 0;
-                        updateLetter(0);
-                        startAutoSlide();
-                    }, 800);
-                }
-            }
-        };
-    } else {
-        loveOverlay.click();
+function growCoOverlay() {
+    if (!q5Overlay) return;
+    khongClicks++;
+    const scale = 1 + khongClicks * 0.55;
+    q5Overlay.style.transform = `translate(-50%, -50%) scale(${scale})`;
+    q5Overlay.style.opacity = Math.min(1, 0.35 + khongClicks * 0.15);
+    if (khongClicks >= 5) {
+        q5Overlay.classList.add('cover-full');
     }
 }
 
-function showLoveQR() {
-    quizPage.classList.add('hidden');
-    showTransferPage();
+if (btnKhong) btnKhong.addEventListener('click', growCoOverlay);
+if (btnCoReal) btnCoReal.addEventListener('click', goToTransfer);
+if (q5Overlay) q5Overlay.addEventListener('click', goToTransfer);
+
+function goToTransfer() {
+    if (quizPage) quizPage.classList.add('hidden');
+    if (transferPage) transferPage.classList.remove('hidden');
 }
 
-// ============================================
-// ===== TRANG CHUYỂN TIỀN + TROLL =====
-// ============================================
-function showTransferPage() {
-    const overlay = document.createElement('div');
-    overlay.id = 'transferOverlay';
-    overlay.style.cssText = `
-        position: fixed;
-        top: 0;
-        left: 0;
-        width: 100%;
-        height: 100%;
-        z-index: 9999;
-        background: rgba(0,0,0,0.7);
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        padding: 20px;
-        overflow-y: auto;
-    `;
-
-    const card = document.createElement('div');
-    card.style.cssText = `
-        background: #fff;
-        border-radius: 30px;
-        padding: 30px 25px;
-        max-width: 420px;
-        width: 100%;
-        text-align: center;
-        box-shadow: 0 20px 60px rgba(0,0,0,0.3);
-        animation: fadeSlide 0.3s ease;
-        max-height: 90vh;
-        overflow-y: auto;
-        position: relative;
-    `;
-
-    card.innerHTML = `
-        <div style="font-size: 48px; margin-bottom: 6px;">💝</div>
-        <h2 style="color: #d6336c; font-size: 24px; margin-bottom: 4px;">Chị thương em bao nhiêu?</h2>
-        <p style="color: #888; font-size: 14px; margin-bottom: 16px;">Số tiền chị chuyển sẽ thể hiện tình cảm dành cho em đó! 💕</p>
-
-        <div style="margin: 12px 0;">
-            <img src="https://api.qrserver.com/v1/create-qr-code/?size=200x200&data=MBANK_QR_CODE_HERE" 
-                 alt="QR Code MB Bank" 
-                 style="width: 180px; height: 180px; border-radius: 16px; border: 3px solid #f0d0e0;" />
-            <p style="font-size: 12px; color: #999; margin-top: 6px;">📱 Quét mã QR để chuyển khoản</p>
-        </div>
-
-        <div style="margin: 12px 0;">
-            <p style="font-size: 14px; color: #666;">Ngân hàng: <strong>MB Bank</strong></p>
-            <p style="font-size: 14px; color: #666;">Số tài khoản: <strong id="accountNumber">[Số TK của anh/chị]</strong></p>
-            <p style="font-size: 14px; color: #666;">Chủ tài khoản: <strong id="accountName">[Tên chủ TK]</strong></p>
-        </div>
-
-        <div style="margin: 12px 0;">
-            <label style="font-size: 14px; color: #666; display: block; text-align: left; margin-bottom: 4px;">
-                💰 Số tiền (VND):
-            </label>
-            <input type="number" id="transferAmount" 
-                   placeholder="Nhập số tiền..." 
-                   style="width: 100%; padding: 12px 16px; border: 2px solid #f0d0e0; border-radius: 16px; font-size: 18px; outline: none; transition: 0.2s;"
-                   onfocus="this.style.borderColor='#d6336c'"
-                   onblur="this.style.borderColor='#f0d0e0'" />
-            <p style="font-size: 12px; color: #999; margin-top: 4px;">💡 Số tiền sẽ tùy vào mức độ quý mến của chị dành cho em!</p>
-        </div>
-
-        <button id="transferBtn" 
-                style="width: 100%; padding: 14px; background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%); border: none; border-radius: 30px; font-size: 18px; font-weight: 600; color: #fff; cursor: pointer; box-shadow: 0 8px 25px rgba(245, 87, 108, 0.35); transition: 0.2s; margin-top: 8px;">
-            💸 Chuyển khoản ngay
-        </button>
-
-        <button id="skipTransferBtn" 
-                style="width: 100%; padding: 12px; background: transparent; border: 2px solid #ddd; border-radius: 30px; font-size: 16px; color: #888; cursor: pointer; margin-top: 10px; transition: 0.2s;">
-            ❌ Bỏ qua, đọc thư sau
-        </button>
-    `;
-
-    overlay.appendChild(card);
-    document.body.appendChild(overlay);
-
-    document.getElementById('transferBtn').addEventListener('click', function() {
-        const amount = document.getElementById('transferAmount').value;
-        if (!amount || amount <= 0) {
-            alert('💝 Chị ơi, hãy nhập số tiền em nhé!');
-            return;
-        }
-        showTrollMessage(overlay);
-    });
-
-    document.getElementById('skipTransferBtn').addEventListener('click', function() {
-        overlay.remove();
-        quizPage.classList.add('hidden');
-        letterPage.classList.remove('hidden');
-        currentLetter = 0;
-        updateLetter(0);
-        startAutoSlide();
-    });
-
-    const style2 = document.createElement('style');
-    style2.textContent = `
-        @keyframes fadeSlide {
-            0% { opacity: 0; transform: translateY(20px) scale(0.95); }
-            100% { opacity: 1; transform: translateY(0) scale(1); }
-        }
-    `;
-    document.head.appendChild(style2);
+function startQuiz() {
+    currentQ = 0;
+    khongClicks = 0;
+    if (q5Overlay) {
+        q5Overlay.style.transform = 'translate(-50%, -50%) scale(1)';
+        q5Overlay.style.opacity = 0.35;
+        q5Overlay.classList.remove('cover-full');
+    }
+    if (quizQ5Box) quizQ5Box.classList.add('hidden');
+    if (quizQuestionBox) quizQuestionBox.classList.remove('hidden');
+    renderQuestion();
 }
 
-function showTrollMessage(overlay) {
-    overlay.innerHTML = '';
-    overlay.style.cssText = `
-        position: fixed;
-        top: 0;
-        left: 0;
-        width: 100%;
-        height: 100%;
-        z-index: 9999;
-        background: rgba(0,0,0,0.85);
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        padding: 20px;
-        animation: fadeSlide 0.5s ease;
-    `;
+// ===== FORM CHUYỂN KHOẢN GIẢ (TROLL) =====
+const transferSubmitBtn = document.getElementById('transferSubmitBtn');
 
-    const trollCard = document.createElement('div');
-    trollCard.style.cssText = `
-        background: linear-gradient(135deg, #ff6b6b, #ee5a24);
-        border-radius: 40px;
-        padding: 50px 40px;
-        max-width: 450px;
-        width: 100%;
-        text-align: center;
-        box-shadow: 0 30px 80px rgba(0,0,0,0.5);
-        animation: trollPop 0.6s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-    `;
-
-    trollCard.innerHTML = `
-        <div style="font-size: 80px; margin-bottom: 10px;">🤡</div>
-        <h1 style="color: #fff; font-size: 48px; font-weight: 900; text-shadow: 0 4px 20px rgba(0,0,0,0.3);">
-            TROLL!!!
-        </h1>
-        <p style="color: rgba(255,255,255,0.9); font-size: 20px; margin: 16px 0 20px; line-height: 1.6;">
-            🤣 Chị bị lừa rồi! <br>
-            Đây chỉ là trang web tình cảm thôi! 💕
-        </p>
-        <div style="font-size: 60px; margin: 10px 0;">😝</div>
-        <button id="trollContinueBtn" 
-                style="margin-top: 16px; padding: 16px 40px; background: #fff; border: none; border-radius: 50px; font-size: 20px; font-weight: 700; color: #ee5a24; cursor: pointer; box-shadow: 0 8px 30px rgba(0,0,0,0.2); transition: 0.2s;">
-            💌 Đọc thư đi nào!
-        </button>
-    `;
-
-    overlay.appendChild(trollCard);
-
-    const style = document.createElement('style');
-    style.textContent = `
-        @keyframes trollPop {
-            0% { transform: scale(0.3) rotate(-10deg); opacity: 0; }
-            100% { transform: scale(1) rotate(0deg); opacity: 1; }
+if (transferSubmitBtn) {
+    transferSubmitBtn.addEventListener('click', (e) => {
+        e.preventDefault();
+        if (transferPage) transferPage.classList.add('hidden');
+        if (jumpscareOverlay) {
+            jumpscareOverlay.classList.remove('hidden');
+            jumpscareOverlay.classList.add('shake');
         }
-        @keyframes fadeSlide {
-            0% { opacity: 0; }
-            100% { opacity: 1; }
-        }
-    `;
-    document.head.appendChild(style);
 
-    document.getElementById('trollContinueBtn').addEventListener('click', function() {
-        overlay.remove();
-        quizPage.classList.add('hidden');
-        letterPage.classList.remove('hidden');
-        currentLetter = 0;
-        updateLetter(0);
-        startAutoSlide();
+        setTimeout(() => {
+            if (jumpscareOverlay) {
+                jumpscareOverlay.classList.add('hidden');
+                jumpscareOverlay.classList.remove('shake');
+            }
+            if (loginPage) loginPage.classList.remove('hidden');
+        }, 2200);
     });
 }
 
-// ============================================
-// ===== LÁ THƯ =====
-// ============================================
+// (Mật khẩu đã được chuyển lên đầu file để luôn chạy được dù phần khác lỗi)
+
+// ===== LÁ THƯ - TỰ ĐỘNG CHUYỂN =====
 const letters = [
-    { emoji: '💖', content: 'Chị à, em chúc chị luôn vui vẻ và hạnh phúc! Chị xứng đáng với những điều tốt đẹp nhất trên đời này. 🌸' },
-    { emoji: '🌟', content: 'Cảm ơn chị vì luôn bên em, chăm sóc và yêu thương em. Em may mắn khi có chị trong cuộc đời! 🥰' },
-    { emoji: '🌈', content: 'Chúc chị năm mới tuổi mới thật nhiều niềm vui, sức khỏe và thành công trong mọi dự định! 🎊' },
-    { emoji: '🌺', content: 'Chị luôn là nguồn cảm hứng và là hình mẫu của em. Em yêu chị rất nhiều! Mong chị luôn xinh đẹp và rạng rỡ! ✨' },
-    { emoji: '🎁', content: 'Tuổi mới, chị hãy sống thật vui và thật ý nghĩa nhé! Em luôn ủng hộ và yêu thương chị! 💕' }
+    {
+        emoji: '💖',
+        content: 'Chị à, em chúc chị luôn vui vẻ và hạnh phúc! Chị xứng đáng với những điều tốt đẹp nhất trên đời này. 🌸'
+    },
+    {
+        emoji: '🌟',
+        content: 'Cảm ơn chị vì luôn bên em, chăm sóc và yêu thương em. Em may mắn khi có chị trong cuộc đời! 🥰'
+    },
+    {
+        emoji: '🌈',
+        content: 'Chúc chị năm mới tuổi mới thật nhiều niềm vui, sức khỏe và thành công trong mọi dự định! 🎊'
+    },
+    {
+        emoji: '🌺',
+        content: 'Chị luôn là nguồn cảm hứng và là hình mẫu của em. Em yêu chị rất nhiều! Mong chị luôn xinh đẹp và rạng rỡ! ✨'
+    },
+    {
+        emoji: '🎁',
+        content: 'Tuổi mới, chị hãy sống thật vui và thật ý nghĩa nhé! Em luôn ủng hộ và yêu thương chị! 💕'
+    }
 ];
 
 let currentLetter = 0;
@@ -527,7 +335,7 @@ function updateLetter(index) {
     const letter = letters[index];
     letterEmoji.textContent = letter.emoji;
     letterContent.textContent = letter.content;
-    letterCounter.textContent = 'Lá thư ' + (index + 1) + ' / ' + letters.length;
+    letterCounter.textContent = `Lá thư ${index + 1} / ${letters.length}`;
 
     let dots = '';
     for (let i = 0; i < letters.length; i++) {
@@ -540,7 +348,7 @@ function updateLetter(index) {
 
     const display = document.getElementById('letterDisplay');
     display.style.animation = 'none';
-    requestAnimationFrame(function() {
+    requestAnimationFrame(() => {
         display.style.animation = 'fadeSlide 0.4s ease';
     });
 }
@@ -570,7 +378,7 @@ function stopAutoSlide() {
     }
 }
 
-prevBtn.addEventListener('click', function() {
+prevBtn.addEventListener('click', () => {
     if (currentLetter > 0) {
         currentLetter--;
         updateLetter(currentLetter);
@@ -579,7 +387,7 @@ prevBtn.addEventListener('click', function() {
     }
 });
 
-nextBtn.addEventListener('click', function() {
+nextBtn.addEventListener('click', () => {
     if (currentLetter < letters.length - 1) {
         currentLetter++;
         updateLetter(currentLetter);
@@ -588,18 +396,18 @@ nextBtn.addEventListener('click', function() {
     }
 });
 
-document.getElementById('letterDisplay').addEventListener('mouseenter', function() {
+document.getElementById('letterDisplay').addEventListener('mouseenter', () => {
     stopAutoSlide();
 });
 
-document.getElementById('letterDisplay').addEventListener('mouseleave', function() {
+document.getElementById('letterDisplay').addEventListener('mouseleave', () => {
     if (!letterPage.classList.contains('hidden')) {
         startAutoSlide();
     }
 });
 
 let paused = false;
-document.addEventListener('touchstart', function(e) {
+document.addEventListener('touchstart', (e) => {
     if (letterPage.classList.contains('hidden')) return;
     if (!paused) {
         stopAutoSlide();
@@ -610,14 +418,61 @@ document.addEventListener('touchstart', function(e) {
     }
 });
 
-// ============================================
-// ===== BÁNH SINH NHẬT + HOA =====
-// ============================================
+// ===== HIỆU ỨNG PHONG BÌ MỞ THƯ + TRÁI TIM BAY =====
+const envelopeIntro = document.getElementById('envelopeIntro');
+const letterMain = document.getElementById('letterMain');
+const letterHeartsLayer = document.getElementById('letterHeartsLayer');
+let heartsTimer = null;
+
+function spawnFloatingHeart() {
+    const heart = document.createElement('div');
+    heart.classList.add('floating-heart');
+    const emojis = ['💖', '💕', '💗', '✨', '🌸', '💌'];
+    heart.textContent = emojis[Math.floor(Math.random() * emojis.length)];
+    heart.style.left = Math.random() * 100 + '%';
+    heart.style.setProperty('--drift', (Math.random() * 80 - 40) + 'px');
+    heart.style.animationDuration = (6 + Math.random() * 6) + 's';
+    heart.style.fontSize = (14 + Math.random() * 14) + 'px';
+    letterHeartsLayer.appendChild(heart);
+    setTimeout(() => heart.remove(), 13000);
+}
+
+function startLetterHearts() {
+    if (heartsTimer) return;
+    if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+    heartsTimer = setInterval(spawnFloatingHeart, 500);
+}
+
+function playEnvelopeIntro() {
+    envelopeIntro.classList.remove('hidden');
+    letterMain.classList.add('hidden');
+    startLetterHearts();
+
+    setTimeout(() => {
+        envelopeIntro.classList.add('hidden');
+        letterMain.classList.remove('hidden');
+        currentLetter = 0;
+        updateLetter(0);
+        startAutoSlide();
+    }, 2400);
+}
+
+const observer = new MutationObserver(() => {
+    if (!letterPage.classList.contains('hidden')) {
+        playEnvelopeIntro();
+    }
+});
+observer.observe(letterPage, { attributes: true, attributeFilter: ['class'] });
+
+if (!letterPage.classList.contains('hidden')) {
+    playEnvelopeIntro();
+}
+
+// ===== BÁNH SINH NHẬT + HOA RƠI TỰ ĐỘNG =====
 const canvas = document.getElementById('birthdayCanvas');
 const ctx = canvas.getContext('2d');
 
 let W, H;
-
 function resizeCanvas() {
     W = canvas.width = window.innerWidth;
     H = canvas.height = window.innerHeight;
@@ -625,8 +480,13 @@ function resizeCanvas() {
 resizeCanvas();
 window.addEventListener('resize', resizeCanvas);
 
-function Flower() {
-    this.reset = function() {
+class Flower {
+    constructor() {
+        this.reset();
+        this.y = Math.random() * -H;
+    }
+
+    reset() {
         this.x = Math.random() * W;
         this.y = -20;
         this.size = 15 + Math.random() * 25;
@@ -640,14 +500,18 @@ function Flower() {
         this.petalColor = this.randomColor();
         this.centerColor = '#ffd93d';
         this.type = Math.floor(Math.random() * 3);
-    };
+    }
 
-    this.randomColor = function() {
-        const colors = ['#ff6b6b', '#ff9ff3', '#feca57', '#ff9f43', '#ff4757', '#ff6348', '#ff7f50', '#ff6b81', '#ffcccc', '#ffb8b8', '#ffd93d', '#ffda79'];
+    randomColor() {
+        const colors = [
+            '#ff6b6b', '#ff9ff3', '#feca57', '#ff9f43',
+            '#ff4757', '#ff6348', '#ff7f50', '#ff6b81',
+            '#ffcccc', '#ffb8b8', '#ffd93d', '#ffda79'
+        ];
         return colors[Math.floor(Math.random() * colors.length)];
-    };
+    }
 
-    this.draw = function() {
+    draw() {
         ctx.save();
         ctx.translate(this.x, this.y);
         ctx.rotate(this.rotation);
@@ -696,9 +560,9 @@ function Flower() {
         ctx.fill();
 
         ctx.restore();
-    };
+    }
 
-    this.update = function() {
+    update() {
         this.y += this.speed;
         this.x += Math.sin(this.phase) * this.swing;
         this.phase += this.swingSpeed;
@@ -707,43 +571,43 @@ function Flower() {
         if (this.y > H + 50) {
             this.reset();
         }
-    };
-
-    this.reset();
+    }
 }
 
-function BirthdayCake() {
-    this.x = W / 2;
-    this.y = H / 2 + 60;
-    this.scale = Math.min(W, H) / 500;
-    this.layers = 3;
-    this.decorations = [];
-    this.candles = [];
+class BirthdayCake {
+    constructor() {
+        this.x = W / 2;
+        this.y = H / 2 + 60;
+        this.scale = Math.min(W, H) / 500;
+        this.layers = 3;
+        this.decorations = [];
+        this.candles = [];
 
-    for (let i = 0; i < 7; i++) {
-        this.candles.push({
-            x: (i - 3) * 22 * this.scale,
-            y: 0,
-            height: 40 * this.scale + Math.random() * 10 * this.scale,
-            width: 8 * this.scale,
-            color: ['#ff6b6b', '#feca57', '#48dbfb', '#ff9ff3', '#54a0ff', '#ff9f43', '#00d2d3'][i % 7],
-            flame: {
-                size: 12 * this.scale + Math.random() * 4 * this.scale,
-                flicker: Math.random() * 0.5
-            }
-        });
+        for (let i = 0; i < 7; i++) {
+            this.candles.push({
+                x: (i - 3) * 22 * this.scale,
+                y: 0,
+                height: 40 * this.scale + Math.random() * 10 * this.scale,
+                width: 8 * this.scale,
+                color: ['#ff6b6b', '#feca57', '#48dbfb', '#ff9ff3', '#54a0ff', '#ff9f43', '#00d2d3'][i % 7],
+                flame: {
+                    size: 12 * this.scale + Math.random() * 4 * this.scale,
+                    flicker: Math.random() * 0.5
+                }
+            });
+        }
+
+        for (let i = 0; i < 30; i++) {
+            this.decorations.push({
+                x: (Math.random() - 0.5) * 200 * this.scale,
+                y: Math.random() * 60 * this.scale - 30 * this.scale,
+                size: 4 * this.scale + Math.random() * 6 * this.scale,
+                color: ['#ff6b6b', '#feca57', '#48dbfb', '#ff9ff3', '#54a0ff', '#ff9f43', '#00d2d3'][Math.floor(Math.random() * 7)]
+            });
+        }
     }
 
-    for (let i = 0; i < 30; i++) {
-        this.decorations.push({
-            x: (Math.random() - 0.5) * 200 * this.scale,
-            y: Math.random() * 60 * this.scale - 30 * this.scale,
-            size: 4 * this.scale + Math.random() * 6 * this.scale,
-            color: ['#ff6b6b', '#feca57', '#48dbfb', '#ff9ff3', '#54a0ff', '#ff9f43', '#00d2d3'][Math.floor(Math.random() * 7)]
-        });
-    }
-
-    this.draw = function() {
+    draw() {
         ctx.save();
         ctx.translate(this.x, this.y);
         ctx.scale(this.scale, this.scale);
@@ -770,35 +634,35 @@ function BirthdayCake() {
             ctx.shadowBlur = 20;
             ctx.shadowOffsetY = 5;
 
-            const grad = ctx.createLinearGradient(-w / 2, yOffset - h / 2, w / 2, yOffset + h / 2);
+            const grad = ctx.createLinearGradient(-w/2, yOffset - h/2, w/2, yOffset + h/2);
             grad.addColorStop(0, layerColors[i]);
             grad.addColorStop(0.5, '#fff0f5');
             grad.addColorStop(1, layerColors[i]);
 
             ctx.fillStyle = grad;
             ctx.beginPath();
-            ctx.roundRect(-w / 2, yOffset - h / 2, w, h, 12);
+            ctx.roundRect(-w/2, yOffset - h/2, w, h, 12);
             ctx.fill();
 
             ctx.shadowBlur = 0;
             ctx.strokeStyle = 'rgba(255,255,255,0.3)';
             ctx.lineWidth = 2;
             ctx.beginPath();
-            ctx.roundRect(-w / 2, yOffset - h / 2, w, h, 12);
+            ctx.roundRect(-w/2, yOffset - h/2, w, h, 12);
             ctx.stroke();
 
             if (i < this.layers - 1) {
                 for (let j = 0; j < 12; j++) {
-                    const dotX = -w / 2 + 20 + j * ((w - 40) / 11);
+                    const dotX = -w/2 + 20 + j * ((w - 40) / 11);
                     ctx.beginPath();
-                    ctx.arc(dotX, yOffset - h / 2, 6, 0, Math.PI * 2);
+                    ctx.arc(dotX, yOffset - h/2, 6, 0, Math.PI * 2);
                     ctx.fillStyle = 'rgba(255,255,255,0.6)';
                     ctx.fill();
                 }
             }
         }
 
-        this.decorations.forEach(function(dec) {
+        this.decorations.forEach(dec => {
             ctx.shadowBlur = 0;
             ctx.fillStyle = dec.color;
             ctx.beginPath();
@@ -807,10 +671,10 @@ function BirthdayCake() {
             ctx.strokeStyle = 'rgba(255,255,255,0.3)';
             ctx.lineWidth = 1;
             ctx.stroke();
-        }.bind(this));
+        });
 
         const candleY = -this.layers * 40 + 20;
-        this.candles.forEach(function(candle, idx) {
+        this.candles.forEach((candle, idx) => {
             const x = candle.x;
 
             ctx.shadowColor = 'rgba(0,0,0,0.15)';
@@ -819,7 +683,7 @@ function BirthdayCake() {
 
             ctx.fillStyle = candle.color;
             ctx.beginPath();
-            ctx.roundRect(x - candle.width / 2, candleY - candle.height, candle.width, candle.height, 3);
+            ctx.roundRect(x - candle.width/2, candleY - candle.height, candle.width, candle.height, 3);
             ctx.fill();
 
             ctx.shadowBlur = 0;
@@ -828,8 +692,8 @@ function BirthdayCake() {
             for (let s = 0; s < 3; s++) {
                 const sy = candleY - candle.height + 8 + s * 12;
                 ctx.beginPath();
-                ctx.moveTo(x - candle.width / 2 + 2, sy);
-                ctx.lineTo(x + candle.width / 2 - 2, sy);
+                ctx.moveTo(x - candle.width/2 + 2, sy);
+                ctx.lineTo(x + candle.width/2 - 2, sy);
                 ctx.stroke();
             }
 
@@ -858,10 +722,10 @@ function BirthdayCake() {
             ctx.beginPath();
             ctx.ellipse(x + flickerX * 0.5, candleY - candle.height - flameSize * 0.4, flameSize * 0.2, flameSize * 0.4, 0, 0, Math.PI * 2);
             ctx.fill();
-        }.bind(this));
+        });
 
         ctx.restore();
-    };
+    }
 }
 
 let flowers = [];
@@ -889,7 +753,7 @@ function animate() {
         cake.draw();
     }
 
-    flowers.forEach(function(flower) {
+    flowers.forEach(flower => {
         flower.update();
         flower.draw();
     });
@@ -899,8 +763,8 @@ function animate() {
 
 if (!CanvasRenderingContext2D.prototype.roundRect) {
     CanvasRenderingContext2D.prototype.roundRect = function(x, y, w, h, r) {
-        if (r > w / 2) r = w / 2;
-        if (r > h / 2) r = h / 2;
+        if (r > w/2) r = w/2;
+        if (r > h/2) r = h/2;
         this.moveTo(x + r, y);
         this.lineTo(x + w - r, y);
         this.quadraticCurveTo(x + w, y, x + w, y + r);
@@ -914,7 +778,7 @@ if (!CanvasRenderingContext2D.prototype.roundRect) {
     };
 }
 
-window.addEventListener('resize', function() {
+window.addEventListener('resize', () => {
     resizeCanvas();
     if (cake) {
         cake.x = W / 2;
@@ -922,4 +786,14 @@ window.addEventListener('resize', function() {
     }
 });
 
-startBirthdayEffect();
+// ===== NẾU ĐÃ QUA NGÀY 4/9, BẮT ĐẦU QUIZ NGAY =====
+if (new Date().getTime() >= TARGET_DATE) {
+    countdownPage.classList.add('hidden');
+    if (quizPage) {
+        quizPage.classList.remove('hidden');
+        startQuiz();
+    } else if (loginPage) {
+        loginPage.classList.remove('hidden');
+    }
+    startBirthdayEffect();
+}
