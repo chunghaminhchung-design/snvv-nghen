@@ -85,6 +85,8 @@ body {
     text-align: center;
     box-shadow: 0 25px 60px rgba(0,0,0,0.15);
     border: 1px solid rgba(255,255,255,0.3);
+    position: relative;
+    z-index: 2;
 }
 
 /* ---- COUNTDOWN ---- */
@@ -230,73 +232,426 @@ h1 {
     display: none;
 }
 
-/* ---- QUIZ ---- */
-.quiz-container {
-    margin: 10px 0;
+/* ===== QUIZ 5 CÂU ===== */
+.quiz-card {
+    max-width: 520px;
 }
 
-.question-text {
-    font-size: 20px;
+.quiz-question-box.hidden {
+    display: none;
+}
+
+.quiz-question-text {
+    font-size: 18px;
     font-weight: 600;
     color: #333;
-    margin-bottom: 16px;
+    margin: 10px 0 20px;
     line-height: 1.5;
-    min-height: 60px;
 }
 
-.options {
+.quiz-answers {
     display: flex;
     flex-direction: column;
     gap: 10px;
 }
 
-.option-btn {
-    background: rgba(255, 255, 255, 0.7);
+.quiz-answer-btn {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    width: 100%;
+    text-align: left;
+    background: rgba(255,255,255,0.7);
     border: 2px solid rgba(214, 51, 108, 0.15);
     border-radius: 16px;
-    padding: 14px 18px;
-    font-size: 16px;
+    padding: 12px 16px;
+    font-size: 15px;
     color: #333;
     cursor: pointer;
-    transition: all 0.2s ease;
-    text-align: left;
+    transition: all 0.15s ease;
 }
 
-.option-btn:hover {
-    background: rgba(214, 51, 108, 0.08);
-    border-color: #d6336c;
+.quiz-answer-btn:not(:disabled):active {
+    transform: scale(0.98);
 }
 
-.option-btn:active {
-    transform: scale(0.97);
+.quiz-answer-btn:disabled {
+    cursor: default;
 }
 
-.option-btn.selected {
-    background: #d6336c;
-    color: #fff;
-    border-color: #d6336c;
+.ans-letter {
+    flex-shrink: 0;
+    width: 30px;
+    height: 30px;
+    border-radius: 50%;
+    background: rgba(214, 51, 108, 0.12);
+    color: #d6336c;
+    font-weight: 700;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 14px;
 }
 
-.option-btn.correct {
+.quiz-answer-btn.correct {
+    background: rgba(46, 204, 113, 0.18);
+    border-color: rgba(46, 204, 113, 0.5);
+}
+
+.quiz-answer-btn.correct .ans-letter {
     background: #2ecc71;
     color: #fff;
-    border-color: #2ecc71;
 }
 
-.option-btn.wrong {
+.quiz-answer-btn.wrong {
+    background: rgba(231, 76, 60, 0.15);
+    border-color: rgba(231, 76, 60, 0.4);
+}
+
+.quiz-answer-btn.wrong .ans-letter {
     background: #e74c3c;
     color: #fff;
-    border-color: #e74c3c;
 }
 
-.result-text {
-    font-size: 22px;
+.quiz-feedback {
+    margin-top: 14px;
+    font-size: 15px;
+    font-weight: 600;
+    color: #555;
+}
+
+.quiz-feedback.hidden {
+    display: none;
+}
+
+/* ---- Câu 5: Chị có quý em không ---- */
+.q5-wrap {
+    position: relative;
+    display: flex;
+    gap: 16px;
+    justify-content: center;
+    margin-top: 20px;
+    min-height: 60px;
+}
+
+.q5-btn {
+    border: none;
+    border-radius: 30px;
+    padding: 14px 30px;
+    font-size: 17px;
     font-weight: 700;
-    color: #d6336c;
-    margin: 10px 0;
+    cursor: pointer;
+    transition: transform 0.15s ease;
 }
 
-/* ---- LÁ THƯ ---- */
+.q5-btn:active {
+    transform: scale(0.94);
+}
+
+.q5-no {
+    background: rgba(214, 51, 108, 0.1);
+    color: #999;
+}
+
+.q5-yes {
+    background: linear-gradient(135deg, #ff9fc3, #d6336c);
+    color: #fff;
+    box-shadow: 0 6px 16px rgba(214, 51, 108, 0.35);
+}
+
+.q5-overlay {
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    transform: translate(-50%, -50%) scale(1);
+    font-size: 20px;
+    font-weight: 800;
+    color: #fff;
+    background: linear-gradient(135deg, #ff6b9d, #d6336c);
+    padding: 14px 26px;
+    border-radius: 40px;
+    opacity: 0.35;
+    pointer-events: none;
+    transition: transform 0.35s cubic-bezier(.34,1.56,.64,1), opacity 0.3s ease, border-radius 0.3s ease;
+    z-index: 5;
+    cursor: pointer;
+    white-space: nowrap;
+}
+
+.q5-overlay.cover-full {
+    position: fixed;
+    inset: 0;
+    left: 0;
+    top: 0;
+    transform: none;
+    border-radius: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 16vw;
+    opacity: 1;
+    pointer-events: auto;
+    z-index: 999;
+    white-space: normal;
+}
+
+/* ===== FORM CHUYỂN KHOẢN GIẢ ===== */
+.transfer-card {
+    max-width: 460px;
+}
+
+.qr-image {
+    width: 200px;
+    height: 200px;
+    object-fit: cover;
+    border-radius: 20px;
+    margin: 16px auto;
+    display: block;
+    border: 3px solid rgba(214, 51, 108, 0.2);
+    box-shadow: 0 10px 25px rgba(0,0,0,0.12);
+}
+
+.transfer-form {
+    text-align: left;
+    margin-top: 10px;
+}
+
+.transfer-label {
+    display: block;
+    font-size: 13px;
+    color: #888;
+    margin: 12px 0 6px;
+    font-weight: 600;
+}
+
+.transfer-input {
+    width: 100%;
+    padding: 12px 14px;
+    border-radius: 14px;
+    border: 1px solid rgba(214, 51, 108, 0.2);
+    background: rgba(255,255,255,0.7);
+    font-size: 15px;
+    color: #333;
+}
+
+.transfer-input:focus {
+    outline: none;
+    border-color: #d6336c;
+}
+
+.transfer-submit {
+    width: 100%;
+    margin-top: 20px;
+    font-size: 16px;
+}
+
+/* ===== JUMPSCARE TROLL ===== */
+.jumpscare {
+    position: fixed;
+    inset: 0;
+    z-index: 1000;
+    background: #000;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    padding: 20px;
+}
+
+.jumpscare.hidden {
+    display: none;
+}
+
+.jumpscare-text {
+    color: #ff2d55;
+    font-size: 9vw;
+    font-weight: 900;
+    text-shadow: 0 0 20px rgba(255,45,85,0.8);
+    line-height: 1.3;
+}
+
+.jumpscare.shake {
+    animation: jumpShake 0.15s linear infinite;
+}
+
+@keyframes jumpShake {
+    0%, 100% { transform: translate(0, 0); }
+    25% { transform: translate(-6px, 4px); }
+    50% { transform: translate(6px, -4px); }
+    75% { transform: translate(-4px, -6px); }
+}
+
+/* ===== TRANG LÁ THƯ - LỚP TRÁI TIM BAY ===== */
+.letter-hearts-layer {
+    position: fixed;
+    inset: 0;
+    pointer-events: none;
+    z-index: 1;
+    overflow: hidden;
+}
+
+.floating-heart {
+    position: absolute;
+    bottom: -40px;
+    opacity: 0;
+    animation: floatHeart linear forwards;
+    filter: drop-shadow(0 2px 4px rgba(214, 51, 108, 0.2));
+}
+
+@keyframes floatHeart {
+    0% {
+        transform: translateY(0) translateX(0) rotate(0deg);
+        opacity: 0;
+    }
+    10% { opacity: 0.9; }
+    85% { opacity: 0.85; }
+    100% {
+        transform: translateY(-115vh) translateX(var(--drift, 20px)) rotate(360deg);
+        opacity: 0;
+    }
+}
+
+/* ===== HIỆU ỨNG PHONG BÌ MỞ THƯ ===== */
+.envelope-intro {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 50px 0 40px;
+}
+
+.envelope-intro.hidden {
+    display: none;
+}
+
+.envelope-scene {
+    position: relative;
+    width: 170px;
+    height: 118px;
+    margin: 0 auto 22px;
+    perspective: 600px;
+    animation: envelopeFlyIn 1s cubic-bezier(0.34, 1.56, 0.64, 1) both;
+}
+
+@keyframes envelopeFlyIn {
+    0% {
+        transform: translateY(130px) scale(0.4) rotate(-18deg);
+        opacity: 0;
+    }
+    65% {
+        transform: translateY(-8px) scale(1.05) rotate(4deg);
+        opacity: 1;
+    }
+    100% {
+        transform: translateY(0) scale(1) rotate(0deg);
+        opacity: 1;
+    }
+}
+
+.envelope-body {
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(135deg, #ffd6e5, #ffb8d0);
+    border-radius: 12px;
+    box-shadow: 0 18px 34px rgba(214, 51, 108, 0.28);
+}
+
+.envelope-body::before {
+    content: '';
+    position: absolute;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    height: 65%;
+    background: linear-gradient(to top, rgba(255,255,255,0.35), transparent);
+    border-radius: 0 0 12px 12px;
+}
+
+.envelope-letter {
+    position: absolute;
+    left: 50%;
+    top: 34px;
+    transform: translate(-50%, 0) scale(0.6);
+    font-size: 42px;
+    z-index: 2;
+    opacity: 0;
+    animation: letterPopUp 0.7s ease 0.95s forwards;
+}
+
+@keyframes letterPopUp {
+    0% {
+        transform: translate(-50%, 0) scale(0.6);
+        opacity: 0;
+    }
+    60% {
+        transform: translate(-50%, -58px) scale(1.12);
+        opacity: 1;
+    }
+    100% {
+        transform: translate(-50%, -48px) scale(1);
+        opacity: 1;
+    }
+}
+
+.envelope-flap {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 64px;
+    background: linear-gradient(135deg, #ff9fc3, #ff7fae);
+    clip-path: polygon(0 0, 50% 68%, 100% 0);
+    transform-origin: top center;
+    border-radius: 12px 12px 0 0;
+    z-index: 3;
+    box-shadow: 0 4px 8px rgba(214, 51, 108, 0.15);
+    animation: flapOpen 0.5s ease 0.6s forwards;
+}
+
+@keyframes flapOpen {
+    0% { transform: rotateX(0deg); }
+    100% { transform: rotateX(180deg); }
+}
+
+.envelope-sparkle {
+    position: absolute;
+    font-size: 18px;
+    opacity: 0;
+    animation: sparklePop 1.4s ease 1.3s forwards;
+}
+
+.envelope-sparkle.s1 { top: -10px; left: -14px; animation-delay: 1.3s; }
+.envelope-sparkle.s2 { top: -6px; right: -18px; animation-delay: 1.5s; }
+.envelope-sparkle.s3 { bottom: -12px; left: 50%; animation-delay: 1.7s; }
+
+@keyframes sparklePop {
+    0% { transform: scale(0) rotate(0deg); opacity: 0; }
+    40% { transform: scale(1.2) rotate(20deg); opacity: 1; }
+    100% { transform: scale(0.9) rotate(-10deg) translateY(-14px); opacity: 0; }
+}
+
+.envelope-text {
+    font-size: 15px;
+    color: #d6336c;
+    font-weight: 600;
+    opacity: 0;
+    animation: fadeInText 0.6s ease 1.5s forwards;
+}
+
+@keyframes fadeInText {
+    to { opacity: 1; }
+}
+
+/* ---- Nội dung thư chính (hiện ra sau hiệu ứng phong bì) ---- */
+.letter-main.hidden {
+    display: none;
+}
+
+.letter-main {
+    animation: fadeSlide 0.5s ease;
+}
+
+/* ===== LÁ THƯ ===== */
 .letter-display {
     background: linear-gradient(145deg, #fff5f7, #ffe8ee);
     border-radius: 24px;
@@ -376,29 +731,6 @@ h1 {
     min-width: 80px;
 }
 
-/* ===== QR MINI ===== */
-.qr-mini {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    gap: 10px;
-    margin-top: 16px;
-    padding: 8px 14px;
-    background: rgba(214, 51, 108, 0.06);
-    border-radius: 30px;
-    border: 1px dashed rgba(214, 51, 108, 0.15);
-}
-
-.qr-mini img {
-    border-radius: 8px;
-    border: 2px solid rgba(214, 51, 108, 0.1);
-}
-
-.qr-mini span {
-    font-size: 13px;
-    color: #888;
-}
-
 /* ---- Responsive ---- */
 @media (max-width: 500px) {
     .card {
@@ -439,18 +771,12 @@ h1 {
     .countdown-label {
         font-size: 10px;
     }
-    .qr-mini img {
-        width: 50px;
-        height: 50px;
+    .envelope-scene {
+        width: 140px;
+        height: 98px;
     }
-    .qr-mini span {
-        font-size: 11px;
-    }
-    .question-text {
-        font-size: 17px;
-    }
-    .option-btn {
-        font-size: 14px;
-        padding: 12px 14px;
+    .envelope-letter {
+        font-size: 34px;
+        top: 28px;
     }
 }
