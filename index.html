@@ -314,6 +314,14 @@
             color: #ee5a24;
             cursor: pointer;
         }
+        .qr-img {
+            width: 180px;
+            height: 180px;
+            border-radius: 16px;
+            border: 3px solid #f0d0e0;
+            object-fit: contain;
+            background: white;
+        }
         @media (max-width: 480px) {
             .card {
                 padding: 20px 16px;
@@ -329,12 +337,16 @@
             h1 {
                 font-size: 20px;
             }
+            .qr-img {
+                width: 140px;
+                height: 140px;
+            }
         }
     </style>
 </head>
 <body>
 
-    <!-- Bong bóng nền đơn giản -->
+    <!-- Bong bóng nền -->
     <div id="bubbles" style="position:fixed;top:0;left:0;width:100%;height:100%;pointer-events:none;z-index:0;overflow:hidden;"></div>
 
     <!-- ===== TRANG ĐĂNG NHẬP ===== -->
@@ -545,8 +557,10 @@
 
             if (q.isFinal) {
                 if (index === 0) {
+                    // Ấn "Có" → hiện QR
                     showLoveQR();
                 } else {
+                    // Ấn "Không" → chữ CÓ to dần từng lần
                     growLoveText();
                 }
                 return;
@@ -580,13 +594,15 @@
         }
 
         // ============================================
-        // ===== XỬ LÝ CÂU CUỐI =====
+        // ===== XỬ LÝ CÂU CUỐI: "KHÔNG" =====
+        // Mỗi lần ấn "Không" chữ CÓ to dần lên
         // ============================================
         let noClickCount = 0;
         let loveOverlay = null;
 
         function growLoveText() {
             if (!loveOverlay) {
+                // Tạo overlay lần đầu
                 loveOverlay = document.createElement('div');
                 loveOverlay.id = 'loveOverlay';
                 const text = document.createElement('div');
@@ -595,17 +611,24 @@
                 loveOverlay.appendChild(text);
                 document.body.appendChild(loveOverlay);
 
+                // Click vào overlay để tăng size
                 loveOverlay.onclick = function() {
                     noClickCount++;
                     const textEl = document.getElementById('loveText');
                     if (textEl) {
+                        // Các mức size: 40 → 60 → 80 → 120 → 200 → 300
                         const sizes = [40, 60, 80, 120, 200, 300];
                         const idx = Math.min(noClickCount, sizes.length - 1);
                         textEl.style.fontSize = sizes[idx] + 'px';
+                        textEl.style.transition = 'font-size 0.3s ease';
+
+                        // Khi đạt size lớn nhất (300px), tự động vào thư
                         if (noClickCount >= sizes.length - 1) {
                             setTimeout(function() {
-                                loveOverlay.remove();
-                                loveOverlay = null;
+                                if (loveOverlay) {
+                                    loveOverlay.remove();
+                                    loveOverlay = null;
+                                }
                                 quizPage.classList.add('hidden');
                                 letterPage.classList.remove('hidden');
                                 currentLetter = 0;
@@ -616,19 +639,28 @@
                     }
                 };
             } else {
+                // Nếu overlay đã tồn tại, tự động tăng size (giống như click)
                 loveOverlay.click();
             }
         }
 
+        // ============================================
+        // ===== XỬ LÝ CÂU CUỐI: "CÓ" =====
+        // Hiện QR + form chuyển tiền
+        // ============================================
         function showLoveQR() {
             quizPage.classList.add('hidden');
             showTransferPage();
         }
 
         // ============================================
-        // ===== TRANSFER + TROLL =====
+        // ===== QR + CHUYỂN TIỀN =====
         // ============================================
         function showTransferPage() {
+            // 🔥 THAY LINK QR CỦA ANH/CHỊ VÀO ĐÂY 🔥
+            const QR_LINK = 'https://img.vietqr.io/image/MB-0388888888-compact.png?amount=0&addInfo=Chuc%20mung%20sinh%20nhat&accountName=NGUYEN%20VAN%20A';
+            // 👆 Thay link QR thật của anh/chị vào đây
+
             const overlay = document.createElement('div');
             overlay.id = 'transferOverlay';
             overlay.innerHTML = `
@@ -637,14 +669,13 @@
                     <h2 style="color:#d6336c;font-size:22px;margin:4px 0;">Chị thương em bao nhiêu?</h2>
                     <p style="color:#888;font-size:14px;">Số tiền chị chuyển sẽ thể hiện tình cảm dành cho em đó!</p>
                     <div style="margin:12px 0;">
-                        <img src="https://api.qrserver.com/v1/create-qr-code/?size=180x180&data=MBANK_QR_CODE_HERE" 
-                             style="width:160px;height:160px;border-radius:16px;border:3px solid #f0d0e0;" />
-                        <p style="font-size:12px;color:#999;">📱 Quét mã QR để chuyển khoản</p>
+                        <img src="${QR_LINK}" class="qr-img" alt="QR Code" />
+                        <p style="font-size:12px;color:#999;margin-top:6px;">📱 Quét mã QR để chuyển khoản</p>
                     </div>
                     <div style="margin:12px 0;">
                         <p style="font-size:14px;color:#666;">Ngân hàng: <strong>MB Bank</strong></p>
-                        <p style="font-size:14px;color:#666;">Số TK: <strong id="accountNumber">[Số TK]</strong></p>
-                        <p style="font-size:14px;color:#666;">Chủ TK: <strong id="accountName">[Tên chủ TK]</strong></p>
+                        <p style="font-size:14px;color:#666;">Số TK: <strong id="accountNumber">0388888888</strong></p>
+                        <p style="font-size:14px;color:#666;">Chủ TK: <strong id="accountName">NGUYEN VAN A</strong></p>
                     </div>
                     <div style="margin:12px 0;">
                         <label style="font-size:14px;color:#666;display:block;text-align:left;">💰 Số tiền (VND):</label>
@@ -676,6 +707,9 @@
             };
         }
 
+        // ============================================
+        // ===== TROLL =====
+        // ============================================
         function showTrollMessage(overlay) {
             overlay.innerHTML = `
                 <div class="troll-card">
