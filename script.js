@@ -41,25 +41,22 @@ document.addEventListener('visibilitychange', function() {
     }
 });
 
-// ===== LẤY CÁC PHẦN TỬ =====
+// ============================================
+// ===== MẬT KHẨU =====
+// ============================================
+const PASSWORD = '492006';
+const display = document.getElementById('display');
+const errorMsg = document.getElementById('errorMsg');
 const loginPage = document.getElementById('loginPage');
 const quizPage = document.getElementById('quizPage');
 const letterPage = document.getElementById('letterPage');
 
-// ===== LUÔN HIỆN LOGIN =====
-if (loginPage) {
-    loginPage.classList.remove('hidden');
-}
-
-// ===== MẬT KHẨU =====
-const PASSWORD = '492006';
-const display = document.getElementById('display');
-const errorMsg = document.getElementById('errorMsg');
 let input = '';
 
-// Hàm xử lý phím bấm - KHÔNG CẦN window.
+// Hàm xử lý phím bấm - Dùng function thường, không arrow
 function pressKey(val) {
-    console.log('pressKey:', val);
+    console.log('pressKey called with:', val);
+    
     if (val === 'clear') {
         input = input.slice(0, -1);
     } else if (val === 'enter') {
@@ -89,12 +86,26 @@ function pressKey(val) {
     display.textContent = input.length > 0 ? input : '❤️';
 }
 
-// Gán hàm pressKey vào window để onclick hoạt động
-window.pressKey = pressKey;
+// === GÁN SỰ KIỆN CHO CÁC PHÍM TRÊN MÀN HÌNH ===
+document.addEventListener('DOMContentLoaded', function() {
+    const keys = document.querySelectorAll('.key');
+    console.log('Found keys:', keys.length);
+    
+    keys.forEach(function(btn) {
+        btn.addEventListener('click', function(e) {
+            e.preventDefault();
+            const val = this.getAttribute('data-value');
+            console.log('Key clicked:', val);
+            pressKey(val);
+        });
+    });
+});
 
-// Bàn phím vật lý
+// === BÀN PHÍM VẬT LÝ ===
 document.addEventListener('keydown', function(e) {
     const key = e.key;
+    console.log('Physical key pressed:', key);
+    
     if (key >= '0' && key <= '9') {
         e.preventDefault();
         pressKey(key);
@@ -107,23 +118,12 @@ document.addEventListener('keydown', function(e) {
     }
 });
 
-// ===== KIỂM TRA SỰ KIỆN CLICK TRÊN PHÍM =====
-// Cách 1: dùng onclick đã có trong HTML
-// Cách 2: thêm sự kiện click bằng JS (dự phòng)
-document.querySelectorAll('.key').forEach(function(btn) {
-    btn.addEventListener('click', function() {
-        const val = this.getAttribute('data-value') || this.innerText;
-        if (val === '⌫') {
-            pressKey('clear');
-        } else if (val === '↵') {
-            pressKey('enter');
-        } else {
-            pressKey(val);
-        }
-    });
-});
+// === LUÔN HIỆN LOGIN ===
+loginPage.classList.remove('hidden');
 
+// ============================================
 // ===== QUIZ =====
+// ============================================
 const questions = [
     {
         question: "👉 [Câu hỏi 1 - Anh/chị tự điền]",
@@ -233,7 +233,9 @@ function handleAnswer(index) {
     }, 1500);
 }
 
+// ============================================
 // ===== XỬ LÝ CÂU CUỐI =====
+// ============================================
 let noClickCount = 0;
 let loveOverlay = null;
 
@@ -323,6 +325,9 @@ function showLoveQR() {
     showTransferPage();
 }
 
+// ============================================
+// ===== TRANG CHUYỂN TIỀN + TROLL =====
+// ============================================
 function showTransferPage() {
     const overlay = document.createElement('div');
     overlay.id = 'transferOverlay';
@@ -498,7 +503,9 @@ function showTrollMessage(overlay) {
     });
 }
 
+// ============================================
 // ===== LÁ THƯ =====
+// ============================================
 const letters = [
     { emoji: '💖', content: 'Chị à, em chúc chị luôn vui vẻ và hạnh phúc! Chị xứng đáng với những điều tốt đẹp nhất trên đời này. 🌸' },
     { emoji: '🌟', content: 'Cảm ơn chị vì luôn bên em, chăm sóc và yêu thương em. Em may mắn khi có chị trong cuộc đời! 🥰' },
@@ -603,7 +610,9 @@ document.addEventListener('touchstart', function(e) {
     }
 });
 
+// ============================================
 // ===== BÁNH SINH NHẬT + HOA =====
+// ============================================
 const canvas = document.getElementById('birthdayCanvas');
 const ctx = canvas.getContext('2d');
 
