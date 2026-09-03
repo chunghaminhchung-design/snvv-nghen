@@ -64,10 +64,15 @@ function updateCountdown() {
     const diff = TARGET_DATE - now;
 
     if (diff <= 0) {
-        // Đã đến ngày 4/9 -> chuyển sang quiz
+        // Đã đến ngày 4/9 -> chuyển sang quiz (hoặc thẳng vào mật khẩu nếu thiếu trang quiz)
+        clearInterval(countdownInterval);
         countdownPage.classList.add('hidden');
-        quizPage.classList.remove('hidden');
-        startQuiz();
+        if (quizPage) {
+            quizPage.classList.remove('hidden');
+            startQuiz();
+        } else if (loginPage) {
+            loginPage.classList.remove('hidden');
+        }
         startBirthdayEffect();
         return;
     }
@@ -95,7 +100,7 @@ function updateCountdown() {
 }
 
 updateCountdown();
-setInterval(updateCountdown, 1000);
+const countdownInterval = setInterval(updateCountdown, 1000);
 
 // ===== QUIZ 5 CÂU =====
 // SỬA NỘI DUNG CÂU HỎI + ĐÁP ÁN Ở ĐÂY.
@@ -137,8 +142,9 @@ let currentQ = 0;
 let khongClicks = 0;
 
 function renderQuestion() {
+    if (!quizQuestionText || !quizAnswers) return;
     const q = quizQuestions[currentQ];
-    quizCounter.textContent = `Câu ${currentQ + 1} / 5`;
+    if (quizCounter) quizCounter.textContent = `Câu ${currentQ + 1} / 5`;
     quizQuestionText.textContent = q.question;
 
     const btns = quizAnswers.querySelectorAll('.quiz-answer-btn');
@@ -151,6 +157,7 @@ function renderQuestion() {
 }
 
 function selectAnswer(index) {
+    if (!quizAnswers) return;
     const q = quizQuestions[currentQ];
     const btns = quizAnswers.querySelectorAll('.quiz-answer-btn');
     btns.forEach(b => b.disabled = true);
@@ -171,18 +178,21 @@ function selectAnswer(index) {
             renderQuestion();
         } else {
             // Chuyển sang câu 5 đặc biệt
-            quizQuestionBox.classList.add('hidden');
-            quizCounter.textContent = 'Câu 5 / 5';
-            quizQ5Box.classList.remove('hidden');
+            if (quizQuestionBox) quizQuestionBox.classList.add('hidden');
+            if (quizCounter) quizCounter.textContent = 'Câu 5 / 5';
+            if (quizQ5Box) quizQ5Box.classList.remove('hidden');
         }
     }, 1400);
 }
 
-quizAnswers.querySelectorAll('.quiz-answer-btn').forEach((btn, i) => {
-    btn.addEventListener('click', () => selectAnswer(i));
-});
+if (quizAnswers) {
+    quizAnswers.querySelectorAll('.quiz-answer-btn').forEach((btn, i) => {
+        btn.addEventListener('click', () => selectAnswer(i));
+    });
+}
 
 function growCoOverlay() {
+    if (!q5Overlay) return;
     khongClicks++;
     const scale = 1 + khongClicks * 0.55;
     q5Overlay.style.transform = `translate(-50%, -50%) scale(${scale})`;
@@ -192,41 +202,49 @@ function growCoOverlay() {
     }
 }
 
-btnKhong.addEventListener('click', growCoOverlay);
-btnCoReal.addEventListener('click', goToTransfer);
-q5Overlay.addEventListener('click', goToTransfer);
+if (btnKhong) btnKhong.addEventListener('click', growCoOverlay);
+if (btnCoReal) btnCoReal.addEventListener('click', goToTransfer);
+if (q5Overlay) q5Overlay.addEventListener('click', goToTransfer);
 
 function goToTransfer() {
-    quizPage.classList.add('hidden');
-    transferPage.classList.remove('hidden');
+    if (quizPage) quizPage.classList.add('hidden');
+    if (transferPage) transferPage.classList.remove('hidden');
 }
 
 function startQuiz() {
     currentQ = 0;
     khongClicks = 0;
-    q5Overlay.style.transform = 'translate(-50%, -50%) scale(1)';
-    q5Overlay.style.opacity = 0.35;
-    q5Overlay.classList.remove('cover-full');
-    quizQ5Box.classList.add('hidden');
-    quizQuestionBox.classList.remove('hidden');
+    if (q5Overlay) {
+        q5Overlay.style.transform = 'translate(-50%, -50%) scale(1)';
+        q5Overlay.style.opacity = 0.35;
+        q5Overlay.classList.remove('cover-full');
+    }
+    if (quizQ5Box) quizQ5Box.classList.add('hidden');
+    if (quizQuestionBox) quizQuestionBox.classList.remove('hidden');
     renderQuestion();
 }
 
 // ===== FORM CHUYỂN KHOẢN GIẢ (TROLL) =====
 const transferSubmitBtn = document.getElementById('transferSubmitBtn');
 
-transferSubmitBtn.addEventListener('click', (e) => {
-    e.preventDefault();
-    transferPage.classList.add('hidden');
-    jumpscareOverlay.classList.remove('hidden');
-    jumpscareOverlay.classList.add('shake');
+if (transferSubmitBtn) {
+    transferSubmitBtn.addEventListener('click', (e) => {
+        e.preventDefault();
+        if (transferPage) transferPage.classList.add('hidden');
+        if (jumpscareOverlay) {
+            jumpscareOverlay.classList.remove('hidden');
+            jumpscareOverlay.classList.add('shake');
+        }
 
-    setTimeout(() => {
-        jumpscareOverlay.classList.add('hidden');
-        jumpscareOverlay.classList.remove('shake');
-        loginPage.classList.remove('hidden');
-    }, 2200);
-});
+        setTimeout(() => {
+            if (jumpscareOverlay) {
+                jumpscareOverlay.classList.add('hidden');
+                jumpscareOverlay.classList.remove('shake');
+            }
+            if (loginPage) loginPage.classList.remove('hidden');
+        }, 2200);
+    });
+}
 
 // ===== MẬT KHẨU =====
 const PASSWORD = '492006';
@@ -768,7 +786,11 @@ window.addEventListener('resize', () => {
 // ===== NẾU ĐÃ QUA NGÀY 4/9, BẮT ĐẦU QUIZ NGAY =====
 if (new Date().getTime() >= TARGET_DATE) {
     countdownPage.classList.add('hidden');
-    quizPage.classList.remove('hidden');
-    startQuiz();
+    if (quizPage) {
+        quizPage.classList.remove('hidden');
+        startQuiz();
+    } else if (loginPage) {
+        loginPage.classList.remove('hidden');
+    }
     startBirthdayEffect();
 }
