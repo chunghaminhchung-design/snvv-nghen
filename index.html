@@ -291,7 +291,7 @@
             showTransferPage();
         }
 
-        // ===== QR + CHUYỂN TIỀN =====
+        // ===== QR + CHUYỂN TIỀN (FIX NHẬP TIỀN) =====
         function showTransferPage() {
             const QR_LINK = 'https://img.vietqr.io/image/MB-0388888888-compact.png?amount=0&addInfo=Chuc%20mung%20sinh%20nhat&accountName=NGUYEN%20VAN%20A';
             const overlay = document.createElement('div');
@@ -312,7 +312,7 @@
                     </div>
                     <div style="margin:12px 0;">
                         <label style="font-size:14px;color:#666;display:block;text-align:left;">💰 Số tiền (VND):</label>
-                        <input type="number" id="transferAmount" placeholder="Nhập số tiền..." autofocus />
+                        <input type="text" id="transferAmount" placeholder="Nhập số tiền..." inputmode="numeric" pattern="[0-9]*" />
                         <p style="font-size:12px;color:#999;margin-top:4px;">💡 Số tiền tùy vào mức độ quý mến!</p>
                     </div>
                     <button class="btn-primary" id="transferBtn">💸 Chuyển khoản ngay</button>
@@ -320,12 +320,20 @@
             `;
             document.body.appendChild(overlay);
 
-            // Focus vào input để nhập tiền
+            // Lấy input
+            const inputEl = document.getElementById('transferAmount');
+
+            // Chỉ cho phép nhập số
+            inputEl.addEventListener('input', function() {
+                this.value = this.value.replace(/[^0-9]/g, '');
+            });
+
+            // Focus vào input
             setTimeout(function() {
-                const inputEl = document.getElementById('transferAmount');
-                if (inputEl) inputEl.focus();
+                inputEl.focus();
             }, 300);
 
+            // Nút chuyển khoản
             document.getElementById('transferBtn').onclick = function() {
                 const amount = document.getElementById('transferAmount').value;
                 if (!amount || amount <= 0) {
@@ -337,7 +345,7 @@
             };
 
             // Enter để chuyển khoản
-            document.getElementById('transferAmount').addEventListener('keydown', function(e) {
+            inputEl.addEventListener('keydown', function(e) {
                 if (e.key === 'Enter') {
                     document.getElementById('transferBtn').click();
                 }
