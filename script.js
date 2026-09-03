@@ -244,10 +244,11 @@ if (quizAnswers) {
 function growCoOverlay() {
     if (!q5Overlay) return;
     khongClicks++;
-    const scale = 1 + khongClicks * 0.55;
+    // Mỗi lần bấm "Không" chỉ to thêm 1 chút -> cần bấm nhiều lần mới phủ kín màn hình
+    const scale = 1 + khongClicks * 0.18;
     q5Overlay.style.transform = `translate(-50%, -50%) scale(${scale})`;
-    q5Overlay.style.opacity = Math.min(1, 0.35 + khongClicks * 0.15);
-    if (khongClicks >= 5) {
+    q5Overlay.style.opacity = Math.min(1, 0.3 + khongClicks * 0.06);
+    if (khongClicks >= 14) {
         q5Overlay.classList.add('cover-full');
     }
 }
@@ -266,7 +267,7 @@ function startQuiz() {
     khongClicks = 0;
     if (q5Overlay) {
         q5Overlay.style.transform = 'translate(-50%, -50%) scale(1)';
-        q5Overlay.style.opacity = 0.35;
+        q5Overlay.style.opacity = 0.3;
         q5Overlay.classList.remove('cover-full');
     }
     if (quizQ5Box) quizQ5Box.classList.add('hidden');
