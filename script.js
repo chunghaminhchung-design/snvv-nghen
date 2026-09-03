@@ -45,6 +45,9 @@ document.addEventListener('visibilitychange', () => {
 const targetDate = new Date(2026, 8, 4, 0, 0, 0); // 4/9/2026
 const TARGET_DATE = targetDate.getTime();
 
+// 🔧 BẬT DÒNG NÀY = true ĐỂ BỎ QUA ĐẾM NGƯỢC KHI TEST, NHỚ ĐỔI LẠI false TRƯỚC KHI GỬI CHO CHỊ!
+const SKIP_COUNTDOWN_FOR_TESTING = true;
+
 const countdownPage = document.getElementById('countdownPage');
 const quizPage = document.getElementById('quizPage');
 const loginPage = document.getElementById('loginPage');
@@ -113,7 +116,7 @@ function updateCountdown() {
     const now = new Date().getTime();
     const diff = TARGET_DATE - now;
 
-    if (diff <= 0) {
+    if (diff <= 0 || SKIP_COUNTDOWN_FOR_TESTING) {
         // Đã đến ngày 4/9 -> chuyển sang quiz (hoặc thẳng vào mật khẩu nếu thiếu trang quiz)
         if (countdownInterval) clearInterval(countdownInterval);
         countdownPage.classList.add('hidden');
@@ -787,8 +790,8 @@ window.addEventListener('resize', () => {
     }
 });
 
-// ===== NẾU ĐÃ QUA NGÀY 4/9, BẮT ĐẦU QUIZ NGAY =====
-if (new Date().getTime() >= TARGET_DATE) {
+// ===== NẾU ĐÃ QUA NGÀY 4/9 (HOẶC ĐANG TEST), BẮT ĐẦU QUIZ NGAY =====
+if (new Date().getTime() >= TARGET_DATE || SKIP_COUNTDOWN_FOR_TESTING) {
     countdownPage.classList.add('hidden');
     if (quizPage) {
         quizPage.classList.remove('hidden');
