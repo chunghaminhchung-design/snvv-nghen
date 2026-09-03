@@ -56,18 +56,18 @@ const errorMsg = document.getElementById('errorMsg');
 const PASSWORD = '492006';
 let input = '';
 
-// Hàm xử lý phím bấm
 function pressKey(val) {
     if (val === 'clear') {
         input = input.slice(0, -1);
     } else if (val === 'enter') {
         if (input === PASSWORD) {
+            // === ĐÚNG: Ẩn login, hiện quiz ===
             loginPage.classList.add('hidden');
-            quizPage.classList.remove('hidden');
+            quizPage.classList.remove('hidden');   // ← QUAN TRỌNG: hiện quiz
             errorMsg.classList.add('hidden');
             input = '';
             display.textContent = '❤️';
-            startQuiz();
+            startQuiz();                           // ← QUAN TRỌNG: bắt đầu quiz
             startBirthdayEffect();
             return;
         } else {
@@ -118,28 +118,28 @@ document.addEventListener('keydown', function(e) {
 loginPage.classList.remove('hidden');
 
 // ============================================
-// ===== CÂU HỎI (ĐÃ ĐIỀN SẴN) =====
+// ===== CÂU HỎI =====
 // ============================================
 const questions = [
     {
         question: "📌 Em sinh năm bao nhiêu?",
         options: ["A. 2000", "B. 2001", "C. 2002", "D. 2003"],
-        correct: 2 // C
+        correct: 2
     },
     {
         question: "📌 Màu sắc em yêu thích nhất là gì?",
         options: ["A. Đỏ", "B. Xanh dương", "C. Hồng", "D. Tím"],
-        correct: 2 // C
+        correct: 2
     },
     {
         question: "📌 Em thích ăn món gì nhất?",
         options: ["A. Bánh mì", "B. Phở", "C. Cơm rang", "D. Mì tôm"],
-        correct: 1 // B
+        correct: 1
     },
     {
         question: "📌 Sở thích của em là gì?",
         options: ["A. Đá bóng", "B. Nghe nhạc", "C. Lập trình", "D. Du lịch"],
-        correct: 2 // C
+        correct: 2
     },
     {
         question: "💖 Chị có quý em không?",
@@ -220,6 +220,7 @@ function handleAnswer(index) {
             currentQuestion++;
             renderQuestion();
         } else {
+            // === HẾT CÂU HỎI: vào lá thư ===
             quizPage.classList.add('hidden');
             letterPage.classList.remove('hidden');
             currentLetter = 0;
