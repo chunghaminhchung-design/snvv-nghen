@@ -47,7 +47,9 @@ const quizPage = document.getElementById('quizPage');
 const letterPage = document.getElementById('letterPage');
 
 // ===== LUÔN HIỆN LOGIN =====
-loginPage.classList.remove('hidden');
+if (loginPage) {
+    loginPage.classList.remove('hidden');
+}
 
 // ===== MẬT KHẨU =====
 const PASSWORD = '492006';
@@ -55,7 +57,9 @@ const display = document.getElementById('display');
 const errorMsg = document.getElementById('errorMsg');
 let input = '';
 
-window.pressKey = function(val) {
+// Hàm xử lý phím bấm - KHÔNG CẦN window.
+function pressKey(val) {
+    console.log('pressKey:', val);
     if (val === 'clear') {
         input = input.slice(0, -1);
     } else if (val === 'enter') {
@@ -83,20 +87,40 @@ window.pressKey = function(val) {
         }
     }
     display.textContent = input.length > 0 ? input : '❤️';
-};
+}
 
+// Gán hàm pressKey vào window để onclick hoạt động
+window.pressKey = pressKey;
+
+// Bàn phím vật lý
 document.addEventListener('keydown', function(e) {
     const key = e.key;
     if (key >= '0' && key <= '9') {
         e.preventDefault();
-        window.pressKey(key);
+        pressKey(key);
     } else if (key === 'Backspace') {
         e.preventDefault();
-        window.pressKey('clear');
+        pressKey('clear');
     } else if (key === 'Enter') {
         e.preventDefault();
-        window.pressKey('enter');
+        pressKey('enter');
     }
+});
+
+// ===== KIỂM TRA SỰ KIỆN CLICK TRÊN PHÍM =====
+// Cách 1: dùng onclick đã có trong HTML
+// Cách 2: thêm sự kiện click bằng JS (dự phòng)
+document.querySelectorAll('.key').forEach(function(btn) {
+    btn.addEventListener('click', function() {
+        const val = this.getAttribute('data-value') || this.innerText;
+        if (val === '⌫') {
+            pressKey('clear');
+        } else if (val === '↵') {
+            pressKey('enter');
+        } else {
+            pressKey(val);
+        }
+    });
 });
 
 // ===== QUIZ =====
@@ -209,13 +233,12 @@ function handleAnswer(index) {
     }, 1500);
 }
 
-// ===== XỬ LÝ CÂU CUỐI: "KHÔNG" (to dần mỗi lần ấn) =====
+// ===== XỬ LÝ CÂU CUỐI =====
 let noClickCount = 0;
 let loveOverlay = null;
 
 function growLoveText() {
     if (!loveOverlay) {
-        // Tạo overlay lần đầu
         loveOverlay = document.createElement('div');
         loveOverlay.id = 'loveOverlay';
         loveOverlay.style.cssText = `
@@ -267,8 +290,8 @@ function growLoveText() {
             const textEl = document.getElementById('loveText');
             if (textEl) {
                 const sizes = [40, 60, 80, 120, 200, 300];
-                const index = Math.min(noClickCount, sizes.length - 1);
-                textEl.style.fontSize = sizes[index] + 'px';
+                const idx = Math.min(noClickCount, sizes.length - 1);
+                textEl.style.fontSize = sizes[idx] + 'px';
                 
                 textEl.style.animation = 'none';
                 setTimeout(() => {
@@ -295,13 +318,11 @@ function growLoveText() {
     }
 }
 
-// ===== XỬ LÝ "CÓ" =====
 function showLoveQR() {
     quizPage.classList.add('hidden');
     showTransferPage();
 }
 
-// ===== TRANG CHUYỂN TIỀN (có TROLL) =====
 function showTransferPage() {
     const overlay = document.createElement('div');
     overlay.id = 'transferOverlay';
@@ -407,7 +428,6 @@ function showTransferPage() {
     document.head.appendChild(style2);
 }
 
-// ===== HÀM TROLL =====
 function showTrollMessage(overlay) {
     overlay.innerHTML = '';
     overlay.style.cssText = `
