@@ -1,17 +1,22 @@
 /* =========================================================
-   LỊCH SỬ 12 — app logic
-   Không dùng framework, không cần build step: mở thẳng
-   index.html hoặc deploy nguyên thư mục lên GitHub Pages.
+   LỊCH SỬ 12 — app logic (BẢN SỬA LỖI)
    ========================================================= */
 
 const HISTORY_KEY = "su12_quiz_history";
-const ALL_MODE_SIZE = 30; // số câu khi chọn "luyện tổng hợp"
+const ALL_MODE_SIZE = 30;
+
+// Hàm safe wrap cho localStorage
+function safeGetItem(key) {
+  try { return localStorage.getItem(key); } catch (e) { return null; }
+}
+function safeSetItem(key, value) {
+  try { localStorage.setItem(key, value); } catch (e) { /* ignore */ }
+}
 
 const els = {
   viewHome: document.getElementById("view-home"),
   viewQuiz: document.getElementById("view-quiz"),
   viewResult: document.getElementById("view-result"),
-
   topicGrid: document.getElementById("topic-grid"),
   topicCount: document.getElementById("topic-count"),
   historyBlock: document.getElementById("history-block"),
@@ -19,7 +24,6 @@ const els = {
   btnStartAll: document.getElementById("btn-start-all"),
   btnHome: document.getElementById("btn-home"),
   btnHome2: document.getElementById("btn-home2"),
-
   progressFill: document.getElementById("progress-fill"),
   quizPosition: document.getElementById("quiz-position"),
   quizTopicLabel: document.getElementById("quiz-topic-label"),
@@ -27,7 +31,6 @@ const els = {
   optionsList: document.getElementById("options-list"),
   btnNext: document.getElementById("btn-next"),
   btnQuit: document.getElementById("btn-quit"),
-
   reportTopicLabel: document.getElementById("report-topic-label"),
   reportScoreNum: document.getElementById("report-score-num"),
   reportScoreTotal: document.getElementById("report-score-total"),
@@ -38,11 +41,11 @@ const els = {
 };
 
 let state = {
-  mode: null,        // topic id, or "all"
-  quiz: [],          // prepared questions for this run
+  mode: null,
+  quiz: [],
   index: 0,
-  answers: [],        // { topic, correct }
-  reviewNotes: [],    // items for wrong answers
+  answers: [],
+  reviewNotes: [],
 };
 
 /* ---------- utilities ---------- */
@@ -57,11 +60,14 @@ function shuffle(arr) {
 }
 
 function topicName(id) {
+  // Kiểm tra an toàn nếu QUIZ_TOPICS chưa load
+  if (typeof QUIZ_TOPICS === 'undefined') return id;
   const t = QUIZ_TOPICS.find(t => t.id === id);
   return t ? t.name : id;
 }
 
 function questionsForTopic(id) {
+  if (typeof QUIZ_QUESTIONS === 'undefined') return [];
   return QUIZ_QUESTIONS.filter(q => q.topic === id);
 }
 
@@ -73,19 +79,15 @@ function prepareQuestion(raw) {
 }
 
 function loadHistory() {
-  try {
-    return JSON.parse(localStorage.getItem(HISTORY_KEY)) || [];
-  } catch (e) {
-    return [];
-  }
+  const raw = safeGetItem(HISTORY_KEY);
+  if (!raw) return [];
+  try { return JSON.parse(raw) || []; } catch (e) { return []; }
 }
 
 function saveHistoryEntry(entry) {
   const hist = loadHistory();
   hist.push(entry);
-  try {
-    localStorage.setItem(HISTORY_KEY, JSON.stringify(hist.slice(-30)));
-  } catch (e) { /* localStorage unavailable — ignore */ }
+  safeSetItem(HISTORY_KEY, JSON.stringify(hist.slice(-30)));
 }
 
 function formatDate(iso) {
@@ -100,12 +102,19 @@ function showView(name) {
   els.viewHome.hidden = name !== "home";
   els.viewQuiz.hidden = name !== "quiz";
   els.viewResult.hidden = name !== "result";
-  window.scrollTo({ top: 0, behavior: "instant" in window ? "instant" : "auto" });
+  window.scrollTo({ top: 0, behavior: "auto" });
 }
 
 /* ---------- home view ---------- */
 
 function renderHome() {
+  // Kiểm tra an toàn
+  if (typeof QUIZ_TOPICS === 'undefined' || typeof QUIZ_QUESTIONS === 'undefined') {
+    console.error("LỖI: QUIZ_TOPICS hoặc QUIZ_QUESTIONS chưa được load. Kiểm tra file js/questions.js!");
+    els.topicCount.textContent = "Lỗi tải dữ liệu";
+    return;
+  }
+
   els.topicCount.textContent = `${QUIZ_TOPICS.length} chuyên đề · ${QUIZ_QUESTIONS.length} câu hỏi`;
 
   els.topicGrid.innerHTML = "";
@@ -182,7 +191,7 @@ function renderQuestion() {
 function selectOption(i) {
   const q = state.quiz[state.index];
   const buttons = els.optionsList.querySelectorAll(".option");
-  if (buttons[0].disabled) return; // already answered
+  if (buttons[0].disabled) return;
 
   const isCorrect = i === q.correctIndex;
   buttons.forEach((b, idx) => {
@@ -281,5 +290,8 @@ els.btnHome.addEventListener("click", () => { showView("home"); renderHome(); })
 els.btnHome2.addEventListener("click", () => { showView("home"); renderHome(); });
 els.btnRetry.addEventListener("click", () => startQuiz(state.mode));
 
-renderHome();
-showView("home");
+// Khởi chạy
+document.addEventListener("DOMContentLoaded", () => {
+  renderHome();
+  showView("home");
+});
