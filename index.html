@@ -3,8 +3,8 @@
 <head>
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-<title>Lịch Sử 12 — Luyện trắc nghiệm</title>
-<meta name="description" content="Luyện tập trắc nghiệm Lịch Sử 12 theo từng bài, có thi thử." />
+<title>Lịch Sử 12 — Ôn thi THPTQG</title>
+<meta name="description" content="Ôn tập Lịch Sử 12: luyện đề, thi thử, ôn tập theo bài." />
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,600;0,700;0,800;1,600&family=Be+Vietnam+Pro:wght@400;500;600;700&display=swap" rel="stylesheet">
@@ -12,99 +12,151 @@
 </head>
 <body>
 
-<header class="masthead">
-  <div class="masthead__inner">
-    <button class="masthead__title" id="btn-home" aria-label="Về trang chủ">
-      <span class="masthead__mark">LS12</span>
-      <span class="masthead__name">Lịch&nbsp;Sử&nbsp;12</span>
-    </button>
-    <span class="masthead__tag">Hồ sơ ôn luyện trắc nghiệm</span>
-  </div>
-</header>
+<div class="layout">
 
-<main id="app">
-
-  <!-- ============ HOME VIEW ============ -->
-  <section id="view-home" class="view">
-
-    <div class="hero">
-      <p class="hero__eyebrow">Ngân hàng câu hỏi &middot; 12 bài &middot; Tập 1</p>
-      <h1 class="hero__title">Ôn tập từng bài,<br>giữ chắc từng con điểm.</h1>
-      <p class="hero__desc">Chọn một bài bên dưới để luyện tập hoặc thi thử. Mỗi bài đều có ngân hàng câu hỏi riêng, cho phép làm lại nhiều lần.</p>
-      <button class="btn btn--gold" id="btn-start-all">Luyện tổng hợp — trộn tất cả</button>
+  <!-- ============ SIDEBAR ============ -->
+  <aside class="sidebar" id="sidebar">
+    <div class="sidebar__brand">
+      <span class="brand__mark">LS12</span>
+      <span class="brand__name">Lịch Sử 12</span>
     </div>
 
-    <div class="section-head">
-      <h2>Hồ sơ bài học</h2>
-      <span class="section-head__count" id="topic-count"></span>
+    <nav class="sidebar__nav">
+      <button class="nav-item is-active" data-view="home">
+        <span class="nav-item__icon">🏠</span>
+        <span>Trang chủ</span>
+      </button>
+      <button class="nav-item" data-view="luyen-de">
+        <span class="nav-item__icon">📝</span>
+        <span>Luyện đề</span>
+      </button>
+      <button class="nav-item" data-view="thi-thu">
+        <span class="nav-item__icon">🎓</span>
+        <span>Thi thử THPTQG</span>
+      </button>
+      <button class="nav-item" data-view="on-tap">
+        <span class="nav-item__icon">📚</span>
+        <span>Ôn tập theo bài</span>
+      </button>
+    </nav>
+
+    <div class="sidebar__footer">
+      <p>Ngân hàng câu hỏi bám sát SGK Kết nối tri thức</p>
     </div>
+  </aside>
 
-    <div class="dossier-grid" id="topic-grid"><!-- injected --></div>
+  <!-- ============ MOBILE TOGGLE ============ -->
+  <button class="mobile-toggle" id="mobile-toggle" aria-label="Menu">☰</button>
 
-    <div class="history" id="history-block" hidden>
-      <div class="section-head">
-        <h2>Lịch sử làm bài</h2>
+  <!-- ============ MAIN CONTENT ============ -->
+  <main class="content">
+
+    <!-- ============ VIEW: HOME ============ -->
+    <section class="view" id="view-home">
+      <div class="hero">
+        <p class="hero__eyebrow">Ngân hàng câu hỏi &middot; cập nhật liên tục</p>
+        <h1 class="hero__title">Ôn thi THPTQG<br>môn Lịch Sử.</h1>
+        <p class="hero__desc">Luyện đề giữa kỳ, cuối kỳ của các trường THPT, thi thử đề THPTQG các năm, và ôn tập theo từng bài trong SGK.</p>
       </div>
-      <ul class="history__list" id="history-list"><!-- injected --></ul>
-    </div>
 
-  </section>
-
-  <!-- ============ QUIZ VIEW ============ -->
-  <section id="view-quiz" class="view" hidden>
-
-    <div class="quiz-bar">
-      <div class="quiz-bar__track"><div class="quiz-bar__fill" id="progress-fill"></div></div>
-      <div class="quiz-bar__meta">
-        <span id="quiz-position">Câu 1/20</span>
-        <span class="quiz-bar__timer" id="quiz-timer" hidden></span>
-        <span id="quiz-topic-label" class="quiz-bar__topic"></span>
+      <div class="quick-grid">
+        <button class="quick-card" data-view="luyen-de">
+          <span class="quick-card__icon">📝</span>
+          <h3>Luyện đề</h3>
+          <p>Đề giữa kỳ, cuối kỳ của nhiều trường THPT gần đây.</p>
+        </button>
+        <button class="quick-card" data-view="thi-thu">
+          <span class="quick-card__icon">🎓</span>
+          <h3>Thi thử THPTQG</h3>
+          <p>Đề thi chính thức các năm về trước, có đếm ngược.</p>
+        </button>
+        <button class="quick-card" data-view="on-tap">
+          <span class="quick-card__icon">📚</span>
+          <h3>Ôn tập theo bài</h3>
+          <p>Tập 1 (12 bài) + Tập 2, mỗi bài có ngân hàng câu hỏi riêng.</p>
+        </button>
       </div>
-    </div>
+    </section>
 
-    <div class="question-card">
-      <p class="question-card__text" id="question-text"></p>
-      <div class="options" id="options-list"><!-- injected --></div>
-    </div>
-
-    <div class="quiz-nav">
-      <button class="btn btn--ghost" id="btn-quit">Thoát</button>
-      <button class="btn btn--navy" id="btn-next" disabled>Câu tiếp theo →</button>
-    </div>
-
-  </section>
-
-  <!-- ============ RESULT VIEW ============ -->
-  <section id="view-result" class="view" hidden>
-
-    <div class="report">
-      <p class="report__eyebrow" id="report-topic-label">Biên bản chấm điểm</p>
-      <p class="report__score"><span id="report-score-num">0</span><span class="report__score-total">/<span id="report-score-total">0</span></span></p>
-      <p class="report__percent" id="report-percent">0% chính xác</p>
-
-      <div class="report__breakdown" id="report-breakdown"><!-- injected --></div>
-
-      <div class="report__actions">
-        <button class="btn btn--navy" id="btn-retry">Làm lại</button>
-        <button class="btn btn--gold" id="btn-retry-exam" hidden>Thi thử lại</button>
-        <button class="btn btn--ghost" id="btn-home2">Về trang chủ</button>
+    <!-- ============ VIEW: LUYỆN ĐỀ ============ -->
+    <section class="view" id="view-luyen-de" hidden>
+      <div class="view-head">
+        <h2>📝 Luyện đề</h2>
+        <p>Đề thi giữa kỳ, cuối kỳ của các trường THPT gần đây. Làm lại không giới hạn.</p>
       </div>
-    </div>
+      <div class="card-grid" id="luyen-de-grid"></div>
+    </section>
 
-    <div class="review" id="review-block">
-      <div class="section-head"><h2>Xem lại các câu chưa đúng</h2></div>
-      <ol class="review__list" id="review-list"><!-- injected --></ol>
-    </div>
+    <!-- ============ VIEW: THI THỬ ============ -->
+    <section class="view" id="view-thi-thu" hidden>
+      <div class="view-head">
+        <h2>🎓 Thi thử THPTQG</h2>
+        <p>Đề thi chính thức các năm. Có đồng hồ đếm ngược như thi thật.</p>
+      </div>
+      <div class="card-grid" id="thi-thu-grid"></div>
+    </section>
 
-  </section>
+    <!-- ============ VIEW: ÔN TẬP ============ -->
+    <section class="view" id="view-on-tap" hidden>
+      <div class="view-head">
+        <h2>📚 Ôn tập theo bài</h2>
+        <p>Chọn Tập 1 hoặc Tập 2 để ôn theo từng bài trong SGK.</p>
+      </div>
 
-</main>
+      <div class="tab-row">
+        <button class="tab-btn is-active" data-tap="tap1">Tập 1 (12 bài)</button>
+        <button class="tab-btn" data-tap="tap2">Tập 2</button>
+      </div>
 
-<footer class="site-footer">
-  <p>Ngân hàng câu hỏi bám sát SGK Kết nối tri thức &middot; không dùng để thay thế sách giáo khoa</p>
-</footer>
+      <div class="card-grid" id="on-tap-grid"></div>
+    </section>
+
+    <!-- ============ VIEW: QUIZ ============ -->
+    <section class="view" id="view-quiz" hidden>
+      <div class="quiz-bar">
+        <div class="quiz-bar__track"><div class="quiz-bar__fill" id="progress-fill"></div></div>
+        <div class="quiz-bar__meta">
+          <span id="quiz-position">Câu 1/20</span>
+          <span class="quiz-bar__timer" id="quiz-timer" hidden></span>
+          <span id="quiz-topic-label" class="quiz-bar__topic"></span>
+        </div>
+      </div>
+
+      <div class="question-card">
+        <p class="question-card__text" id="question-text"></p>
+        <div class="options" id="options-list"></div>
+      </div>
+
+      <div class="quiz-nav">
+        <button class="btn btn--ghost" id="btn-quit">Thoát</button>
+        <button class="btn btn--navy" id="btn-next" disabled>Câu tiếp theo →</button>
+      </div>
+    </section>
+
+    <!-- ============ VIEW: RESULT ============ -->
+    <section class="view" id="view-result" hidden>
+      <div class="report">
+        <p class="report__eyebrow" id="report-topic-label">Biên bản chấm điểm</p>
+        <p class="report__score"><span id="report-score-num">0</span><span class="report__score-total">/<span id="report-score-total">0</span></span></p>
+        <p class="report__percent" id="report-percent">0% chính xác</p>
+
+        <div class="report__actions">
+          <button class="btn btn--navy" id="btn-retry">Làm lại</button>
+          <button class="btn btn--ghost" id="btn-home2">Về trang chủ</button>
+        </div>
+      </div>
+
+      <div class="review">
+        <h3>Xem lại các câu chưa đúng</h3>
+        <ol class="review__list" id="review-list"></ol>
+      </div>
+    </section>
+
+  </main>
+</div>
 
 <script src="js/questions.js"></script>
+<script src="js/exams.js"></script>
 <script src="js/app.js"></script>
 </body>
 </html>
