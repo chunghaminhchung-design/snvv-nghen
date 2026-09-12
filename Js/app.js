@@ -1,11 +1,12 @@
 /* =========================================================
-   LỊCH SỬ 12 — app logic (phiên bản 12 bài + thi thử)
+   LỊCH SỬ 12 — app.js
+   Logic: trang chủ, luyện tập, thi thử, chấm điểm, lịch sử
    ========================================================= */
 
 const HISTORY_KEY = "su12_quiz_history";
 const ALL_MODE_SIZE = 30;
-const EXAM_SIZE = 20;       // Số câu thi thử mỗi bài
-const EXAM_TIME = 20 * 60;  // 20 phút đếm ngược
+const EXAM_SIZE = 15;       // Số câu thi thử mỗi bài
+const EXAM_TIME = 15 * 60;  // 15 phút đếm ngược
 
 function safeGetItem(k) { try { return localStorage.getItem(k); } catch(e) { return null; } }
 function safeSetItem(k,v) { try { localStorage.setItem(k,v); } catch(e) {} }
@@ -40,7 +41,7 @@ const els = {
 };
 
 let state = {
-  mode: null,        // "bai1".."bai12" | "all" | "exam-bai1"...
+  mode: null,
   quiz: [],
   index: 0,
   answers: [],
@@ -52,7 +53,6 @@ let timerInterval = null;
 let secondsLeft = 0;
 
 /* ---------- utilities ---------- */
-
 function shuffle(arr) {
   const a = arr.slice();
   for (let i = a.length - 1; i > 0; i--) {
@@ -99,7 +99,6 @@ function formatDate(iso) {
 }
 
 /* ---------- view switching ---------- */
-
 function showView(name) {
   els.viewHome.hidden = name !== "home";
   els.viewQuiz.hidden = name !== "quiz";
@@ -108,10 +107,10 @@ function showView(name) {
 }
 
 /* ---------- home view ---------- */
-
 function renderHome() {
   if (typeof QUIZ_TOPICS === "undefined" || typeof QUIZ_QUESTIONS === "undefined") {
     console.error("Chưa load được questions.js!");
+    els.topicCount.textContent = "Lỗi tải dữ liệu";
     return;
   }
 
@@ -136,7 +135,6 @@ function renderHome() {
     els.topicGrid.appendChild(card);
   });
 
-  // Gắn sự kiện cho tất cả nút bên trong
   els.topicGrid.querySelectorAll("button[data-mode]").forEach(btn => {
     btn.addEventListener("click", (e) => {
       e.stopPropagation();
@@ -166,7 +164,6 @@ function renderHome() {
 }
 
 /* ---------- timer ---------- */
-
 function startCountdown(seconds) {
   stopTimer();
   secondsLeft = seconds;
@@ -178,7 +175,6 @@ function startCountdown(seconds) {
     if (secondsLeft <= 0) {
       stopTimer();
       alert("⏰ Hết giờ! Bài sẽ được nộp tự động.");
-      // Tự động nộp: điền các câu chưa làm
       while (state.answers.length < state.quiz.length) {
         const idx = state.answers.length;
         const q = state.quiz[idx];
@@ -204,7 +200,6 @@ function stopTimer() {
 }
 
 /* ---------- quiz flow ---------- */
-
 function startQuiz(mode) {
   state.mode = mode;
   state.index = 0;
@@ -242,7 +237,7 @@ function renderQuestion() {
   const q = state.quiz[state.index];
   const total = state.quiz.length;
 
-  els.progressFill.style.width = `${((state.index) / total) * 100}%`;
+  els.progressFill.style.width = `${(state.index / total) * 100}%`;
   els.quizPosition.textContent = `Câu ${state.index + 1}/${total}`;
   els.quizTopicLabel.textContent = topicName(q.topic);
   els.questionText.textContent = q.text;
@@ -266,7 +261,6 @@ function selectOption(i) {
   const buttons = els.optionsList.querySelectorAll(".option");
 
   if (state.isExam) {
-    // Chế độ thi: chỉ đánh dấu đã chọn, KHÔNG hiện đáp án
     buttons.forEach((b, idx) => {
       b.classList.toggle("is-selected", idx === i);
     });
@@ -281,7 +275,6 @@ function selectOption(i) {
     return;
   }
 
-  // Chế độ luyện tập: hiện đáp án ngay
   if (buttons[0].disabled) return;
   const isCorrect = i === q.correctIndex;
   buttons.forEach((b, idx) => {
@@ -323,7 +316,6 @@ function finishQuiz() {
     if (a.correct) byTopic[a.topic].correct += 1;
   });
 
-  // Nhãn hiển thị
   let label;
   if (state.isExam) {
     const tid = state.mode.replace("exam-", "");
@@ -334,7 +326,6 @@ function finishQuiz() {
 
   saveHistoryEntry({ date: new Date().toISOString(), label, score, total });
 
-  // Nếu là thi thử, tạo reviewNotes từ các câu sai
   if (state.isExam && state.reviewNotes.length === 0) {
     state.answers.forEach(a => {
       if (!a.correct) {
@@ -353,7 +344,6 @@ function finishQuiz() {
 }
 
 /* ---------- result view ---------- */
-
 function renderResult(score, total, byTopic, label) {
   els.reportTopicLabel.textContent = `Biên bản chấm điểm · ${label}`;
   els.reportScoreNum.textContent = score;
@@ -392,7 +382,6 @@ function renderResult(score, total, byTopic, label) {
     });
   }
 
-  // Hiện nút "Thi thử lại" nếu đang ở chế độ thi
   if (state.isExam) {
     els.btnRetryExam.hidden = false;
     els.btnRetry.hidden = true;
@@ -405,7 +394,6 @@ function renderResult(score, total, byTopic, label) {
 }
 
 /* ---------- wiring ---------- */
-
 els.btnStartAll.addEventListener("click", () => startQuiz("all"));
 els.btnNext.addEventListener("click", goNext);
 els.btnQuit.addEventListener("click", () => {
@@ -418,7 +406,6 @@ els.btnQuit.addEventListener("click", () => {
 els.btnHome.addEventListener("click", () => { stopTimer(); showView("home"); renderHome(); });
 els.btnHome2.addEventListener("click", () => { stopTimer(); showView("home"); renderHome(); });
 
-// Phím tắt A/B/C/D + Enter
 document.addEventListener("keydown", (e) => {
   if (els.viewQuiz.hidden) return;
   const map = { "A":0, "B":1, "C":2, "D":3 };
@@ -430,7 +417,6 @@ document.addEventListener("keydown", (e) => {
   if (e.key === "Enter" && !els.btnNext.disabled) els.btnNext.click();
 });
 
-// Khởi chạy
 document.addEventListener("DOMContentLoaded", () => {
   renderHome();
   showView("home");
