@@ -3,143 +3,183 @@
 <head>
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-<title>Lịch Sử 12 — Mr.Chung</title>
-<meta name="description" content="Ôn thi THPTQG môn Lịch Sử 12 do Mr.Chung thiết kế." />
+<title>Ôn thi Lịch Sử 12 — Mr.Chung</title>
+<meta name="description" content="Ôn thi THPTQG môn Lịch Sử 12." />
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,600;0,700;0,800;1,600&family=Be+Vietnam+Pro:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="css/style.css" />
 </head>
 <body>
 
 <!-- ============ NÚT 3 GẠCH ============ -->
-<button class="menu-toggle" id="menu-toggle" aria-label="Mở menu">
-  <span></span><span></span><span></span>
+<button class="menu-btn" id="menu-btn" aria-label="Menu">
+  <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round">
+    <line x1="4" y1="7" x2="20" y2="7"/>
+    <line x1="4" y1="12" x2="20" y2="12"/>
+    <line x1="4" y1="17" x2="20" y2="17"/>
+  </svg>
 </button>
 
-<!-- ============ MENU DRAWER ============ -->
-<div class="menu-overlay" id="menu-overlay"></div>
+<!-- ============ OVERLAY ============ -->
+<div class="overlay" id="overlay"></div>
 
-<aside class="menu-drawer" id="menu-drawer">
-  <div class="menu-drawer__head">
-    <span class="brand__mark">LS12</span>
-    <span class="brand__name">Lịch Sử 12</span>
+<!-- ============ DRAWER MENU ============ -->
+<aside class="drawer" id="drawer">
+  <div class="drawer__head">
+    <div class="logo">
+      <div class="logo__mark">LS</div>
+      <div class="logo__text">
+        <strong>Lịch Sử 12</strong>
+        <span>Mr.Chung</span>
+      </div>
+    </div>
   </div>
 
-  <nav class="menu-drawer__nav">
-    <button class="nav-item is-active" data-view="home">
-      <span class="nav-item__icon">🏠</span>
+  <nav class="drawer__nav">
+    <a class="menu-item is-active" data-view="home">
+      <span class="menu-item__icon">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
+      </span>
       <span>Trang chủ</span>
-    </button>
-    <button class="nav-item" data-view="luyen-de">
-      <span class="nav-item__icon">📝</span>
+    </a>
+    <a class="menu-item" data-view="luyen-de">
+      <span class="menu-item__icon">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="9" y1="15" x2="15" y2="15"/></svg>
+      </span>
       <span>Luyện đề</span>
-    </button>
-    <button class="nav-item" data-view="thi-thu">
-      <span class="nav-item__icon">🎓</span>
+    </a>
+    <a class="menu-item" data-view="thi-thu">
+      <span class="menu-item__icon">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 10v6M2 10l10-5 10 5-10 5z"/><path d="M6 12v5c3 3 9 3 12 0v-5"/></svg>
+      </span>
       <span>Thi thử THPTQG</span>
-    </button>
-    <button class="nav-item" data-view="on-tap">
-      <span class="nav-item__icon">📚</span>
+    </a>
+    <a class="menu-item" data-view="on-tap">
+      <span class="menu-item__icon">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/></svg>
+      </span>
       <span>Ôn tập theo bài</span>
-    </button>
+    </a>
   </nav>
 
-  <div class="menu-drawer__footer">
-    <p>Website ôn thi Lịch Sử 12<br>Thiết kế bởi <strong>Mr.Chung</strong></p>
+  <div class="drawer__foot">
+    <p>Website ôn thi Lịch Sử 12</p>
+    <p>Thiết kế bởi <strong>Mr.Chung</strong></p>
   </div>
 </aside>
 
-<!-- ============ NỘI DUNG CHÍNH ============ -->
-<main class="content">
+<!-- ============ NỘI DUNG ============ -->
+<main class="main">
 
-  <!-- ============ VIEW: HOME ============ -->
+  <!-- ============ HOME ============ -->
   <section class="view" id="view-home">
     <div class="welcome">
-      <p class="welcome__eyebrow">Chào mừng bạn đến với</p>
-      <h1 class="welcome__title">Website của<br><span class="welcome__name">Mr.Chung</span></h1>
-      <p class="welcome__desc">Nơi ôn luyện Lịch Sử 12 — luyện đề, thi thử THPTQG và ôn tập theo từng bài trong SGK.</p>
-      <p class="welcome__hint">👈 Bấm vào <strong>biểu tượng 3 gạch</strong> ở góc trên bên trái để bắt đầu.</p>
+      <span class="welcome__badge">👋 Chào mừng</span>
+      <h1 class="welcome__title">Website ôn thi<br><span>Lịch Sử 12</span></h1>
+      <p class="welcome__sub">Được thiết kế bởi <strong>Mr.Chung</strong> — dành cho học sinh lớp 12 ôn thi THPTQG.</p>
+      <div class="welcome__cta">
+        <button class="btn btn-primary" data-go="on-tap">📚 Bắt đầu ôn tập</button>
+        <button class="btn btn-outline" data-go="thi-thu">🎓 Thi thử ngay</button>
+      </div>
+      <p class="welcome__hint">Hoặc bấm <strong>☰</strong> ở góc trên bên trái để mở menu.</p>
+    </div>
+
+    <div class="feature-grid">
+      <div class="feature-card" data-go="luyen-de">
+        <div class="feature-card__icon" style="background:#FEF3C7;color:#D97706;">📝</div>
+        <h3>Luyện đề</h3>
+        <p>Đề giữa kỳ, cuối kỳ của nhiều trường THPT gần đây.</p>
+      </div>
+      <div class="feature-card" data-go="thi-thu">
+        <div class="feature-card__icon" style="background:#DBEAFE;color:#2563EB;">🎓</div>
+        <h3>Thi thử THPTQG</h3>
+        <p>Đề chính thức các năm, có đồng hồ đếm ngược.</p>
+      </div>
+      <div class="feature-card" data-go="on-tap">
+        <div class="feature-card__icon" style="background:#DCFCE7;color:#16A34A;">📚</div>
+        <h3>Ôn tập theo bài</h3>
+        <p>Tập 1 (12 bài) + Tập 2, mỗi bài có câu hỏi riêng.</p>
+      </div>
     </div>
   </section>
 
-  <!-- ============ VIEW: LUYỆN ĐỀ ============ -->
+  <!-- ============ LUYỆN ĐỀ ============ -->
   <section class="view" id="view-luyen-de" hidden>
-    <div class="view-head">
+    <header class="page-head">
       <h2>📝 Luyện đề</h2>
-      <p>Đề thi giữa kỳ, cuối kỳ của các trường THPT gần đây. Làm lại không giới hạn.</p>
-    </div>
-    <div class="card-grid" id="luyen-de-grid"></div>
+      <p>Đề giữa kỳ, cuối kỳ của các trường THPT. Làm lại không giới hạn.</p>
+    </header>
+    <div class="grid" id="grid-luyen-de"></div>
   </section>
 
-  <!-- ============ VIEW: THI THỬ ============ -->
+  <!-- ============ THI THỬ ============ -->
   <section class="view" id="view-thi-thu" hidden>
-    <div class="view-head">
+    <header class="page-head">
       <h2>🎓 Thi thử THPTQG</h2>
-      <p>Đề thi chính thức các năm. Có đồng hồ đếm ngược như thi thật.</p>
-    </div>
-    <div class="card-grid" id="thi-thu-grid"></div>
+      <p>Đề chính thức các năm. Có đồng hồ đếm ngược như thi thật.</p>
+    </header>
+    <div class="grid" id="grid-thi-thu"></div>
   </section>
 
-  <!-- ============ VIEW: ÔN TẬP ============ -->
+  <!-- ============ ÔN TẬP ============ -->
   <section class="view" id="view-on-tap" hidden>
-    <div class="view-head">
+    <header class="page-head">
       <h2>📚 Ôn tập theo bài</h2>
       <p>Chọn Tập 1 hoặc Tập 2 để ôn theo từng bài trong SGK.</p>
+    </header>
+
+    <div class="tabs">
+      <button class="tab is-active" data-tap="tap1">Tập 1 (12 bài)</button>
+      <button class="tab" data-tap="tap2">Tập 2</button>
     </div>
 
-    <div class="tab-row">
-      <button class="tab-btn is-active" data-tap="tap1">Tập 1 (12 bài)</button>
-      <button class="tab-btn" data-tap="tap2">Tập 2</button>
-    </div>
-
-    <div class="card-grid" id="on-tap-grid"></div>
+    <div class="grid" id="grid-on-tap"></div>
   </section>
 
-  <!-- ============ VIEW: QUIZ ============ -->
+  <!-- ============ QUIZ ============ -->
   <section class="view" id="view-quiz" hidden>
-    <div class="quiz-bar">
-      <div class="quiz-bar__track"><div class="quiz-bar__fill" id="progress-fill"></div></div>
-      <div class="quiz-bar__meta">
+    <div class="quiz-top">
+      <div class="progress"><div class="progress__fill" id="progress-fill"></div></div>
+      <div class="quiz-meta">
         <span id="quiz-position">Câu 1/20</span>
-        <span class="quiz-bar__timer" id="quiz-timer" hidden></span>
-        <span id="quiz-topic-label" class="quiz-bar__topic"></span>
+        <span class="timer" id="quiz-timer" hidden></span>
+        <span id="quiz-label" class="quiz-label"></span>
       </div>
     </div>
 
-    <div class="question-card">
-      <p class="question-card__text" id="question-text"></p>
-      <div class="options" id="options-list"></div>
+    <div class="qcard">
+      <p class="qcard__text" id="q-text"></p>
+      <div class="answers" id="answers"></div>
     </div>
 
-    <div class="quiz-nav">
-      <button class="btn btn--ghost" id="btn-quit">Thoát</button>
-      <button class="btn btn--navy" id="btn-next" disabled>Câu tiếp theo →</button>
+    <div class="quiz-actions">
+      <button class="btn btn-outline" id="btn-quit">Thoát</button>
+      <button class="btn btn-primary" id="btn-next" disabled>Câu tiếp theo →</button>
     </div>
   </section>
 
-  <!-- ============ VIEW: RESULT ============ -->
+  <!-- ============ KẾT QUẢ ============ -->
   <section class="view" id="view-result" hidden>
-    <div class="report">
-      <p class="report__eyebrow" id="report-topic-label">Biên bản chấm điểm</p>
-      <p class="report__score"><span id="report-score-num">0</span><span class="report__score-total">/<span id="report-score-total">0</span></span></p>
-      <p class="report__percent" id="report-percent">0% chính xác</p>
-
-      <div class="report__actions">
-        <button class="btn btn--navy" id="btn-retry">Làm lại</button>
-        <button class="btn btn--ghost" id="btn-home2">Về trang chủ</button>
+    <div class="result">
+      <p class="result__eyebrow" id="result-label">Kết quả</p>
+      <p class="result__score"><span id="result-score">0</span><span class="result__total">/<span id="result-total">0</span></span></p>
+      <p class="result__percent" id="result-percent">0%</p>
+      <div class="result__actions">
+        <button class="btn btn-primary" id="btn-retry">Làm lại</button>
+        <button class="btn btn-outline" id="btn-home">Về trang chủ</button>
       </div>
     </div>
 
     <div class="review">
-      <h3>Xem lại các câu chưa đúng</h3>
+      <h3>Câu chưa đúng</h3>
       <ol class="review__list" id="review-list"></ol>
     </div>
   </section>
 
 </main>
 
-<footer class="site-footer">
+<footer class="footer">
   <p>Website ôn thi Lịch Sử 12 &middot; Thiết kế bởi <strong>Mr.Chung</strong></p>
 </footer>
 
