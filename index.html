@@ -4,7 +4,7 @@
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 <title>Lịch Sử 12 — Luyện trắc nghiệm</title>
-<meta name="description" content="Luyện tập trắc nghiệm Lịch Sử 12 theo từng chuyên đề, bám sát cấu trúc đề thi." />
+<meta name="description" content="Luyện tập trắc nghiệm Lịch Sử 12 theo từng bài, có thi thử." />
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,600;0,700;0,800;1,600&family=Be+Vietnam+Pro:wght@400;500;600;700&display=swap" rel="stylesheet">
@@ -28,14 +28,14 @@
   <section id="view-home" class="view">
 
     <div class="hero">
-      <p class="hero__eyebrow">Ngân hàng câu hỏi &middot; cập nhật theo từng đợt</p>
-      <h1 class="hero__title">Ôn tập từng chuyên đề,<br>giữ chắc từng con điểm.</h1>
-      <p class="hero__desc">Chọn một chuyên đề bên dưới để luyện riêng, hoặc trộn đề tổng hợp để kiểm tra tổng thể. Mỗi lượt làm bài đều được lưu lại để bạn theo dõi tiến bộ.</p>
+      <p class="hero__eyebrow">Ngân hàng câu hỏi &middot; cập nhật theo từng bài</p>
+      <h1 class="hero__title">Ôn tập từng bài,<br>giữ chắc từng con điểm.</h1>
+      <p class="hero__desc">Chọn một bài bên dưới để luyện tập hoặc thi thử. Mỗi bài đều có ngân hàng câu hỏi riêng, cho phép làm lại nhiều lần.</p>
       <button class="btn btn--gold" id="btn-start-all">Luyện tổng hợp — trộn tất cả</button>
     </div>
 
     <div class="section-head">
-      <h2>Hồ sơ chuyên đề</h2>
+      <h2>Hồ sơ bài học</h2>
       <span class="section-head__count" id="topic-count"></span>
     </div>
 
@@ -57,6 +57,7 @@
       <div class="quiz-bar__track"><div class="quiz-bar__fill" id="progress-fill"></div></div>
       <div class="quiz-bar__meta">
         <span id="quiz-position">Câu 1/20</span>
+        <span class="quiz-bar__timer" id="quiz-timer" hidden></span>
         <span id="quiz-topic-label" class="quiz-bar__topic"></span>
       </div>
     </div>
@@ -84,7 +85,8 @@
       <div class="report__breakdown" id="report-breakdown"><!-- injected --></div>
 
       <div class="report__actions">
-        <button class="btn btn--navy" id="btn-retry">Làm lại chuyên đề này</button>
+        <button class="btn btn--navy" id="btn-retry">Làm lại</button>
+        <button class="btn btn--gold" id="btn-retry-exam" hidden>Thi thử lại</button>
         <button class="btn btn--ghost" id="btn-home2">Về trang chủ</button>
       </div>
     </div>
@@ -99,7 +101,7 @@
 </main>
 
 <footer class="site-footer">
-  <p>Ngân hàng câu hỏi được bổ sung dần theo từng đợt &middot; không dùng để thay thế sách giáo khoa</p>
+  <p>Ngân hàng câu hỏi được bổ sung dần theo từng bài &middot; không dùng để thay thế sách giáo khoa</p>
 </footer>
 
 <script src="js/questions.js"></script>
