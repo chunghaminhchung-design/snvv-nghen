@@ -1,6 +1,5 @@
 /* =========================================================
    LỊCH SỬ 12 — app.js
-   Menu 3 gạch, điều hướng, quiz, thi thử, chấm điểm
    ========================================================= */
 
 const HISTORY_KEY = "su12_quiz_history";
@@ -8,39 +7,42 @@ const ALL_MODE_SIZE = 30;
 const EXAM_SIZE = 15;
 const EXAM_TIME = 15 * 60;
 
-function safeGetItem(k) { try { return localStorage.getItem(k); } catch(e) { return null; } }
-function safeSetItem(k,v) { try { localStorage.setItem(k,v); } catch(e) {} }
+function safeGet(k) { try { return localStorage.getItem(k); } catch(e) { return null; } }
+function safeSet(k,v) { try { localStorage.setItem(k,v); } catch(e) {} }
+
+/* ---------- DOM ---------- */
+const $ = (id) => document.getElementById(id);
 
 const els = {
   views: {
-    home: document.getElementById("view-home"),
-    "luyen-de": document.getElementById("view-luyen-de"),
-    "thi-thu": document.getElementById("view-thi-thu"),
-    "on-tap": document.getElementById("view-on-tap"),
-    quiz: document.getElementById("view-quiz"),
-    result: document.getElementById("view-result"),
+    home: $("view-home"),
+    "luyen-de": $("view-luyen-de"),
+    "thi-thu": $("view-thi-thu"),
+    "on-tap": $("view-on-tap"),
+    quiz: $("view-quiz"),
+    result: $("view-result"),
   },
-  menuToggle: document.getElementById("menu-toggle"),
-  menuDrawer: document.getElementById("menu-drawer"),
-  menuOverlay: document.getElementById("menu-overlay"),
-  luyenDeGrid: document.getElementById("luyen-de-grid"),
-  thiThuGrid: document.getElementById("thi-thu-grid"),
-  onTapGrid: document.getElementById("on-tap-grid"),
-  progressFill: document.getElementById("progress-fill"),
-  quizPosition: document.getElementById("quiz-position"),
-  quizTopicLabel: document.getElementById("quiz-topic-label"),
-  quizTimer: document.getElementById("quiz-timer"),
-  questionText: document.getElementById("question-text"),
-  optionsList: document.getElementById("options-list"),
-  btnNext: document.getElementById("btn-next"),
-  btnQuit: document.getElementById("btn-quit"),
-  reportTopicLabel: document.getElementById("report-topic-label"),
-  reportScoreNum: document.getElementById("report-score-num"),
-  reportScoreTotal: document.getElementById("report-score-total"),
-  reportPercent: document.getElementById("report-percent"),
-  reviewList: document.getElementById("review-list"),
-  btnRetry: document.getElementById("btn-retry"),
-  btnHome2: document.getElementById("btn-home2"),
+  menuBtn: $("menu-btn"),
+  drawer: $("drawer"),
+  overlay: $("overlay"),
+  gridLuyenDe: $("grid-luyen-de"),
+  gridThiThu: $("grid-thi-thu"),
+  gridOnTap: $("grid-on-tap"),
+  progressFill: $("progress-fill"),
+  quizPosition: $("quiz-position"),
+  quizLabel: $("quiz-label"),
+  quizTimer: $("quiz-timer"),
+  qText: $("q-text"),
+  answers: $("answers"),
+  btnNext: $("btn-next"),
+  btnQuit: $("btn-quit"),
+  resultLabel: $("result-label"),
+  resultScore: $("result-score"),
+  resultTotal: $("result-total"),
+  resultPercent: $("result-percent"),
+  reviewList: $("review-list"),
+  btnRetry: $("btn-retry"),
+  btnHome: $("btn-home"),
 };
 
 let state = {
@@ -51,6 +53,7 @@ let state = {
   reviewNotes: [],
   isExam: false,
   currentTab: "tap1",
+  customExam: null,
 };
 
 let timerInterval = null;
@@ -58,41 +61,49 @@ let secondsLeft = 0;
 
 /* ---------- MENU ---------- */
 function openMenu() {
-  els.menuDrawer.classList.add("is-open");
-  els.menuOverlay.classList.add("is-open");
-  els.menuToggle.classList.add("is-open");
+  els.drawer.classList.add("is-open");
+  els.overlay.classList.add("is-open");
 }
 function closeMenu() {
-  els.menuDrawer.classList.remove("is-open");
-  els.menuOverlay.classList.remove("is-open");
-  els.menuToggle.classList.remove("is-open");
+  els.drawer.classList.remove("is-open");
+  els.overlay.classList.remove("is-open");
 }
-els.menuToggle.addEventListener("click", () => {
-  if (els.menuDrawer.classList.contains("is-open")) closeMenu();
+els.menuBtn.addEventListener("click", () => {
+  if (els.drawer.classList.contains("is-open")) closeMenu();
   else openMenu();
 });
-els.menuOverlay.addEventListener("click", closeMenu);
+els.overlay.addEventListener("click", closeMenu);
 
 /* ---------- SHOW VIEW ---------- */
 function showView(name) {
   Object.keys(els.views).forEach(k => {
-    els.views[k].hidden = k !== name;
+    els.views[k].hidden = (k !== name);
   });
-  // Cập nhật trạng thái active cho nav-item
-  document.querySelectorAll(".nav-item").forEach(n => {
-    n.classList.toggle("is-active", n.dataset.view === name);
+  document.querySelectorAll(".menu-item").forEach(m => {
+    m.classList.toggle("is-active", m.dataset.view === name);
   });
   window.scrollTo({ top: 0, behavior: "auto" });
 }
 
-document.querySelectorAll(".nav-item").forEach(btn => {
-  btn.addEventListener("click", () => {
-    const v = btn.dataset.view;
+/* ---------- MENU ITEMS ---------- */
+document.querySelectorAll(".menu-item").forEach(item => {
+  item.addEventListener("click", () => {
+    const v = item.dataset.view;
     if (v === "home") showView("home");
     if (v === "luyen-de") { renderLuyenDe(); showView("luyen-de"); }
     if (v === "thi-thu") { renderThiThu(); showView("thi-thu"); }
     if (v === "on-tap") { renderOnTap(); showView("on-tap"); }
     closeMenu();
+  });
+});
+
+/* ---------- FEATURE CARDS (home) ---------- */
+document.querySelectorAll("[data-go]").forEach(el => {
+  el.addEventListener("click", () => {
+    const v = el.dataset.go;
+    if (v === "luyen-de") { renderLuyenDe(); showView("luyen-de"); }
+    if (v === "thi-thu") { renderThiThu(); showView("thi-thu"); }
+    if (v === "on-tap") { renderOnTap(); showView("on-tap"); }
   });
 });
 
@@ -121,113 +132,132 @@ function prepareQuestion(raw) {
   return { id: raw.id || "", topic: raw.topic || "", text: raw.q, options, correctIndex };
 }
 function loadHistory() {
-  const raw = safeGetItem(HISTORY_KEY);
+  const raw = safeGet(HISTORY_KEY);
   if (!raw) return [];
-  try { return JSON.parse(raw) || []; } catch (e) { return []; }
+  try { return JSON.parse(raw) || []; } catch(e) { return []; }
 }
-function saveHistoryEntry(entry) {
-  const hist = loadHistory();
-  hist.push(entry);
-  safeSetItem(HISTORY_KEY, JSON.stringify(hist.slice(-50)));
+function saveHistory(entry) {
+  const h = loadHistory();
+  h.push(entry);
+  safeSet(HISTORY_KEY, JSON.stringify(h.slice(-50)));
 }
 
-/* ---------- RENDER: LUYỆN ĐỀ ---------- */
+/* ---------- RENDER LUYỆN ĐỀ ---------- */
 function renderLuyenDe() {
-  els.luyenDeGrid.innerHTML = "";
+  const grid = els.gridLuyenDe;
+  grid.innerHTML = "";
   if (typeof LUYEN_DE_EXAMS === "undefined" || !LUYEN_DE_EXAMS.length) {
-    els.luyenDeGrid.innerHTML = "<p>Chưa có đề luyện nào.</p>";
+    grid.innerHTML = `<div class="empty">Chưa có đề luyện nào. Hãy thêm vào <code>js/exams.js</code>.</div>`;
     return;
   }
   LUYEN_DE_EXAMS.forEach(exam => {
     const card = document.createElement("div");
-    card.className = "topic-card";
+    card.className = "card";
     card.innerHTML = `
-      <span class="topic-card__no">${exam.year} · ${exam.school}</span>
-      <span class="topic-card__title">${exam.title}</span>
-      <span class="topic-card__meta">${exam.questions.length} câu · ${exam.duration} phút</span>
-      <div class="topic-card__actions">
-        <button class="mini-btn mini-btn--practice">Làm bài</button>
+      <span class="card__badge">${exam.year} · ${exam.school}</span>
+      <h3 class="card__title">${exam.title}</h3>
+      <p class="card__meta">${exam.questions.length} câu · ${exam.duration} phút</p>
+      <div class="card__actions">
+        <button class="card-btn card-btn--primary">Làm bài</button>
       </div>
     `;
-    card.querySelector(".mini-btn--practice").addEventListener("click", () => startExamMode(exam));
-    els.luyenDeGrid.appendChild(card);
+    card.querySelector(".card-btn--primary").addEventListener("click", () => startCustomExam(exam));
+    grid.appendChild(card);
   });
 }
 
-/* ---------- RENDER: THI THỬ ---------- */
+/* ---------- RENDER THI THỬ ---------- */
 function renderThiThu() {
-  els.thiThuGrid.innerHTML = "";
+  const grid = els.gridThiThu;
+  grid.innerHTML = "";
   if (typeof THI_THU_EXAMS === "undefined" || !THI_THU_EXAMS.length) {
-    els.thiThuGrid.innerHTML = "<p>Chưa có đề thi thử nào.</p>";
+    grid.innerHTML = `<div class="empty">Chưa có đề thi thử nào. Hãy thêm vào <code>js/exams.js</code>.</div>`;
     return;
   }
   THI_THU_EXAMS.forEach(exam => {
     const card = document.createElement("div");
-    card.className = "topic-card";
+    card.className = "card";
     card.innerHTML = `
-      <span class="topic-card__no">${exam.year} · ${exam.school}</span>
-      <span class="topic-card__title">${exam.title}</span>
-      <span class="topic-card__meta">${exam.questions.length} câu · ${exam.duration} phút</span>
-      <div class="topic-card__actions">
-        <button class="mini-btn mini-btn--exam">Thi thử</button>
+      <span class="card__badge">${exam.year} · ${exam.school}</span>
+      <h3 class="card__title">${exam.title}</h3>
+      <p class="card__meta">${exam.questions.length} câu · ${exam.duration} phút</p>
+      <div class="card__actions">
+        <button class="card-btn card-btn--primary">Thi thử</button>
       </div>
     `;
-    card.querySelector(".mini-btn--exam").addEventListener("click", () => startExamMode(exam));
-    els.thiThuGrid.appendChild(card);
+    card.querySelector(".card-btn--primary").addEventListener("click", () => startCustomExam(exam));
+    grid.appendChild(card);
   });
 }
 
-/* ---------- RENDER: ÔN TẬP ---------- */
+/* ---------- RENDER ÔN TẬP ---------- */
 function renderOnTap() {
+  const grid = els.gridOnTap;
+  grid.innerHTML = "";
   const tab = state.currentTab;
-  els.onTapGrid.innerHTML = "";
 
-  const topics = (typeof QUIZ_TOPICS !== "undefined") ? QUIZ_TOPICS.filter(t => {
-    if (tab === "tap1") return t.id.startsWith("bai") && parseInt(t.id.replace("bai","")) <= 12;
-    return true; // Tập 2 — bạn thêm sau
-  }) : [];
+  if (typeof QUIZ_TOPICS === "undefined" || typeof QUIZ_QUESTIONS === "undefined") {
+    grid.innerHTML = `<div class="empty">Chưa load được dữ liệu câu hỏi. Kiểm tra <code>js/questions.js</code>.</div>`;
+    return;
+  }
+
+  let topics = QUIZ_TOPICS;
+  if (tab === "tap1") {
+    topics = QUIZ_TOPICS.filter(t => {
+      const n = parseInt((t.id || "").replace("bai",""));
+      return !isNaN(n) && n >= 1 && n <= 12;
+    });
+  } else {
+    topics = QUIZ_TOPICS.filter(t => {
+      const n = parseInt((t.id || "").replace("bai",""));
+      return !isNaN(n) && n >= 13;
+    });
+  }
 
   if (!topics.length) {
-    els.onTapGrid.innerHTML = "<p>Chưa có bài nào trong mục này.</p>";
+    grid.innerHTML = `<div class="empty">Mục này chưa có bài nào.</div>`;
     return;
   }
 
   topics.forEach(t => {
     const count = questionsForTopic(t.id).length;
-    if (count === 0) return;
     const card = document.createElement("div");
-    card.className = "topic-card";
+    card.className = "card";
     card.innerHTML = `
-      <span class="topic-card__no">${t.code}</span>
-      <span class="topic-card__title">${t.name}</span>
-      <span class="topic-card__meta">${count} câu hỏi</span>
-      <div class="topic-card__actions">
-        <button class="mini-btn mini-btn--practice">📖 Luyện tập</button>
-        <button class="mini-btn mini-btn--exam">🎓 Thi thử</button>
+      <span class="card__badge">${t.code || t.id}</span>
+      <h3 class="card__title">${t.name}</h3>
+      <p class="card__meta">${count} câu hỏi</p>
+      <div class="card__actions">
+        <button class="card-btn card-btn--primary" ${count === 0 ? "disabled" : ""}>📖 Luyện tập</button>
+        <button class="card-btn card-btn--secondary" ${count === 0 ? "disabled" : ""}>🎓 Thi thử</button>
       </div>
     `;
-    card.querySelector(".mini-btn--practice").addEventListener("click", () => startQuiz(t.id, false));
-    card.querySelector(".mini-btn--exam").addEventListener("click", () => startQuiz(t.id, true));
-    els.onTapGrid.appendChild(card);
+    if (count > 0) {
+      card.querySelector(".card-btn--primary").addEventListener("click", () => startTopicQuiz(t.id, false));
+      card.querySelector(".card-btn--secondary").addEventListener("click", () => startTopicQuiz(t.id, true));
+    }
+    grid.appendChild(card);
   });
 }
 
-document.querySelectorAll(".tab-btn").forEach(btn => {
-  btn.addEventListener("click", () => {
-    document.querySelectorAll(".tab-btn").forEach(b => b.classList.remove("is-active"));
-    btn.classList.add("is-active");
-    state.currentTab = btn.dataset.tap;
+/* ---------- TABS ---------- */
+document.querySelectorAll(".tab").forEach(tab => {
+  tab.addEventListener("click", () => {
+    document.querySelectorAll(".tab").forEach(t => t.classList.remove("is-active"));
+    tab.classList.add("is-active");
+    state.currentTab = tab.dataset.tap;
     renderOnTap();
   });
 });
 
-/* ---------- START QUIZ (ôn tập theo bài) ---------- */
-function startQuiz(topicId, isExam) {
+/* ---------- START QUIZ (ôn tập) ---------- */
+function startTopicQuiz(topicId, isExam) {
   state.mode = isExam ? `exam-${topicId}` : topicId;
   state.index = 0;
   state.answers = [];
   state.reviewNotes = [];
   state.isExam = isExam;
+  state.customExam = null;
 
   const pool = questionsForTopic(topicId);
   const size = isExam ? Math.min(EXAM_SIZE, pool.length) : pool.length;
@@ -239,15 +269,15 @@ function startQuiz(topicId, isExam) {
   renderQuestion();
 }
 
-/* ---------- START EXAM (đề luyện / thi thử) ---------- */
-function startExamMode(exam) {
+/* ---------- START CUSTOM EXAM (luyện đề / thi thử) ---------- */
+function startCustomExam(exam) {
   state.mode = `custom-${exam.id}`;
   state.index = 0;
   state.answers = [];
   state.reviewNotes = [];
   state.isExam = true;
+  state.customExam = exam;
   state.quiz = shuffle(exam.questions).map(prepareQuestion);
-  state.customTitle = exam.title;
 
   showView("quiz");
   startCountdown((exam.duration || 45) * 60);
@@ -259,32 +289,31 @@ function startCountdown(seconds) {
   stopTimer();
   secondsLeft = seconds;
   els.quizTimer.hidden = false;
-  updateTimerDisplay();
+  updateTimer();
   timerInterval = setInterval(() => {
     secondsLeft--;
-    updateTimerDisplay();
+    updateTimer();
     if (secondsLeft <= 0) {
       stopTimer();
-      alert("⏰ Hết giờ! Bài sẽ được nộp tự động.");
+      alert("⏰ Hết giờ! Tự động nộp bài.");
       while (state.answers.length < state.quiz.length) {
-        const idx = state.answers.length;
-        state.answers.push({ index: idx, topic: state.quiz[idx].topic, correct: false, chosen: -1 });
+        const i = state.answers.length;
+        state.answers.push({ index: i, topic: state.quiz[i].topic, correct: false, chosen: -1 });
       }
       finishQuiz();
     }
   }, 1000);
 }
-function updateTimerDisplay() {
-  const m = Math.floor(Math.max(0,secondsLeft) / 60).toString().padStart(2, "0");
-  const s = (Math.max(0,secondsLeft) % 60).toString().padStart(2, "0");
+function updateTimer() {
+  const m = Math.floor(Math.max(0, secondsLeft) / 60).toString().padStart(2, "0");
+  const s = (Math.max(0, secondsLeft) % 60).toString().padStart(2, "0");
   els.quizTimer.textContent = `⏱ ${m}:${s}`;
-  if (secondsLeft <= 60) els.quizTimer.classList.add("is-warning");
-  else els.quizTimer.classList.remove("is-warning");
+  els.quizTimer.classList.toggle("warning", secondsLeft <= 60);
 }
 function stopTimer() {
   clearInterval(timerInterval);
   els.quizTimer.hidden = true;
-  els.quizTimer.classList.remove("is-warning");
+  els.quizTimer.classList.remove("warning");
 }
 
 /* ---------- RENDER QUESTION ---------- */
@@ -294,34 +323,34 @@ function renderQuestion() {
 
   els.progressFill.style.width = `${(state.index / total) * 100}%`;
   els.quizPosition.textContent = `Câu ${state.index + 1}/${total}`;
-  els.quizTopicLabel.textContent = state.customTitle || topicName(q.topic);
-  els.questionText.textContent = q.text;
+  els.quizLabel.textContent = state.customExam ? state.customExam.title : topicName(q.topic);
+  els.qText.textContent = q.text;
 
-  els.optionsList.innerHTML = "";
-  const letters = ["A","B","C","D"];
+  els.answers.innerHTML = "";
+  const letters = ["A", "B", "C", "D"];
   q.options.forEach((opt, i) => {
     const btn = document.createElement("button");
-    btn.className = "option";
-    btn.innerHTML = `<span class="option__bubble">${letters[i]}</span><span>${opt}</span>`;
-    btn.addEventListener("click", () => selectOption(i));
-    els.optionsList.appendChild(btn);
+    btn.className = "answer";
+    btn.innerHTML = `<span class="answer__key">${letters[i]}</span><span>${opt}</span>`;
+    btn.addEventListener("click", () => selectAnswer(i));
+    els.answers.appendChild(btn);
   });
 
   els.btnNext.disabled = true;
   els.btnNext.textContent = state.index === total - 1 ? "Nộp bài →" : "Câu tiếp theo →";
 }
 
-/* ---------- SELECT OPTION ---------- */
-function selectOption(i) {
+/* ---------- SELECT ANSWER ---------- */
+function selectAnswer(i) {
   const q = state.quiz[state.index];
-  const buttons = els.optionsList.querySelectorAll(".option");
+  const buttons = els.answers.querySelectorAll(".answer");
 
   if (state.isExam) {
-    buttons.forEach((b, idx) => b.classList.toggle("is-selected", idx === i));
-    const existing = state.answers.find(a => a.index === state.index);
-    if (existing) {
-      existing.chosen = i;
-      existing.correct = i === q.correctIndex;
+    buttons.forEach((b, idx) => b.classList.toggle("selected", idx === i));
+    const ex = state.answers.find(a => a.index === state.index);
+    if (ex) {
+      ex.chosen = i;
+      ex.correct = i === q.correctIndex;
     } else {
       state.answers.push({ index: state.index, topic: q.topic, chosen: i, correct: i === q.correctIndex });
     }
@@ -333,9 +362,9 @@ function selectOption(i) {
   const isCorrect = i === q.correctIndex;
   buttons.forEach((b, idx) => {
     b.disabled = true;
-    if (idx === q.correctIndex) b.classList.add("is-correct");
-    if (idx === i) b.classList.add("is-selected");
-    if (idx === i && !isCorrect) b.classList.add("is-wrong");
+    if (idx === q.correctIndex) b.classList.add("correct");
+    if (idx === i) b.classList.add("selected");
+    if (idx === i && !isCorrect) b.classList.add("wrong");
   });
   state.answers.push({ index: state.index, topic: q.topic, correct: isCorrect, chosen: i });
   if (!isCorrect) {
@@ -351,7 +380,7 @@ function selectOption(i) {
 /* ---------- NEXT ---------- */
 function goNext() {
   if (state.index < state.quiz.length - 1) {
-    state.index += 1;
+    state.index++;
     renderQuestion();
   } else {
     finishQuiz();
@@ -364,12 +393,13 @@ function finishQuiz() {
   const total = state.quiz.length;
   const score = state.answers.filter(a => a.correct).length;
 
-  let label = state.customTitle || (state.mode === "all" ? "Luyện tổng hợp" : topicName(state.mode));
-  if (state.isExam && !state.customTitle) {
-    const tid = state.mode.replace("exam-", "");
-    label = `Thi thử · ${tid === "all" ? "Tổng hợp" : topicName(tid)}`;
-  }
-  saveHistoryEntry({ date: new Date().toISOString(), label, score, total });
+  let label;
+  if (state.customExam) label = state.customExam.title;
+  else if (state.isExam) label = `Thi thử · ${topicName(state.mode.replace("exam-",""))}`;
+  else if (state.mode === "all") label = "Luyện tổng hợp";
+  else label = topicName(state.mode);
+
+  saveHistory({ date: new Date().toISOString(), label, score, total });
 
   if (state.isExam && state.reviewNotes.length === 0) {
     state.answers.forEach(a => {
@@ -389,24 +419,24 @@ function finishQuiz() {
 }
 
 function renderResult(score, total, label) {
-  els.reportTopicLabel.textContent = `Biên bản chấm điểm · ${label}`;
-  els.reportScoreNum.textContent = score;
-  els.reportScoreTotal.textContent = total;
-  els.reportPercent.textContent = `${Math.round((score / total) * 100)}% chính xác`;
+  els.resultLabel.textContent = label;
+  els.resultScore.textContent = score;
+  els.resultTotal.textContent = total;
+  els.resultPercent.textContent = `${Math.round((score/total)*100)}% chính xác`;
 
   els.reviewList.innerHTML = "";
-  if (state.reviewNotes.length === 0) {
+  if (!state.reviewNotes.length) {
     const p = document.createElement("p");
     p.textContent = "🎉 Không có câu nào sai — làm rất tốt!";
     els.reviewList.appendChild(p);
   } else {
     state.reviewNotes.forEach(n => {
       const li = document.createElement("li");
-      li.className = "review__item";
+      li.className = "review-item";
       li.innerHTML = `
-        <p class="review__q">${n.text}</p>
-        <p class="review__answer wrong">Bạn chọn: ${n.chosen}</p>
-        <p class="review__answer right">Đáp án đúng: ${n.correct}</p>
+        <p class="review-q">${n.text}</p>
+        <p class="review-ans wrong">Bạn chọn: ${n.chosen}</p>
+        <p class="review-ans right">Đáp án đúng: ${n.correct}</p>
       `;
       els.reviewList.appendChild(li);
     });
@@ -416,31 +446,26 @@ function renderResult(score, total, label) {
 /* ---------- WIRING ---------- */
 els.btnNext.addEventListener("click", goNext);
 els.btnQuit.addEventListener("click", () => {
-  if (confirm("Thoát bài làm? Tiến độ sẽ không được lưu.")) {
+  if (confirm("Thoát bài làm?")) {
     stopTimer();
     showView("home");
   }
 });
-els.btnHome2.addEventListener("click", () => { stopTimer(); showView("home"); });
+els.btnHome.addEventListener("click", () => { stopTimer(); showView("home"); });
 els.btnRetry.addEventListener("click", () => {
-  if (state.customTitle) {
-    // Tìm lại exam gốc
-    const all = [...(LUYEN_DE_EXAMS || []), ...(THI_THU_EXAMS || [])];
-    const exam = all.find(e => `custom-${e.id}` === state.mode);
-    if (exam) return startExamMode(exam);
-  }
+  if (state.customExam) return startCustomExam(state.customExam);
   const isExam = state.isExam;
-  const tid = state.mode.replace("exam-", "").replace("custom-", "");
-  startQuiz(tid, isExam);
+  const tid = state.mode.replace("exam-","").replace("custom-","");
+  startTopicQuiz(tid, isExam);
 });
 
 /* ---------- KEYBOARD ---------- */
 document.addEventListener("keydown", (e) => {
   if (els.views.quiz.hidden) return;
-  const map = { "A":0, "B":1, "C":2, "D":3 };
+  const map = { A: 0, B: 1, C: 2, D: 3 };
   const k = e.key.toUpperCase();
   if (map[k] !== undefined) {
-    const btns = els.optionsList.querySelectorAll(".option");
+    const btns = els.answers.querySelectorAll(".answer");
     if (btns[map[k]]) btns[map[k]].click();
   }
   if (e.key === "Enter" && !els.btnNext.disabled) els.btnNext.click();
