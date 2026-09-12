@@ -1,28 +1,22 @@
 /* ===========================================================
-   LỊCH SỬ 12 — design tokens
-   Concept: a study dossier styled after an archival case file,
-   with quiz options rendered like bubbles on an official
-   multiple-choice answer sheet ("phiếu trả lời trắc nghiệm").
+   LỊCH SỬ 12 — style.css
    =========================================================== */
 
 :root {
-  --paper:      #ECE6D3;   /* aged parchment background */
-  --paper-flat:  #F5F1E4;  /* lighter card surface */
-  --ink:        #241F1C;   /* primary text, warm near-black */
-  --ink-soft:   #5B5347;   /* secondary text */
-  --navy:       #1B2A41;   /* archive navy — header, selected state */
+  --paper:      #ECE6D3;
+  --paper-flat: #F5F1E4;
+  --ink:        #241F1C;
+  --ink-soft:   #5B5347;
+  --navy:       #1B2A41;
   --navy-soft:  #2C3E56;
-  --red:        #A6312A;   /* lacquer red — incorrect / accent */
-  --green:      #3F6B4C;   /* ledger green — correct */
-  --gold:       #B98A32;   /* brass seal — highlights, primary CTA */
+  --red:        #A6312A;
+  --green:      #3F6B4C;
+  --gold:       #B98A32;
   --gold-soft:  #E7D9B0;
-  --rule:       #C9BFA0;   /* hairline border on paper */
-  --rule-dark:  rgba(255,255,255,0.18);
-
+  --rule:       #C9BFA0;
   --serif: "Playfair Display", Georgia, serif;
   --sans:  "Be Vietnam Pro", -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
-
-  --max: 760px;
+  --max: 820px;
 }
 
 * { box-sizing: border-box; }
@@ -48,7 +42,6 @@ body {
 button { font-family: inherit; }
 
 /* ---------- masthead ---------- */
-
 .masthead {
   background: var(--navy);
   color: #EFE9D8;
@@ -101,13 +94,8 @@ main#app {
 }
 
 /* ---------- hero ---------- */
-
 .hero { padding: 8px 0 32px; border-bottom: 1px solid var(--rule); margin-bottom: 32px; }
-.hero__eyebrow {
-  font-size: 13px;
-  color: var(--ink-soft);
-  margin: 0 0 10px;
-}
+.hero__eyebrow { font-size: 13px; color: var(--ink-soft); margin: 0 0 10px; }
 .hero__title {
   font-family: var(--serif);
   font-weight: 700;
@@ -135,7 +123,6 @@ main#app {
 }
 .btn:active { transform: translateY(1px); }
 .btn:focus-visible { outline: 2px solid var(--navy); outline-offset: 2px; }
-
 .btn--gold { background: var(--gold); color: #26200F; }
 .btn--gold:hover { background: #a87c2b; }
 .btn--navy { background: var(--navy); color: #F5F1E4; }
@@ -144,26 +131,19 @@ main#app {
 .btn--ghost { background: transparent; color: var(--ink); border-color: var(--rule); }
 .btn--ghost:hover { background: rgba(0,0,0,0.04); }
 
-/* ---------- section head ---------- */
-
 .section-head {
   display: flex;
   align-items: baseline;
   justify-content: space-between;
   margin-bottom: 14px;
 }
-.section-head h2 {
-  font-family: var(--serif);
-  font-size: 20px;
-  margin: 0;
-}
+.section-head h2 { font-family: var(--serif); font-size: 20px; margin: 0; }
 .section-head__count { font-size: 13px; color: var(--ink-soft); }
 
 /* ---------- dossier cards ---------- */
-
 .dossier-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(210px, 1fr));
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
   gap: 14px;
   margin-bottom: 40px;
 }
@@ -175,13 +155,11 @@ main#app {
   padding: 16px 16px 14px;
   text-align: left;
   cursor: pointer;
-  position: relative;
   display: flex;
   flex-direction: column;
   gap: 6px;
 }
 .dossier-card:hover { border-left-color: var(--gold); background: #F8F4E9; }
-.dossier-card:focus-visible { outline: 2px solid var(--navy); outline-offset: 2px; }
 
 .dossier-card__no {
   font-family: var(--serif);
@@ -197,8 +175,29 @@ main#app {
 }
 .dossier-card__meta { font-size: 12.5px; color: var(--ink-soft); margin-top: 4px; }
 
-/* ---------- history ---------- */
+.dossier-card__actions {
+  display: flex;
+  gap: 8px;
+  margin-top: 12px;
+}
 
+.mini-btn {
+  flex: 1;
+  font-family: var(--sans);
+  font-size: 13px;
+  font-weight: 600;
+  padding: 8px 10px;
+  border-radius: 2px;
+  border: 1.5px solid transparent;
+  cursor: pointer;
+  transition: all 0.15s;
+}
+.mini-btn--practice { background: var(--navy); color: #F5F1E4; }
+.mini-btn--practice:hover { background: #14202f; }
+.mini-btn--exam { background: var(--gold); color: #26200F; }
+.mini-btn--exam:hover { background: #a87c2b; }
+
+/* ---------- history ---------- */
 .history__list { list-style: none; margin: 0; padding: 0; }
 .history__list li {
   display: flex;
@@ -214,7 +213,6 @@ main#app {
 .history__score.is-bad { color: var(--red); }
 
 /* ---------- quiz bar ---------- */
-
 .quiz-bar { margin-bottom: 26px; }
 .quiz-bar__track {
   height: 6px;
@@ -225,20 +223,37 @@ main#app {
 .quiz-bar__fill {
   height: 100%;
   background: var(--gold);
-  width: 5%;
+  width: 0;
   transition: width 0.25s ease;
 }
 .quiz-bar__meta {
   display: flex;
   justify-content: space-between;
+  align-items: center;
   margin-top: 8px;
   font-size: 13px;
   color: var(--ink-soft);
+  gap: 10px;
+  flex-wrap: wrap;
 }
 .quiz-bar__topic { font-weight: 600; color: var(--navy); }
 
-/* ---------- question card ---------- */
+.quiz-bar__timer {
+  font-family: var(--serif);
+  font-weight: 700;
+  color: var(--red);
+  font-size: 15px;
+  background: rgba(166,49,42,0.08);
+  padding: 2px 10px;
+  border-radius: 3px;
+}
+.quiz-bar__timer.is-warning {
+  animation: pulse 1s infinite;
+  background: rgba(166,49,42,0.2);
+}
+@keyframes pulse { 50% { opacity: 0.5; } }
 
+/* ---------- question card ---------- */
 .question-card {
   background: var(--paper-flat);
   border: 1px solid var(--rule);
@@ -269,6 +284,7 @@ main#app {
   cursor: pointer;
   font-size: 15.5px;
   color: var(--ink);
+  transition: all 0.15s;
 }
 .option:hover:not(:disabled) { border-color: var(--navy); }
 .option:focus-visible { outline: 2px solid var(--navy); outline-offset: 2px; }
@@ -289,16 +305,16 @@ main#app {
   color: var(--ink-soft);
 }
 
+.option.is-selected { border-color: var(--navy); background: rgba(27,42,65,0.05); }
 .option.is-selected .option__bubble { background: var(--navy); border-color: var(--navy); color: #fff; }
 .option.is-correct { border-color: var(--green); background: rgba(63,107,76,0.08); }
 .option.is-correct .option__bubble { background: var(--green); border-color: var(--green); color: #fff; }
 .option.is-wrong { border-color: var(--red); background: rgba(166,49,42,0.07); }
 .option.is-wrong .option__bubble { background: var(--red); border-color: var(--red); color: #fff; }
 
-.quiz-nav { display: flex; justify-content: space-between; }
+.quiz-nav { display: flex; justify-content: space-between; gap: 10px; }
 
 /* ---------- result / report ---------- */
-
 .report {
   border: 1px solid var(--rule);
   background: var(--paper-flat);
@@ -333,8 +349,6 @@ main#app {
 .review__answer.wrong { color: var(--red); }
 .review__answer.right { color: var(--green); }
 
-/* ---------- footer ---------- */
-
 .site-footer {
   text-align: center;
   font-size: 12.5px;
@@ -342,9 +356,8 @@ main#app {
   padding: 20px;
 }
 
-/* ---------- responsive ---------- */
-
 @media (max-width: 480px) {
   .report__score { font-size: 44px; }
   .question-card { padding: 20px 16px; }
+  .dossier-grid { grid-template-columns: 1fr; }
 }
