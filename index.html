@@ -6,82 +6,239 @@
 <title>LuyệnThi – Luyện thi tốt nghiệp</title>
 <link href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@400;500;600;800&display=swap" rel="stylesheet">
 <style>
-:root{
-  --bg:#ffffff; --ink:#1f2937; --muted:#6b7a90; --line:#d9dee6; --brand:#c8352b; --brand-soft:#fbf1f0; --surface:#ffffff; --dots:#c3c9d3;
-  box-sizing:border-box;
-  padding-top:env(safe-area-inset-top,0px); padding-bottom:env(safe-area-inset-bottom,0px);
-}
-@media (prefers-color-scheme: dark){
-  :root:not([data-theme="light"]){--bg:#141922;--ink:#eef1f6;--muted:#97a3b6;--line:#2c3544;--brand:#ef5a4f;--brand-soft:#2a1b1d;--surface:#1a202b;--dots:#3a4252;}
-}
-:root[data-theme="dark"]{--bg:#141922;--ink:#eef1f6;--muted:#97a3b6;--line:#2c3544;--brand:#ef5a4f;--brand-soft:#2a1b1d;--surface:#1a202b;--dots:#3a4252;}
+:root{--bg:#fff;--ink:#1f2937;--muted:#6b7a90;--line:#d9dee6;--brand:#c8352b;--soft:#fbf1f0;--surface:#fff;--dots:#c3c9d3;--hover:#f4f6f9;
+box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#141922;--ink:#eef1f6;--muted:#97a3b6;--line:#2c3544;--brand:#ef5a4f;--soft:#2a1b1d;--surface:#1a202b;--dots:#3a4252;--hover:#202836}}
+:root[data-theme="dark"]{--bg:#141922;--ink:#eef1f6;--muted:#97a3b6;--line:#2c3544;--brand:#ef5a4f;--soft:#2a1b1d;--surface:#1a202b;--dots:#3a4252;--hover:#202836}
 html{scroll-padding-top:env(safe-area-inset-top,0px)}
 *{box-sizing:border-box;margin:0}
 body{font-family:'Be Vietnam Pro',system-ui,-apple-system,'Segoe UI',sans-serif;background:var(--bg);color:var(--ink);line-height:1.4}
-header{position:sticky;top:env(safe-area-inset-top,0px);z-index:5;display:flex;align-items:center;gap:8px;padding:12px 16px;background:var(--bg);border-bottom:1px solid var(--line)}
-body::before{content:"";position:fixed;inset:0 0 auto;height:env(safe-area-inset-top,0px);background:var(--bg);z-index:10}
-.logo{display:flex;align-items:center;gap:8px;margin-right:auto;font-weight:800;font-size:20px;letter-spacing:-.5px}
+body::before{content:"";position:fixed;inset:0 0 auto;height:env(safe-area-inset-top,0px);background:var(--bg);z-index:30}
+button,input,select{font:inherit;color:inherit}
+header{position:sticky;top:env(safe-area-inset-top,0px);z-index:20;display:flex;align-items:center;gap:8px;padding:12px 16px;background:var(--bg);border-bottom:1px solid var(--line)}
+.logo{display:flex;align-items:center;gap:8px;margin-right:auto;font-weight:800;font-size:20px;letter-spacing:-.5px;color:inherit;text-decoration:none}
 .logo i{width:30px;height:30px;border-radius:9px;background:var(--brand);display:grid;place-items:center;color:#fff;font-style:normal;font-size:16px}
-.pill,.avatar,.menu{height:40px;border:1px solid var(--line);border-radius:14px;background:var(--surface);color:var(--ink);display:flex;align-items:center;justify-content:center;font:600 15px inherit;cursor:pointer;padding:0 12px;gap:4px}
+.btn{height:40px;border:1px solid var(--line);border-radius:14px;background:var(--surface);display:flex;align-items:center;justify-content:center;font-weight:600;cursor:pointer;padding:0 12px;gap:4px}
 .avatar{width:40px;padding:0;border-radius:50%;background:#4b34a8;color:#fff;border:0}
-.hero{position:relative;text-align:center;padding:44px 20px 56px;background-image:radial-gradient(var(--dots) 1.2px,transparent 1.2px);background-size:24px 24px}
+.hero{text-align:center;padding:44px 20px 56px;background-image:radial-gradient(var(--dots) 1.2px,transparent 1.2px);background-size:24px 24px}
 .stat{display:inline-flex;align-items:center;gap:10px;border:1px solid var(--line);background:var(--surface);border-radius:999px;padding:7px 18px 7px 8px;font-size:15px;margin-bottom:28px}
-.stat b{font-weight:600}.stat span{color:var(--muted)}
+.stat span{color:var(--muted)}
 .faces{display:flex}.faces i{width:24px;height:24px;border-radius:50%;margin-left:-6px;border:2px solid var(--surface)}
 .faces i:nth-child(1){background:#7aa7f0;margin-left:0}.faces i:nth-child(2){background:#8a9a7b}.faces i:nth-child(3){background:#2f6cb8}
-h1{font-size:clamp(34px,10vw,56px);font-weight:800;letter-spacing:-1.5px;line-height:1.15}
-h1 em{display:inline-block;font-style:normal;color:var(--brand);background:var(--brand-soft);border-left:3px solid var(--brand);padding:2px 14px;margin-top:6px}
-.panel{margin-top:-24px;background:var(--bg);border:1px solid var(--line);border-radius:36px 36px 0 0;padding:28px 20px 100px;min-height:60vh}
-.panel-head{display:flex;align-items:center;gap:16px;margin-bottom:28px}
+h1{font-size:clamp(32px,9.5vw,54px);font-weight:800;letter-spacing:-1.5px;line-height:1.15}
+h1 em{display:inline-block;font-style:normal;color:var(--brand);background:var(--soft);border-left:3px solid var(--brand);padding:2px 14px;margin-top:6px}
+.panel{margin-top:-24px;position:relative;background:var(--bg);border:1px solid var(--line);border-radius:36px 36px 0 0;padding:28px 20px 100px;min-height:60vh}
+.panel-head{display:flex;align-items:center;gap:16px;margin-bottom:20px}
 .tag{background:var(--brand);color:#fff;font-weight:800;font-size:22px;padding:14px 18px;border-radius:14px;font-style:italic}
 .panel-head h2{font-size:22px;font-weight:500}
 ul{list-style:none;padding:0}
-li a{display:flex;align-items:center;gap:18px;padding:12px 0;color:inherit;text-decoration:none;position:relative}
+.subj{display:flex;align-items:center;gap:18px;padding:10px 12px;margin:0 -12px;border-radius:24px;color:inherit;text-decoration:none}
+.subj:hover,.subj:active{background:var(--hover)}
 .ico{position:relative;width:64px;height:64px;border:1.5px solid var(--line);border-radius:18px;display:grid;place-items:center;font-size:28px;flex:none;background:var(--surface)}
 .hot{position:absolute;top:-10px;right:-10px;background:var(--brand);color:#fff;font-size:11px;font-weight:800;padding:2px 8px;border-radius:10px}
 .txt{flex:1}.txt strong{display:block;font-size:20px;font-weight:500}.txt span{color:var(--muted);font-size:17px}
 .chev{width:10px;height:10px;border-top:2px solid var(--muted);border-right:2px solid var(--muted);transform:rotate(45deg);margin-right:8px}
-li a:active .ico,li a:hover .ico{border-color:var(--brand)}
+/* subject page */
+.subbar{position:sticky;top:calc(65px + env(safe-area-inset-top,0px));z-index:15;display:flex;justify-content:space-between;align-items:center;padding:10px 16px;background:var(--bg);border-bottom:1px solid var(--line)}
+.chip{display:flex;align-items:center;gap:10px;background:none;border:0;cursor:pointer;font-weight:600;font-size:17px}
+.dot{width:30px;height:30px;border-radius:9px;display:grid;place-items:center;font-size:15px}
+.caret{border:5px solid transparent;border-top-color:var(--muted);margin-top:5px}
+.sub-hero{padding:28px 20px 8px}
+.sub-hero h1{font-size:30px;letter-spacing:-.8px;text-align:left}
+.sub-hero p{margin-top:12px;color:var(--muted);font-size:17px;line-height:1.7}
+.controls{padding:20px 16px 4px;display:flex;flex-wrap:wrap;gap:12px}
+.controls .btn{height:48px;border-radius:18px;padding:0 18px}
+.search{flex:1;min-width:0;display:flex;align-items:center;gap:10px;border:1px solid var(--line);border-radius:18px;padding:0 16px;background:var(--surface);height:48px}
+.search input{border:0;background:none;outline:0;flex:1;min-width:0;font-size:16px}
+.filters{display:none;width:100%;gap:8px;flex-wrap:wrap}.filters.open{display:flex}
+.fchip{border:1px solid var(--line);border-radius:999px;background:var(--surface);padding:8px 16px;cursor:pointer}
+.fchip.on{background:var(--brand);border-color:var(--brand);color:#fff}
+.sort{appearance:none;-webkit-appearance:none;background:var(--surface);padding-right:14px}
+.list{padding:12px 16px 110px;display:grid;gap:22px}
+.card{border:1px solid var(--line);border-radius:30px;background:var(--surface);overflow:hidden;box-shadow:0 6px 24px rgba(0,0,0,.05)}
+.cover{position:relative;padding:34px 0;display:grid;place-items:center}
+.book{width:52%;aspect-ratio:3/4;border-radius:4px 8px 8px 4px;padding:14px 12px;display:flex;flex-direction:column;box-shadow:0 14px 28px rgba(0,0,0,.18),inset 8px 0 8px -6px rgba(0,0,0,.18);color:#1b2a2a}
+.book small{align-self:flex-start;background:rgba(255,255,255,.85);font-size:9px;font-weight:600;padding:1px 5px;border-radius:3px}
+.book b{font-size:clamp(17px,5.4vw,24px);line-height:1.05;margin-top:8px;letter-spacing:-.6px}
+.book span{font-size:10.5px;margin-top:4px;font-weight:500}
+.book u{margin-top:auto;font-size:9px;text-decoration:none;opacity:.7}
+.bm{position:absolute;top:18px;right:18px;width:50px;height:50px;border-radius:50%;border:0;background:rgba(60,70,80,.4);color:#fff;font-size:22px;cursor:pointer}
+.bm.on{background:rgba(40,50,60,.85)}
+.body{padding:22px 24px 24px}
+.meta{color:var(--muted);font-size:17px}
+.card h3{font-size:20px;font-weight:600;line-height:1.5;margin:10px 0 16px}
+.nums{display:flex;gap:22px;color:var(--muted);font-size:16px;margin-bottom:18px;flex-wrap:wrap}
+.acts{display:flex;gap:12px}
+.play{flex:1;height:54px;border:1px solid var(--line);border-radius:18px;background:var(--surface);font-weight:600;font-size:17px;cursor:pointer;color:inherit;text-decoration:none;display:flex;align-items:center;justify-content:center;gap:10px}
+.play::before{content:"";border-left:14px solid var(--brand);border-top:8px solid transparent;border-bottom:8px solid transparent}
+.more{width:54px;height:54px;border:1px solid var(--line);border-radius:18px;background:var(--surface);cursor:pointer;font-size:22px}
+.empty{text-align:center;color:var(--muted);padding:40px 0}
+/* sheet */
+.sheet-bg{position:fixed;inset:0;background:rgba(0,0,0,.45);z-index:40;display:none}
+.sheet-bg.open{display:block}
+.sheet{position:absolute;left:0;right:0;bottom:0;max-height:78vh;overflow:auto;background:var(--bg);border-radius:28px 28px 0 0;padding:0 16px calc(24px + env(safe-area-inset-bottom,0px))}
+.sheet header{position:sticky;top:0;padding:20px 4px 14px;font-size:20px;font-weight:600;justify-content:space-between}
+.sheet a{display:flex;align-items:center;gap:16px;padding:12px;border-radius:18px;color:var(--muted);text-decoration:none;font-size:19px}
+.sheet a.on{background:var(--hover);color:var(--ink);font-weight:600}
+.toast{position:fixed;left:50%;bottom:calc(30px + env(safe-area-inset-bottom,0px));transform:translateX(-50%);background:#222;color:#fff;padding:12px 20px;border-radius:14px;z-index:50;display:none;font-size:15px}
+.up{position:fixed;right:18px;bottom:calc(20px + env(safe-area-inset-bottom,0px));width:56px;height:56px;border-radius:50%;background:var(--surface);box-shadow:0 4px 18px rgba(0,0,0,.2);border:0;font-size:24px;cursor:pointer;z-index:12}
 a:focus-visible,button:focus-visible{outline:3px solid var(--brand);outline-offset:2px}
-.chat{position:fixed;right:18px;bottom:calc(20px + env(safe-area-inset-bottom,0px));width:56px;height:56px;border-radius:50%;background:var(--surface);box-shadow:0 4px 18px rgba(0,0,0,.18);display:grid;place-items:center;border:0;cursor:pointer;font-size:26px}
 </style>
 </head>
 <body>
 <header>
-  <div class="logo"><i>L</i>LuyệnThi</div>
-  <button class="pill" aria-label="Cờ">⚑</button>
-  <button class="pill" aria-label="Chuỗi ngày học">🔥 <span id="streak">0</span></button>
-  <button class="avatar" aria-label="Tài khoản">C</button>
-  <button class="menu" aria-label="Menu">☰</button>
+  <a class="logo" href="#/"><i>L</i>LuyệnThi</a>
+  <button class="btn" aria-label="Cờ">⚑</button>
+  <button class="btn" aria-label="Chuỗi ngày học">🔥 0</button>
+  <button class="btn avatar" aria-label="Tài khoản">C</button>
+  <button class="btn" aria-label="Menu">☰</button>
 </header>
-
-<section class="hero">
-  <div class="stat"><div class="faces"><i></i><i></i><i></i></div><div><b id="count">1.731.411</b> <span>lượt làm bài</span></div></div>
-  <h1>Luyện thi tốt nghiệp <em>Phổ thông &amp; ĐGNL</em></h1>
-</section>
-
-<main class="panel">
-  <div class="panel-head"><div class="tag">K12</div><h2>Luyện tốt nghiệp THPT</h2></div>
-  <ul id="subjects"></ul>
-</main>
-
-<button class="chat" aria-label="Chat hỗ trợ">💬</button>
+<div id="app"></div>
+<div class="sheet-bg" id="sheetBg"><div class="sheet"><header>Chọn môn<button class="btn" id="closeSheet" style="border:0">✕</button></header><div id="sheetList"></div></div></div>
+<div class="toast" id="toast"></div>
+<button class="up" id="up" aria-label="Lên đầu trang" style="display:none">↑</button>
 
 <script>
-// Sửa danh sách môn học ở đây: icon, tên, số bài test, hot, liên kết
-const subjects = [
-  {icon:"💬", name:"Anh văn",  tests:147, hot:true,  href:"#anh-van"},
-  {icon:"🧮", name:"Toán học", tests:394, hot:true,  href:"#toan"},
-  {icon:"✒️", name:"Văn học",  tests:41,  hot:true,  href:"#van"},
-  {icon:"⚛️", name:"Vật lí",   tests:264, hot:true,  href:"#ly"},
-  {icon:"🧪", name:"Hoá học",  tests:210, hot:false, href:"#hoa"},
-  {icon:"🧬", name:"Sinh học", tests:180, hot:false, href:"#sinh"}
+/* ============ DỮ LIỆU – SỬA Ở ĐÂY ============ */
+// id: dùng trong link (#/mon/toan) | short: tên ngắn | full: tên đầy đủ | c: màu | n: số bài test
+const SUBJECTS = [
+  {id:"anh",  short:"Anh",         full:"Anh văn",     icon:"💬", c:"#3f9b63", n:147, hot:1},
+  {id:"toan", short:"Toán",        full:"Toán học",    icon:"🧮", c:"#d1477a", n:394, hot:1},
+  {id:"van",  short:"Văn",         full:"Văn học",     icon:"✒️", c:"#5b7de0", n:41,  hot:1},
+  {id:"ly",   short:"Lý",          full:"Vật lí",      icon:"⚛️", c:"#5b7de0", n:264, hot:1},
+  {id:"hoa",  short:"Hoá",         full:"Hoá học",     icon:"🧪", c:"#d1477a", n:330},
+  {id:"sinh", short:"Sinh",        full:"Sinh học",    icon:"🧬", c:"#3f9b63", n:232},
+  {id:"tin",  short:"Tin học",     full:"Tin học",     icon:"🖥️", c:"#d1477a", n:25},
+  {id:"cn",   short:"Công nghiệp", full:"Công nghiệp", icon:"🛠️", c:"#3f9b63", n:27},
+  {id:"nn",   short:"Nông nghiệp", full:"Nông nghiệp", icon:"🌱", c:"#e0a043", n:7},
+  {id:"su",   short:"Sử",          full:"Lịch sử",     icon:"📜", c:"#e0a043", n:71},
+  {id:"dia",  short:"Địa",         full:"Địa lí",      icon:"🌍", c:"#5b7de0", n:54},
+  {id:"gdktpl",short:"GD KT-PL",   full:"GD KT-PL",    icon:"⚖️", c:"#d1477a", n:38}
 ];
-document.getElementById('subjects').innerHTML = subjects.map(s => `
-  <li><a href="${s.href}">
-    <div class="ico">${s.icon}${s.hot?'<span class="hot">HOT</span>':''}</div>
-    <div class="txt"><strong>${s.name}</strong><span>${s.tests} bài test</span></div>
-    <i class="chev"></i></a></li>`).join('');
+// Danh sách Sở GD&ĐT / trường – thêm bớt tuỳ ý
+const PLACES = ["Lâm Đồng","Hà Tĩnh","Nghệ An","Thanh Hoá","Bắc Ninh","Hải Phòng","Đà Nẵng","Quảng Ninh","Thái Bình","Hà Nam"];
+const OFFICIAL_YEARS = [2025,2024,2023,2022];
+const COVERS = [["#f2effd","#b8ecf7"],["#e6fde8","#dfe9a6"],["#fdfde0","#cfeaf9"],["#fdeee6","#f8d3c4"],["#e8f0fd","#d9d2f5"]];
+// Link trang làm bài: đổi thành link thật của bạn, ví dụ "lam-bai.html?de="+exam.id
+const PLAY_LINK = null;
+
+/* ============ TẠO DANH SÁCH ĐỀ ============ */
+const rnd = s => { const x = Math.sin(s) * 10000; return x - Math.floor(x); };
+function buildExams(s, si){
+  const out = []; let k = 0;
+  PLACES.forEach((p,i)=>out.push({type:"Tham khảo", year:2026, place:p, lan:1+i%3, title:`Đề khảo sát chất lượng THPT môn ${s.full} Sở GD&ĐT ${p} năm 2026 - Lần ${1+i%3}`}));
+  OFFICIAL_YEARS.forEach(y=>out.push({type:"Chính thức", year:y, place:"Bộ GD&ĐT", title:`Đề thi chính thức tốt nghiệp THPT môn ${s.full} năm ${y}`}));
+  return out.map((e,i)=>({...e, id:`${s.id}-${i}`, idx:i, cv:COVERS[(i+si)%COVERS.length],
+    views:Math.round(2000+rnd(si*50+i)*40000), likes:Math.round(80+rnd(si*70+i+3)*900), tb:(3.5+rnd(si*90+i+7)*2.5).toFixed(1)}));
+}
+const EXAMS = Object.fromEntries(SUBJECTS.map((s,i)=>[s.id, buildExams(s,i)]));
+
+/* ============ HIỂN THỊ ============ */
+const $ = s => document.querySelector(s);
+const app = $("#app");
+const fmt = n => n>=1000 ? (n/1000).toFixed(1)+"K" : n;
+const saved = new Set();
+let state = {q:"", sort:"new", type:"all", open:false};
+
+function toast(t){const el=$("#toast");el.textContent=t;el.style.display="block";clearTimeout(toast.t);toast.t=setTimeout(()=>el.style.display="none",1800)}
+
+function home(){
+  document.title = "LuyệnThi – Luyện thi tốt nghiệp";
+  app.innerHTML = `
+  <section class="hero">
+    <div class="stat"><div class="faces"><i></i><i></i><i></i></div><div><b>1.731.411</b> <span>lượt làm bài</span></div></div>
+    <h1>Luyện thi tốt nghiệp <em>Phổ thông &amp; ĐGNL</em></h1>
+  </section>
+  <main class="panel">
+    <div class="panel-head"><div class="tag">K12</div><h2>Luyện tốt nghiệp THPT</h2></div>
+    <ul>${SUBJECTS.map(s=>`<li><a class="subj" href="#/mon/${s.id}">
+      <div class="ico">${s.icon}${s.hot?'<span class="hot">HOT</span>':''}</div>
+      <div class="txt"><strong>${s.full}</strong><span>${s.n} bài test</span></div><i class="chev"></i></a></li>`).join("")}</ul>
+  </main>`;
+}
+
+function subject(id){
+  const s = SUBJECTS.find(x=>x.id===id);
+  if(!s){location.hash="#/";return}
+  document.title = `${s.full} – LuyệnThi`;
+  app.innerHTML = `
+  <div class="subbar">
+    <b style="font-style:italic;font-size:20px;color:var(--brand)">THPT</b>
+    <button class="chip" id="pick"><span class="dot" style="background:${s.c};color:#fff">${s.icon}</span>${s.short}<i class="caret"></i></button>
+  </div>
+  <section class="sub-hero">
+    <h1>Luyện thi môn ${s.full}</h1>
+    <p>Tổng hợp đề thi chính thức và đề khảo sát của các Sở GD&amp;ĐT, ôn tập từ các năm gần nhất giúp bạn tự tin chinh phục điểm số mục tiêu.</p>
+  </section>
+  <div class="controls">
+    <button class="btn" id="fbtn">Bộ lọc</button>
+    <label class="search">🔍<input id="q" type="search" placeholder="Tìm kiếm bài tập..." value="${state.q}"></label>
+    <select class="btn sort" id="sort" aria-label="Sắp xếp">
+      <option value="new">Mới nhất</option><option value="views">Xem nhiều</option><option value="likes">Yêu thích</option>
+    </select>
+    <div class="filters ${state.open?"open":""}" id="filters">
+      ${["all|Tất cả","Chính thức|Chính thức","Tham khảo|Tham khảo"].map(x=>{const[v,l]=x.split("|");return `<button class="fchip ${state.type===v?"on":""}" data-t="${v}">${l}</button>`}).join("")}
+    </div>
+  </div>
+  <div class="list" id="list"></div>`;
+  $("#sort").value = state.sort;
+  $("#pick").onclick = openSheet;
+  $("#fbtn").onclick = ()=>{state.open=!state.open;$("#filters").classList.toggle("open",state.open)};
+  $("#q").oninput = e=>{state.q=e.target.value;renderList(s)};
+  $("#sort").onchange = e=>{state.sort=e.target.value;renderList(s)};
+  $("#filters").onclick = e=>{const t=e.target.dataset.t;if(!t)return;state.type=t;
+    document.querySelectorAll(".fchip").forEach(c=>c.classList.toggle("on",c.dataset.t===t));renderList(s)};
+  renderList(s);
+  $("#sheetList").innerHTML = SUBJECTS.map(x=>`<a href="#/mon/${x.id}" class="${x.id===id?"on":""}"><span class="dot" style="background:${x.c};color:#fff">${x.icon}</span>${x.short}</a>`).join("");
+}
+
+function renderList(s){
+  let l = EXAMS[s.id].filter(e=>(state.type==="all"||e.type===state.type) && e.title.toLowerCase().includes(state.q.trim().toLowerCase()));
+  if(state.sort==="views") l=[...l].sort((a,b)=>b.views-a.views);
+  if(state.sort==="likes") l=[...l].sort((a,b)=>b.likes-a.likes);
+  $("#list").innerHTML = l.length ? l.map(e=>`
+  <article class="card">
+    <div class="cover" style="background:${e.cv[0]}">
+      <div class="book" style="background:${e.cv[1]}">
+        <small>${e.type==="Chính thức"?"Đề thi chính thức":"Đề khảo sát chất lượng"} ${e.year}</small>
+        <b>${e.type==="Chính thức"?"Bộ GD&ĐT":"Sở GD&ĐT "+e.place}</b>
+        <span>Tốt nghiệp THPT môn ${s.short}${e.lan?" - Lần "+e.lan:""}</span><u>LuyệnThi</u>
+      </div>
+      <button class="bm ${saved.has(e.id)?"on":""}" data-id="${e.id}" aria-label="Lưu đề">🔖</button>
+    </div>
+    <div class="body">
+      <div class="meta">${e.type} · ${e.year}</div>
+      <h3>${e.title}</h3>
+      <div class="nums"><span>👁 ${fmt(e.views)}</span><span>♡ ${e.likes}</span><span>✔ TB ${e.tb}</span></div>
+      <div class="acts">
+        <a class="play" href="${PLAY_LINK?PLAY_LINK+e.id:'javascript:void(0)'}" data-play="1">Làm bài</a>
+        <button class="more" aria-label="Thêm">⋮</button>
+      </div>
+    </div>
+  </article>`).join("") : `<p class="empty">Không tìm thấy bài tập phù hợp.</p>`;
+}
+
+app.addEventListener("click", e=>{
+  const bm=e.target.closest(".bm");
+  if(bm){const id=bm.dataset.id;saved.has(id)?saved.delete(id):saved.add(id);bm.classList.toggle("on");toast(saved.has(id)?"Đã lưu đề":"Đã bỏ lưu");}
+  if(e.target.closest("[data-play]") && !PLAY_LINK) toast("Chưa gắn trang làm bài – sửa PLAY_LINK trong code");
+});
+
+function openSheet(){$("#sheetBg").classList.add("open")}
+function closeSheet(){$("#sheetBg").classList.remove("open")}
+$("#closeSheet").onclick = closeSheet;
+$("#sheetBg").onclick = e=>{if(e.target.id==="sheetBg"||e.target.closest("a"))closeSheet()};
+
+function route(){
+  const m = location.hash.match(/^#\/mon\/([\w-]+)/);
+  state = {q:"", sort:"new", type:"all", open:false};
+  window.scrollTo(0,0);
+  m ? subject(m[1]) : home();
+}
+window.addEventListener("hashchange", route);
+route();
+window.addEventListener("scroll", ()=>{$("#up").style.display = scrollY>600?"block":"none"});
+$("#up").onclick = ()=>scrollTo({top:0,behavior:"smooth"});
 </script>
 </body>
 </html>
