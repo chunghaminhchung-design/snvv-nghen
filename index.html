@@ -1,1 +1,87 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>LuyệnThi – Luyện thi tốt nghiệp</title>
+<link href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@400;500;600;800&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#ffffff; --ink:#1f2937; --muted:#6b7a90; --line:#d9dee6; --brand:#c8352b; --brand-soft:#fbf1f0; --surface:#ffffff; --dots:#c3c9d3;
+  box-sizing:border-box;
+  padding-top:env(safe-area-inset-top,0px); padding-bottom:env(safe-area-inset-bottom,0px);
+}
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]){--bg:#141922;--ink:#eef1f6;--muted:#97a3b6;--line:#2c3544;--brand:#ef5a4f;--brand-soft:#2a1b1d;--surface:#1a202b;--dots:#3a4252;}
+}
+:root[data-theme="dark"]{--bg:#141922;--ink:#eef1f6;--muted:#97a3b6;--line:#2c3544;--brand:#ef5a4f;--brand-soft:#2a1b1d;--surface:#1a202b;--dots:#3a4252;}
+html{scroll-padding-top:env(safe-area-inset-top,0px)}
+*{box-sizing:border-box;margin:0}
+body{font-family:'Be Vietnam Pro',system-ui,-apple-system,'Segoe UI',sans-serif;background:var(--bg);color:var(--ink);line-height:1.4}
+header{position:sticky;top:env(safe-area-inset-top,0px);z-index:5;display:flex;align-items:center;gap:8px;padding:12px 16px;background:var(--bg);border-bottom:1px solid var(--line)}
+body::before{content:"";position:fixed;inset:0 0 auto;height:env(safe-area-inset-top,0px);background:var(--bg);z-index:10}
+.logo{display:flex;align-items:center;gap:8px;margin-right:auto;font-weight:800;font-size:20px;letter-spacing:-.5px}
+.logo i{width:30px;height:30px;border-radius:9px;background:var(--brand);display:grid;place-items:center;color:#fff;font-style:normal;font-size:16px}
+.pill,.avatar,.menu{height:40px;border:1px solid var(--line);border-radius:14px;background:var(--surface);color:var(--ink);display:flex;align-items:center;justify-content:center;font:600 15px inherit;cursor:pointer;padding:0 12px;gap:4px}
+.avatar{width:40px;padding:0;border-radius:50%;background:#4b34a8;color:#fff;border:0}
+.hero{position:relative;text-align:center;padding:44px 20px 56px;background-image:radial-gradient(var(--dots) 1.2px,transparent 1.2px);background-size:24px 24px}
+.stat{display:inline-flex;align-items:center;gap:10px;border:1px solid var(--line);background:var(--surface);border-radius:999px;padding:7px 18px 7px 8px;font-size:15px;margin-bottom:28px}
+.stat b{font-weight:600}.stat span{color:var(--muted)}
+.faces{display:flex}.faces i{width:24px;height:24px;border-radius:50%;margin-left:-6px;border:2px solid var(--surface)}
+.faces i:nth-child(1){background:#7aa7f0;margin-left:0}.faces i:nth-child(2){background:#8a9a7b}.faces i:nth-child(3){background:#2f6cb8}
+h1{font-size:clamp(34px,10vw,56px);font-weight:800;letter-spacing:-1.5px;line-height:1.15}
+h1 em{display:inline-block;font-style:normal;color:var(--brand);background:var(--brand-soft);border-left:3px solid var(--brand);padding:2px 14px;margin-top:6px}
+.panel{margin-top:-24px;background:var(--bg);border:1px solid var(--line);border-radius:36px 36px 0 0;padding:28px 20px 100px;min-height:60vh}
+.panel-head{display:flex;align-items:center;gap:16px;margin-bottom:28px}
+.tag{background:var(--brand);color:#fff;font-weight:800;font-size:22px;padding:14px 18px;border-radius:14px;font-style:italic}
+.panel-head h2{font-size:22px;font-weight:500}
+ul{list-style:none;padding:0}
+li a{display:flex;align-items:center;gap:18px;padding:12px 0;color:inherit;text-decoration:none;position:relative}
+.ico{position:relative;width:64px;height:64px;border:1.5px solid var(--line);border-radius:18px;display:grid;place-items:center;font-size:28px;flex:none;background:var(--surface)}
+.hot{position:absolute;top:-10px;right:-10px;background:var(--brand);color:#fff;font-size:11px;font-weight:800;padding:2px 8px;border-radius:10px}
+.txt{flex:1}.txt strong{display:block;font-size:20px;font-weight:500}.txt span{color:var(--muted);font-size:17px}
+.chev{width:10px;height:10px;border-top:2px solid var(--muted);border-right:2px solid var(--muted);transform:rotate(45deg);margin-right:8px}
+li a:active .ico,li a:hover .ico{border-color:var(--brand)}
+a:focus-visible,button:focus-visible{outline:3px solid var(--brand);outline-offset:2px}
+.chat{position:fixed;right:18px;bottom:calc(20px + env(safe-area-inset-bottom,0px));width:56px;height:56px;border-radius:50%;background:var(--surface);box-shadow:0 4px 18px rgba(0,0,0,.18);display:grid;place-items:center;border:0;cursor:pointer;font-size:26px}
+</style>
+</head>
+<body>
+<header>
+  <div class="logo"><i>L</i>LuyệnThi</div>
+  <button class="pill" aria-label="Cờ">⚑</button>
+  <button class="pill" aria-label="Chuỗi ngày học">🔥 <span id="streak">0</span></button>
+  <button class="avatar" aria-label="Tài khoản">C</button>
+  <button class="menu" aria-label="Menu">☰</button>
+</header>
 
+<section class="hero">
+  <div class="stat"><div class="faces"><i></i><i></i><i></i></div><div><b id="count">1.731.411</b> <span>lượt làm bài</span></div></div>
+  <h1>Luyện thi tốt nghiệp <em>Phổ thông &amp; ĐGNL</em></h1>
+</section>
+
+<main class="panel">
+  <div class="panel-head"><div class="tag">K12</div><h2>Luyện tốt nghiệp THPT</h2></div>
+  <ul id="subjects"></ul>
+</main>
+
+<button class="chat" aria-label="Chat hỗ trợ">💬</button>
+
+<script>
+// Sửa danh sách môn học ở đây: icon, tên, số bài test, hot, liên kết
+const subjects = [
+  {icon:"💬", name:"Anh văn",  tests:147, hot:true,  href:"#anh-van"},
+  {icon:"🧮", name:"Toán học", tests:394, hot:true,  href:"#toan"},
+  {icon:"✒️", name:"Văn học",  tests:41,  hot:true,  href:"#van"},
+  {icon:"⚛️", name:"Vật lí",   tests:264, hot:true,  href:"#ly"},
+  {icon:"🧪", name:"Hoá học",  tests:210, hot:false, href:"#hoa"},
+  {icon:"🧬", name:"Sinh học", tests:180, hot:false, href:"#sinh"}
+];
+document.getElementById('subjects').innerHTML = subjects.map(s => `
+  <li><a href="${s.href}">
+    <div class="ico">${s.icon}${s.hot?'<span class="hot">HOT</span>':''}</div>
+    <div class="txt"><strong>${s.name}</strong><span>${s.tests} bài test</span></div>
+    <i class="chev"></i></a></li>`).join('');
+</script>
+</body>
+</html>
